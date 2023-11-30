@@ -1,0 +1,116 @@
+---
+#------------------------------------------------------------------------------
+# Pull Request Workflow Controller.
+#
+# Triggers:
+# - Called automatically on relevant actions performed on pull requests.
+# - Can also be run manually by clicking the "Run workflow" button.
+#
+# Actions:
+# - Use semantic release rules to determine if a new release will be published.
+# - run Python tests, but only if Python-related files have changed.
+# - run Terraform tests, but only if Terraform-related files have changed.
+# - run ReactJS tests, but only if ReactJS-related files have changed.
+# - run pre-commit hooks to ensure code is formatted correctly.
+#
+# To-Do:
+# If a new release is to be published then we want to consider running QA tests
+# to ensure formatting and documentation is correct.
+#------------------------------------------------------------------------------
+name: Pull Request Controller
+
+on:
+  workflow_dispatch:
+  # GitHub Copilot: The `pull_request` and `pull_request_target` are two different
+  # event types in GitHub Actions that trigger workflows when activity related
+  # to pull requests occurs.
+  # - `pull_request`: This event triggers a workflow run whenever a pull
+  #   request is opened, synchronized, or closed. The workflow runs in the context of the
+  #   pull request, meaning it has access to the code and environment variables of the head
+  #   branch of the pull request. This is safe for pull requests within the same repository,
+  #   but for pull requests from a fork, this could potentially expose sensitive information.
+  #
+  # - `pull_request_target`: This event is similar to `pull_request`, but it runs in the context
+  #   of the base of the pull request, rather than the head. This means it has access to the code
+  #   and environment variables of the base branch, not the head branch. This is safer for
+  #   pull requests from forks, as it prevents the fork from accessing sensitive information
+  #   in the base repository. However, it means the workflow does not have access to the code
+  #   in the pull request by default. If you need to access the code in the pull request,
+  #   you can use the `actions/checkout` action with the `ref` input
+  #   set to `github.event.pull_request.head.ref`.
+  #
+  # In general, use `pull_request` for workflows that need to access the code in the pull request,
+  # and `pull_request_target` for workflows that need to be safe for pull requests from forks.
+  pull_request_target:
+    types: [opened, synchronize]
+    paths:
+      - "**.py"
+      - "**.requirements.txt"
+      - "**.package.json"
+      - "./grader/**"
+
+env:
+  python-version: "3.11"
+
+jobs:
+  check_for_pending_release:
+    name: test-semantic-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic
+        with:
+          dry_run: true
+          branches: |
+            [
+              '+([0-9])?(.{+([0-9]),x}).x',
+              'main',
+              'next',
+              'next-major',
+              {
+                name: 'beta',
+                prerelease: true
+              },
+              {
+                name: 'alpha',
+                prerelease: true
+              }
+            ]
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+
+      - name: Test Outputs
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          echo ${{ steps.semantic.outputs.new_release_version }}
+          echo ${{ steps.semantic.outputs.new_release_major_version }}
+          echo ${{ steps.semantic.outputs.new_release_minor_version }}
+          echo ${{ steps.semantic.outputs.new_release_patch_version }}
+
+  python_tests:
+    needs: check_for_pending_release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Check for changed files
+        id: file_changes
+        run: |
+          echo "::set-output name=files_changed::$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.py$' || true)"
+          echo "::set-output name=requirements_changed::$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep 'requirements.txt$' || true)"
+
+      - name: Run Python tests
+        if: steps.file_changes.outputs.files_changed != '' || steps.file_changes.outputs.requirements_changed != ''
+        uses: ./.github/actions/tests/python
+        with:
+          python-version: "${{ env.python-version}}"

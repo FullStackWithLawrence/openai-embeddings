@@ -1,0 +1,28 @@
+---
+#------------------------------------------------------------------------------
+# Run all tests
+#------------------------------------------------------------------------------
+name: Run all tests
+
+on:
+  workflow_dispatch:
+
+env:
+  python-version: "3.11"
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Run Python tests
+        uses: ./.github/actions/tests/python
+        with:
+          python-version: "${{ env.python-version}}"
+          openai-api-organization: "${{ secrets.OPENAI_API_ORGANIZATION }}"
+          openai-api-key: "${{ secrets.OPENAI_API_KEY }}"
+          pinecone-api-key: "${{ secrets.PINECONE_API_KEY }}"
+          pinecone-environment: "${{ secrets.PINECONE_ENVIRONMENT }}"

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["flake8", "gitlint", "bump2version"]
+
+[tool.isort]
+profile = "black"
+lines_after_imports = 2
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | venv
+  | node_modules
+  | build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+ignore = "D205,D413,D400,D401"
+max-line-length =120
+max-complexity = 10
+exclude = "venv"
+extend-exclude = "*__init__.py,*__version__.py,venv"
+select = "C101"

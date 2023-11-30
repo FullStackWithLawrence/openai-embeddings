@@ -1,0 +1,6 @@
+{
+  "cornflakes.linter.executablePath": "/Users/mcdaniel/desktop/aws-openai/venv/bin/flake8",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
+}

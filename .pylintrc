@@ -1,0 +1,11 @@
+[MASTER]
+init-hook='import sys; print(sys.executable); print(sys.path)'
+ignore-paths =
+ignore =
+  __version__.py
+
+[FORMAT]
+max-line-length=120
+
+[MESSAGES CONTROL]
+disable=C0103
