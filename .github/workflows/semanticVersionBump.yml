@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION_FILE: __version__.py
-      PACKAGE_PATH: ${{ github.workspace }}/grader/
+      PACKAGE_PATH: ${{ github.workspace }}/models/
 
     steps:
       - uses: actions/checkout@v4

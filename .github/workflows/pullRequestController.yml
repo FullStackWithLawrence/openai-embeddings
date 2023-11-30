@@ -47,7 +47,7 @@ on:
       - "**.py"
       - "**.requirements.txt"
       - "**.package.json"
-      - "./grader/**"
+      - "./models/**"
 
 env:
   python-version: "3.11"
