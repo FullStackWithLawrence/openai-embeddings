@@ -9,25 +9,14 @@ import pinecone
 from dotenv import find_dotenv, load_dotenv
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
-
-# 1.) wrappers
 from langchain.llms.openai import OpenAI
-
-# 3.) prompt templates
 from langchain.prompts import PromptTemplate
-
-# 2.) models and messages
 from langchain.schema import HumanMessage, SystemMessage  # AIMessage (not used)
-
-# 6.) embeddings
 from langchain.text_splitter import Document, RecursiveCharacterTextSplitter
-
-# 7.) pinecode client
 from langchain.vectorstores.pinecone import Pinecone
 from pydantic import BaseModel, ConfigDict, Field  # ValidationError
 
 
-# Load environment variables from .env file in all folders
 # pylint: disable=duplicate-code
 dotenv_path = find_dotenv()
 if os.path.exists(dotenv_path):
@@ -41,22 +30,48 @@ else:
     raise FileNotFoundError("No .env file found in root directory of repository")
 
 DEFAULT_MODEL_NAME = "text-davinci-003"
-pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)  # minute 10:43
+pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
 
 
 class NetecPromptTemplates:
     """Netec Prompt Templates."""
 
+    sales_role: str = """You are a helpful sales assistant at Netec who sells
+        specialized training and exam preparation services to existing customers.
+        You provide concise explanations of the services that Netec offers in 100
+        words or less."""
+
+    @classmethod
+    def get_properties(cls):
+        """return a list of properties of this class."""
+        return [attr for attr in dir(cls) if isinstance(getattr(cls, attr), property)]
+
     @property
     def training_services(self) -> PromptTemplate:
         """Get prompt."""
-        template = """
-        You are a sales assistant at Netec who sells specialized training and exam prep services to existing customers.
+        template = (
+            self.sales_role
+            + """
         Explain the training services that Netec offers about {concept}
-        in no more than 100 words.
         """
-        prompt = PromptTemplate(input_variables=["concept"], template=template)
-        return prompt
+        )
+        return PromptTemplate(input_variables=["concept"], template=template)
+
+    @property
+    def oracle_training_services(self) -> PromptTemplate:
+        """Get prompt."""
+        template = (
+            self.sales_role
+            + """
+        Note that Netec is the exclusive provide of Oracle training services
+        for the 6 levels of Oracle Certification credentials: Oracle Certified Junior Associate (OCJA),
+        Oracle Certified Associate (OCA), Oracle Certified Professional (OCP),
+        Oracle Certified Master (OCM), Oracle Certified Expert (OCE) and
+        Oracle Certified Specialist (OCS).
+        Summarize their programs for {concept}
+        """
+        )
+        return PromptTemplate(input_variables=["concept"], template=template)
 
 
 class SalesSupportModel(BaseModel):
@@ -98,10 +113,9 @@ class SalesSupportModel(BaseModel):
         # pylint: disable=not-callable
         return self.chat(messages)
 
-    def prompt_with_template(self, concept: str, model: str = DEFAULT_MODEL_NAME) -> str:
+    def prompt_with_template(self, prompt: PromptTemplate, concept: str, model: str = DEFAULT_MODEL_NAME) -> str:
         """Prompt with template."""
         llm = OpenAI(model=model)
-        prompt = NetecPromptTemplates().training_services
         retval = llm(prompt.format(concept=concept))
         return retval
 

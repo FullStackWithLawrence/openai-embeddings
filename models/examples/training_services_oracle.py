@@ -9,10 +9,10 @@ ssm = SalesSupportModel()
 templates = NetecPromptTemplates()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="SSM examples")
-    parser.add_argument("concept", type=str, help="A kind of training that Netec provides.")
+    parser = argparse.ArgumentParser(description="SSM Oracle examples")
+    parser.add_argument("concept", type=str, help="An Oracle certification exam prep")
     args = parser.parse_args()
 
-    prompt = templates.training_services
+    prompt = templates.oracle_training_services
     result = ssm.prompt_with_template(prompt=prompt, concept=args.concept)
     print(result)
