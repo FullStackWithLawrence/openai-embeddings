@@ -35,7 +35,7 @@ class NetecPromptTemplates:
         template = (
             self.sales_role
             + """
-        Note that Netec is the exclusive provide of Oracle training services
+        Note that Netec is the exclusive provider in Latin America of Oracle training services
         for the 6 levels of Oracle Certification credentials: Oracle Certified Junior Associate (OCJA),
         Oracle Certified Associate (OCA), Oracle Certified Professional (OCP),
         Oracle Certified Master (OCM), Oracle Certified Expert (OCE) and
