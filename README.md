@@ -1,12 +1,12 @@
-# Netec Catalogue LLM
+# Netec Large Language Models
 
 A Python [LangChain](https://www.langchain.com/) - [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept LLM to manage sales support inquiries on the Netec course catalogue.
 
 ## Installation
 
 ```console
-git clone https://github.com/lpm0073/langchain-workflows.git
-cd langchain-workflows
+git clone https://github.com/lpm0073/netec-llm.git
+cd netec-llm
 make init
 make activate
 ```
@@ -25,6 +25,9 @@ python3 -m models.examples.prompt "You are an expert on businesses located in Me
 
 # example 3 - prompted assistant
 python3 -m models.examples.training_services "Microsoft certified Azure AI engineer associate"
+
+# example 4 - prompted assistant
+python3 -m models.examples.training_services_oracle "Oracle database administrator"
 ```
 
 ## Requirements
