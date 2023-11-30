@@ -61,3 +61,16 @@ cd automatic-models
 make init
 make activate
 ```
+
+### Github Actions
+
+Actions requires the following secrets:
+
+```console
+PAT: {{ secrets.PAT }}  # a GitHub Personal Access Token
+OPENAI_API_ORGANIZATION: {{ secrets.OPENAI_API_ORGANIZATION }}
+OPENAI_API_KEY: {{ secrets.OPENAI_API_KEY }}
+PINECONE_API_KEY: {{ secrets.PINECONE_API_KEY }}
+PINECONE_ENVIRONMENT: {{ secrets.PINECONE_ENVIRONMENT }}
+PINECONE_INDEX_NAME: {{ secrets.PINECONE_INDEX_NAME }}
+```

@@ -11,6 +11,26 @@ inputs:
     description: "The version of Python to use, such as 3.11.0"
     required: true
     type: string
+  openai-api-organization:
+    description: "The OpenAI API organization"
+    required: true
+    type: string
+  openai-api-key:
+    description: "The OpenAI API key"
+    required: true
+    type: string
+  pinecone-api-key:
+    description: "The Pinecone API key"
+    required: true
+    type: string
+  pinecone-environment:
+    description: "The Pinecone environment"
+    required: true
+    type: string
+  pinecone-index-name:
+    description: "The Pinecone index name"
+    required: true
+    type: string
 
 env:
   REQUIREMENTS_PATH: "api/terraform/python/layer_genai/requirements.txt"
@@ -60,14 +80,16 @@ runs:
         echo "OPENAI_API_KEY=${{ env.OPENAI_API_KEY }}" >> ./.env
         echo "PINECONE_API_KEY=${{ env.PINECONE_API_KEY }}" >> ./.env
         echo "PINECONE_ENVIRONMENT=${{ env.PINECONE_ENVIRONMENT }}" >> ./.env
+        echo "PINECONE_INDEX_NAME=${{ env.PINECONE_INDEX_NAME }}" >> ./.env
       env:
-        OPENAI_API_ORGANIZATION: "SET-ME-PLEASE"
-        OPENAI_API_KEY: "SET-ME-PLEASE"
-        PINECONE_API_KEY: "SET-ME-PLEASE"
-        PINECONE_ENVIRONMENT: "SET-ME-PLEASE"
+        OPENAI_API_ORGANIZATION: ${{ inputs.openai-api-organization }}
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        PINECONE_API_KEY: ${{ inputs.pinecone-api-key }}
+        PINECONE_ENVIRONMENT: ${{ inputs.pinecone-environment }}
+        PINECONE_INDEX_NAME: ${{ inputs.pinecone-index-name }}
 
     - name: Run Tests
       shell: bash
       run: |
-        cd ./grader
-        pytest -v -s tests/
+        cd models && pytest -v -s tests/
+        python -m setup_test

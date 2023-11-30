@@ -26,3 +26,4 @@ jobs:
           openai-api-key: "${{ secrets.OPENAI_API_KEY }}"
           pinecone-api-key: "${{ secrets.PINECONE_API_KEY }}"
           pinecone-environment: "${{ secrets.PINECONE_ENVIRONMENT }}"
+          pinecone-index-name: "${{ secrets.PINECONE_INDEX_NAME }}"

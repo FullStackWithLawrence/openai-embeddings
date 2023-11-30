@@ -2,7 +2,7 @@
 # flake8: noqa: F401
 # pylint: disable=too-few-public-methods
 """
-Test integrity of automated grader class methods.
+Test integrity of base class.
 """
 import pytest  # pylint: disable=unused-import
 
