@@ -2,7 +2,8 @@
 """Sales Support Model (SSM) for the LangChain project."""
 import argparse
 
-from ..ssm import NetecPromptTemplates, SalesSupportModel
+from ..prompt_templates import NetecPromptTemplates
+from ..ssm import SalesSupportModel
 
 
 ssm = SalesSupportModel()

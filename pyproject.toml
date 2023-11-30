@@ -34,5 +34,5 @@ extend-exclude = "*__init__.py,*__version__.py,venv"
 select = "C101"
 
 [tool.codespell]
-skip = '*.svg,models/ssm.py'
+skip = '*.svg,models/prompt_templates.py'
 ignore-words = 'codespell.txt'
