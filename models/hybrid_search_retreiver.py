@@ -64,7 +64,7 @@ class TextSplitter:
         return documents
 
 
-class SalesSupportModel:
+class HybridSearchRetriever:
     """Sales Support Model (SSM)."""
 
     # prompting wrapper

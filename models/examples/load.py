@@ -2,10 +2,10 @@
 """Sales Support Model (SSM) Retrieval Augmented Generation (RAG)"""
 import argparse
 
-from ..ssm import SalesSupportModel
+from models.hybrid_search_retreiver import HybridSearchRetriever
 
 
-ssm = SalesSupportModel()
+ssm = HybridSearchRetriever()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RAG example")
