@@ -2,11 +2,11 @@
 """Sales Support Model (SSM) for the LangChain project."""
 import argparse
 
-from ..prompt_templates import NetecPromptTemplates
-from ..ssm import SalesSupportModel
+from models.hybrid_search_retreiver import HybridSearchRetriever
+from models.prompt_templates import NetecPromptTemplates
 
 
-ssm = SalesSupportModel()
+ssm = HybridSearchRetriever()
 templates = NetecPromptTemplates()
 
 if __name__ == "__main__":
