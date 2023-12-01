@@ -15,4 +15,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     result = ssm.cached_chat_request(args.system_prompt, args.human_prompt)
-    print(result.content, end="\n")
+    print(result)
