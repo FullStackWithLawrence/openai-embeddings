@@ -3,10 +3,10 @@
 import argparse
 
 from ..prompt_templates import NetecPromptTemplates
-from ..ssm import SalesSupportModel
+from ..ssm import HybridSearchRetriever
 
 
-ssm = SalesSupportModel()
+ssm = HybridSearchRetriever()
 templates = NetecPromptTemplates()
 
 if __name__ == "__main__":

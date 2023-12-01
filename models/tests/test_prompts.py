@@ -6,13 +6,13 @@ Test integrity of base class.
 import pytest  # pylint: disable=unused-import
 
 from ..prompt_templates import NetecPromptTemplates
-from ..ssm import SalesSupportModel
+from ..ssm import HybridSearchRetriever
 
 
 class TestPrompts:
-    """Test SalesSupportModel class."""
+    """Test HybridSearchRetriever class."""
 
-    ssm = SalesSupportModel()
+    ssm = HybridSearchRetriever()
     templates = NetecPromptTemplates()
 
     def test_oracle_training_services(self):
