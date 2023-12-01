@@ -10,6 +10,7 @@ import glob
 import os
 from typing import List  # ClassVar
 
+# pinecone integration
 import pinecone
 from langchain.cache import InMemoryCache
 
@@ -64,7 +65,7 @@ class SalesSupportModel:
         chunk_overlap=0,
     )
     openai_embedding = OpenAIEmbeddings()
-    pinecone_search = Pinecone.from_existing_index(
+    pinecone_index = Pinecone.from_existing_index(
         Credentials.PINECONE_INDEX_NAME,
         embedding=openai_embedding,
     )
@@ -76,7 +77,8 @@ class SalesSupportModel:
             HumanMessage(content=human_message),
         ]
         # pylint: disable=not-callable
-        return self.chat(messages)
+        retval = self.chat(messages).content
+        return retval
 
     def prompt_with_template(self, prompt: PromptTemplate, concept: str, model: str = DEFAULT_MODEL_NAME) -> str:
         """Prompt with template."""
@@ -84,6 +86,7 @@ class SalesSupportModel:
         retval = llm(prompt.format(concept=concept))
         return retval
 
+    # FIX NOTE: DEPRECATED
     def split_text(self, text: str) -> List[Document]:
         """Split text."""
         text_splitter = RecursiveCharacterTextSplitter(
@@ -115,7 +118,7 @@ class SalesSupportModel:
                 k += 1
                 print(k * "-", end="\r")
                 texts_splitter_results = self.text_splitter.create_documents([doc.page_content])
-                self.pinecone_search.from_existing_index(
+                self.pinecone_index.from_existing_index(
                     index_name=Credentials.PINECONE_INDEX_NAME,
                     embedding=self.openai_embedding,
                     text_key=texts_splitter_results,
@@ -137,7 +140,7 @@ class SalesSupportModel:
             """Format docs."""
             return "\n\n".join(doc.page_content for doc in docs)
 
-        retriever = self.pinecone_search.as_retriever()
+        retriever = self.pinecone_index.as_retriever()
 
         # Use the retriever to get relevant documents
         documents = retriever.get_relevant_documents(query=prompt)
