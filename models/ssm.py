@@ -7,28 +7,27 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
      https://python.langchain.com/docs/integrations/retrievers/pinecone_hybrid_search
 """
 
+# document loading
 import glob
 import os
 import textwrap
-from typing import List  # ClassVar
+from typing import List
 
 # pinecone integration
 import pinecone
 from langchain.cache import InMemoryCache
-
-# prompting and chat
 from langchain.chat_models import ChatOpenAI
-
-# document loading
 from langchain.document_loaders import PyPDFLoader
 
 # embedding
 from langchain.embeddings import OpenAIEmbeddings
-
-# vector database
 from langchain.globals import set_llm_cache
+
+# prompting and chat
 from langchain.llms.openai import OpenAI
 from langchain.prompts import PromptTemplate
+
+# hybrid search capability
 from langchain.retrievers import PineconeHybridSearchRetriever
 from langchain.schema import HumanMessage, SystemMessage
 from langchain.text_splitter import Document
@@ -37,9 +36,6 @@ from pinecone_text.sparse import BM25Encoder
 
 # this project
 from models.const import Credentials
-
-
-# from pydantic import BaseModel, ConfigDict, Field
 
 
 ###############################################################################
@@ -105,11 +101,6 @@ class SalesSupportModel:
         """Prompt with template."""
         llm = OpenAI(model=model)
         retval = llm(prompt.format(concept=concept))
-        return retval
-
-    def split_text(self, text: str) -> List[Document]:
-        """Split text. Leaving this here for now, since it exposes the return type."""
-        retval = self.text_splitter.create_documents([text])
         return retval
 
     def fit_tf_idf_values(self, corpus: List[str]):
