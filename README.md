@@ -35,8 +35,11 @@ python3 -m models.examples.training_services "Microsoft certified Azure AI engin
 # example 4 - prompted assistant
 python3 -m models.examples.training_services_oracle "Oracle database administrator"
 
-# example 5 - RAG
-python3 -m models.examples.rag "./data/" "What is Accounting Based Valuation?"
+# example 5 - Load PDF documents
+python3 -m models.examples.load "./data/"
+
+# example 6 - Retrieval Augmented Generation
+python3 -m models.examples.rag "What is Accounting Based Valuation?"
 ```
 
 ## Requirements

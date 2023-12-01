@@ -8,10 +8,9 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
 
 import glob
 import os
-from typing import ClassVar, List
+from typing import List  # ClassVar
 
 import pinecone
-from langchain import hub
 from langchain.cache import InMemoryCache
 
 # prompting and chat
@@ -27,14 +26,15 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.globals import set_llm_cache
 from langchain.llms.openai import OpenAI
 from langchain.prompts import PromptTemplate
-from langchain.schema import HumanMessage, StrOutputParser, SystemMessage
-from langchain.schema.runnable import RunnablePassthrough
+from langchain.schema import HumanMessage, SystemMessage
 from langchain.text_splitter import Document, RecursiveCharacterTextSplitter
 from langchain.vectorstores.pinecone import Pinecone
-from pydantic import BaseModel, ConfigDict, Field  # ValidationError
 
 # this project
 from models.const import Credentials
+
+
+# from pydantic import BaseModel, ConfigDict, Field
 
 
 ###############################################################################
@@ -45,28 +45,23 @@ pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Credentials.PINE
 set_llm_cache(InMemoryCache())
 
 
-class SalesSupportModel(BaseModel):
+class SalesSupportModel:
     """Sales Support Model (SSM)."""
 
-    Config: ClassVar = ConfigDict(arbitrary_types_allowed=True)
-
     # prompting wrapper
-    chat: ChatOpenAI = Field(
-        default_factory=lambda: ChatOpenAI(
-            api_key=Credentials.OPENAI_API_KEY,
-            organization=Credentials.OPENAI_API_ORGANIZATION,
-            cache=True,
-            max_retries=3,
-            model="gpt-3.5-turbo",
-            temperature=0.0,
-        )
+    chat = ChatOpenAI(
+        api_key=Credentials.OPENAI_API_KEY,
+        organization=Credentials.OPENAI_API_ORGANIZATION,
+        cache=True,
+        max_retries=3,
+        model="gpt-3.5-turbo",
+        temperature=0.0,
     )
 
     # embeddings
-    texts_splitter_results: List[Document] = Field(None, description="Text splitter results")
-    pinecone_search: Pinecone = Field(None, description="Pinecone search")
-    openai_embedding: OpenAIEmbeddings = Field(OpenAIEmbeddings())
-    query_result: List[float] = Field(None, description="Vector database query result")
+    texts_splitter_results: List[Document]
+    openai_embedding = OpenAIEmbeddings()
+    query_result: List[float]
 
     def cached_chat_request(self, system_message: str, human_message: str) -> SystemMessage:
         """Cached chat request."""
@@ -103,13 +98,13 @@ class SalesSupportModel(BaseModel):
         # pylint: disable=no-member
         self.openai_embedding.embed_query(embedding)
 
-        self.pinecone_search = Pinecone.from_documents(
-            texts_splitter_results,
+        Pinecone.from_documents(
+            documents=texts_splitter_results,
             embedding=self.openai_embedding,
             index_name=Credentials.PINECONE_INDEX_NAME,
         )
 
-    def rag(self, filepath: str, prompt: str):
+    def load(self, filepath: str):
         """
         Embed PDF.
         1. Load PDF document text data
@@ -118,33 +113,22 @@ class SalesSupportModel(BaseModel):
         4. Store in Pinecone
         """
 
-        # pylint: disable=unused-variable
-        def format_docs(docs):
-            """Format docs."""
-            return "\n\n".join(doc.page_content for doc in docs)
-
-        for pdf_file in glob.glob(os.path.join(filepath, "*.pdf")):
+        pdf_files = glob.glob(os.path.join(filepath, "*.pdf"))
+        i = 0
+        for pdf_file in pdf_files:
+            i += 1
+            j = len(pdf_files)
+            print(f"Loading PDF {i} of {j}: ")
             loader = PyPDFLoader(file_path=pdf_file)
             docs = loader.load()
+            k = 0
             for doc in docs:
+                k += 1
+                print(k * "-", end="\r")
                 self.embed(doc.page_content)
+        print("Finished loading PDFs")
 
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        splits = text_splitter.split_documents(docs)
-        vectorstore = Pinecone.from_documents(documents=splits, embedding=self.openai_embedding)
-        retriever = vectorstore.as_retriever()
-        prompt = hub.pull("rlm/rag-prompt")
-
-        rag_chain = (
-            {"context": retriever | self.format_docs, "question": RunnablePassthrough()}
-            | prompt
-            | self.chat
-            | StrOutputParser()
-        )
-
-        return rag_chain.invoke(prompt)
-
-    def embedded_prompt(self, prompt: str) -> List[Document]:
+    def rag(self, prompt: str):
         """
         Embedded prompt.
         1. Retrieve prompt: Given a user input, relevant splits are retrieved
@@ -152,5 +136,29 @@ class SalesSupportModel(BaseModel):
         2. Generate: A ChatModel / LLM produces an answer using a prompt that includes
            the question and the retrieved data
         """
-        result = self.pinecone_search.similarity_search(prompt)
-        return result
+
+        # pylint: disable=unused-variable
+        def format_docs(docs):
+            """Format docs."""
+            return "\n\n".join(doc.page_content for doc in docs)
+
+        pinecone_search = Pinecone.from_existing_index(
+            Credentials.PINECONE_INDEX_NAME,
+            embedding=self.openai_embedding,
+        )
+        retriever = pinecone_search.as_retriever()
+
+        # Use the retriever to get relevant documents
+        documents = retriever.get_relevant_documents(query=prompt)
+        print(f"Retrieved {len(documents)} related documents from Pinecone")
+
+        # Generate a prompt from the retrieved documents
+        prompt += " ".join(doc.page_content for doc in documents)
+        print(f"Prompt contains {len(prompt.split())} words")
+        print("Prompt:", prompt)
+        print(doc for doc in documents)
+
+        # Get a response from the GPT-3.5-turbo model
+        response = self.cached_chat_request(system_message="You are a helpful assistant.", human_message=prompt)
+
+        return response
