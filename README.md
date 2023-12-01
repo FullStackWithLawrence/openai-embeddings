@@ -49,16 +49,17 @@ python3 -m models.examples.load "./data/"
 python3 -m models.examples.rag "What is Accounting Based Valuation?"
 ```
 
-## Requirements
+## Setup
 
-- OpenAI API key
-- Pinecone API key
+Set the following credentials in .env located in the root of this repository.
 
 ```console
-export OPENAI_API_ORGANIZATION=SET-ME-PLEASE
-export OPENAI_API_KEY=SET-ME-PLEASE
-export PINECONE_API_KEY=SET-ME-PLEASE
-export PINECONE_ENVIRONMENT=SET-ME-PLEASE
+OPENAI_API_ORGANIZATION=SET-ME-PLEASE
+OPENAI_API_KEY=SET-ME-PLEASE
+PINECONE_API_KEY=SET-ME-PLEASE
+PINECONE_ENVIRONMENT=SET-ME-PLEASE
+PINECONE_INDEX_NAME=SET-ME-PLEASE
+DEBUG_MODE=False
 ```
 
 ### Pinecone setup
