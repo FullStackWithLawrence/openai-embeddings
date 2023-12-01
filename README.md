@@ -1,6 +1,13 @@
-# Netec Large Language Models
+# Hybrid Search Retriever
 
-A Python [LangChain](https://www.langchain.com/) - [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept Retrieval Augmented Generation (RAG) models using sales support PDF documents.
+A Python [OpenAI](https://openai.com/) / [LangChain](https://www.langchain.com/) / [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept Retrieval Augmented Generation (RAG) model using PDF documents as the embeddings data source.
+
+Implements the following:
+
+- a command-line pdf loader program that extracts text, vectorizes, and
+  loads into a Pinecone dot product vector database that is dimensioned to match OpenAI embeddings.
+
+- a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
 
 See:
 
