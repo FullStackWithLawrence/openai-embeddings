@@ -1,55 +1,73 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-few-public-methods
-"""Sales Support Model (SSM) for the LangChain project."""
+"""
+Sales Support Model (SSM) for the LangChain project.
+See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
+     https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf
+"""
 
-from typing import ClassVar, List
+import glob
+import os
+from typing import List  # ClassVar
 
 import pinecone
+from langchain.cache import InMemoryCache
+
+# prompting and chat
 from langchain.chat_models import ChatOpenAI
+
+# document loading
+from langchain.document_loaders import PyPDFLoader
+
+# embedding
 from langchain.embeddings import OpenAIEmbeddings
+
+# vector database
+from langchain.globals import set_llm_cache
 from langchain.llms.openai import OpenAI
 from langchain.prompts import PromptTemplate
-from langchain.schema import HumanMessage, SystemMessage  # AIMessage (not used)
+from langchain.schema import HumanMessage, SystemMessage
 from langchain.text_splitter import Document, RecursiveCharacterTextSplitter
 from langchain.vectorstores.pinecone import Pinecone
-from pydantic import BaseModel, ConfigDict, Field  # ValidationError
 
+# this project
 from models.const import Credentials
 
 
+# from pydantic import BaseModel, ConfigDict, Field
+
+
+###############################################################################
+# initializations
+###############################################################################
 DEFAULT_MODEL_NAME = "text-davinci-003"
 pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Credentials.PINECONE_ENVIRONMENT)
+set_llm_cache(InMemoryCache())
 
 
-class SalesSupportModel(BaseModel):
+class SalesSupportModel:
     """Sales Support Model (SSM)."""
 
-    Config: ClassVar = ConfigDict(arbitrary_types_allowed=True)
-
     # prompting wrapper
-    chat: ChatOpenAI = Field(
-        default_factory=lambda: ChatOpenAI(
-            api_key=Credentials.OPENAI_API_KEY,
-            organization=Credentials.OPENAI_API_ORGANIZATION,
-            max_retries=3,
-            model="gpt-3.5-turbo",
-            temperature=0.3,
-        )
+    chat = ChatOpenAI(
+        api_key=Credentials.OPENAI_API_KEY,
+        organization=Credentials.OPENAI_API_ORGANIZATION,
+        cache=True,
+        max_retries=3,
+        model="gpt-3.5-turbo",
+        temperature=0.0,
     )
 
     # embeddings
-    text_splitter: RecursiveCharacterTextSplitter = Field(
-        default_factory=lambda: RecursiveCharacterTextSplitter(
-            chunk_size=100,
-            chunk_overlap=0,
-        )
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=100,
+        chunk_overlap=0,
     )
-
-    texts_splitter_results: List[Document] = Field(None, description="Text splitter results")
-    pinecone_search: Pinecone = Field(None, description="Pinecone search")
-    pinecone_index_name: str = Field(default="netec-ssm", description="Pinecone index name")
-    openai_embedding: OpenAIEmbeddings = Field(default_factory=lambda: OpenAIEmbeddings(model="ada"))
-    query_result: List[float] = Field(None, description="Vector database query result")
+    openai_embedding = OpenAIEmbeddings()
+    pinecone_search = Pinecone.from_existing_index(
+        Credentials.PINECONE_INDEX_NAME,
+        embedding=openai_embedding,
+    )
 
     def cached_chat_request(self, system_message: str, human_message: str) -> SystemMessage:
         """Cached chat request."""
@@ -68,24 +86,70 @@ class SalesSupportModel(BaseModel):
 
     def split_text(self, text: str) -> List[Document]:
         """Split text."""
-        # pylint: disable=no-member
-        retval = self.text_splitter.create_documents([text])
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=100,
+            chunk_overlap=0,
+        )
+        retval = text_splitter.create_documents([text])
         return retval
 
-    def embed(self, text: str) -> List[float]:
-        """Embed."""
-        texts_splitter_results = self.split_text(text)
-        embedding = texts_splitter_results[0].page_content
-        # pylint: disable=no-member
-        self.openai_embedding.embed_query(embedding)
+    def load(self, filepath: str):
+        """
+        Embed PDF.
+        1. Load PDF document text data
+        2. Split into pages
+        3. Embed each page
+        4. Store in Pinecone
+        """
 
-        self.pinecone_search = Pinecone.from_documents(
-            texts_splitter_results,
-            embedding=self.openai_embedding,
-            index_name=self.pinecone_index_name,
-        )
+        pdf_files = glob.glob(os.path.join(filepath, "*.pdf"))
+        i = 0
+        for pdf_file in pdf_files:
+            i += 1
+            j = len(pdf_files)
+            print(f"Loading PDF {i} of {j}: ", pdf_file)
+            loader = PyPDFLoader(file_path=pdf_file)
+            docs = loader.load()
+            k = 0
+            for doc in docs:
+                k += 1
+                print(k * "-", end="\r")
+                texts_splitter_results = self.text_splitter.create_documents([doc.page_content])
+                self.pinecone_search.from_existing_index(
+                    index_name=Credentials.PINECONE_INDEX_NAME,
+                    embedding=self.openai_embedding,
+                    text_key=texts_splitter_results,
+                )
 
-    def embedded_prompt(self, prompt: str) -> List[Document]:
-        """Embedded prompt."""
-        result = self.pinecone_search.similarity_search(prompt)
-        return result
+        print("Finished loading PDFs")
+
+    def rag(self, prompt: str):
+        """
+        Embedded prompt.
+        1. Retrieve prompt: Given a user input, relevant splits are retrieved
+           from storage using a Retriever.
+        2. Generate: A ChatModel / LLM produces an answer using a prompt that includes
+           the question and the retrieved data
+        """
+
+        # pylint: disable=unused-variable
+        def format_docs(docs):
+            """Format docs."""
+            return "\n\n".join(doc.page_content for doc in docs)
+
+        retriever = self.pinecone_search.as_retriever()
+
+        # Use the retriever to get relevant documents
+        documents = retriever.get_relevant_documents(query=prompt)
+        print(f"Retrieved {len(documents)} related documents from Pinecone")
+
+        # Generate a prompt from the retrieved documents
+        prompt += " ".join(doc.page_content for doc in documents)
+        print(f"Prompt contains {len(prompt.split())} words")
+        print("Prompt:", prompt)
+        print(doc for doc in documents)
+
+        # Get a response from the GPT-3.5-turbo model
+        response = self.cached_chat_request(system_message="You are a helpful assistant.", human_message=prompt)
+
+        return response

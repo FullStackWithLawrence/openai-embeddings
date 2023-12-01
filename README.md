@@ -1,6 +1,12 @@
 # Netec Large Language Models
 
-A Python [LangChain](https://www.langchain.com/) - [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept LLM to manage sales support inquiries on the Netec course catalogue.
+A Python [LangChain](https://www.langchain.com/) - [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept Retrieval Augmented Generation (RAG) models using sales support PDF documents.
+
+See:
+
+- [LangChain RAG](https://python.langchain.com/docs/use_cases/question_answering/)
+- [LangChain Document Loaders](https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf)
+- [LanchChain Caching](https://python.langchain.com/docs/modules/model_io/llms/llm_caching)
 
 ## Installation
 
@@ -28,6 +34,12 @@ python3 -m models.examples.training_services "Microsoft certified Azure AI engin
 
 # example 4 - prompted assistant
 python3 -m models.examples.training_services_oracle "Oracle database administrator"
+
+# example 5 - Load PDF documents
+python3 -m models.examples.load "./data/"
+
+# example 6 - Retrieval Augmented Generation
+python3 -m models.examples.rag "What is Accounting Based Valuation?"
 ```
 
 ## Requirements
