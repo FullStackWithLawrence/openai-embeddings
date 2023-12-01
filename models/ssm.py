@@ -59,9 +59,15 @@ class SalesSupportModel:
     )
 
     # embeddings
-    texts_splitter_results: List[Document]
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=100,
+        chunk_overlap=0,
+    )
     openai_embedding = OpenAIEmbeddings()
-    query_result: List[float]
+    pinecone_search = Pinecone.from_existing_index(
+        Credentials.PINECONE_INDEX_NAME,
+        embedding=openai_embedding,
+    )
 
     def cached_chat_request(self, system_message: str, human_message: str) -> SystemMessage:
         """Cached chat request."""
@@ -87,23 +93,6 @@ class SalesSupportModel:
         retval = text_splitter.create_documents([text])
         return retval
 
-    def embed(self, text: str) -> List[float]:
-        """Embed."""
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=100,
-            chunk_overlap=0,
-        )
-        texts_splitter_results = text_splitter.create_documents([text])
-        embedding = texts_splitter_results[0].page_content
-        # pylint: disable=no-member
-        self.openai_embedding.embed_query(embedding)
-
-        Pinecone.from_documents(
-            documents=texts_splitter_results,
-            embedding=self.openai_embedding,
-            index_name=Credentials.PINECONE_INDEX_NAME,
-        )
-
     def load(self, filepath: str):
         """
         Embed PDF.
@@ -118,14 +107,20 @@ class SalesSupportModel:
         for pdf_file in pdf_files:
             i += 1
             j = len(pdf_files)
-            print(f"Loading PDF {i} of {j}: ")
+            print(f"Loading PDF {i} of {j}: ", pdf_file)
             loader = PyPDFLoader(file_path=pdf_file)
             docs = loader.load()
             k = 0
             for doc in docs:
                 k += 1
                 print(k * "-", end="\r")
-                self.embed(doc.page_content)
+                texts_splitter_results = self.text_splitter.create_documents([doc.page_content])
+                self.pinecone_search.from_existing_index(
+                    index_name=Credentials.PINECONE_INDEX_NAME,
+                    embedding=self.openai_embedding,
+                    text_key=texts_splitter_results,
+                )
+
         print("Finished loading PDFs")
 
     def rag(self, prompt: str):
@@ -142,11 +137,7 @@ class SalesSupportModel:
             """Format docs."""
             return "\n\n".join(doc.page_content for doc in docs)
 
-        pinecone_search = Pinecone.from_existing_index(
-            Credentials.PINECONE_INDEX_NAME,
-            embedding=self.openai_embedding,
-        )
-        retriever = pinecone_search.as_retriever()
+        retriever = self.pinecone_search.as_retriever()
 
         # Use the retriever to get relevant documents
         documents = retriever.get_relevant_documents(query=prompt)
