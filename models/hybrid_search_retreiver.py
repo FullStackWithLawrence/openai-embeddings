@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-few-public-methods
 """
-Sales Support Model (SSM) for the LangChain project.
+Hybrid Search Retriever. A class that combines the following:
+    - OpenAI prompting and ChatModel
+    - PromptingWrapper
+    - Vector embedding with Pinecone
+    - Hybrid Retriever to combine vector embeddings with text search
+
+Provides a pdf loader program that extracts text, vectorizes, and
+loads into a Pinecone dot product vector database that is dimensioned
+to match OpenAI embeddings.
+
 See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
      https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf
      https://python.langchain.com/docs/integrations/retrievers/pinecone_hybrid_search
