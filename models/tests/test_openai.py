@@ -6,7 +6,7 @@ Test integrity of base class.
 """
 import pytest  # pylint: disable=unused-import
 
-from ..ssm import HybridSearchRetriever
+from models.hybrid_search_retreiver import HybridSearchRetriever
 
 
 class TestOpenAI:

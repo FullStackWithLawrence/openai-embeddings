@@ -8,7 +8,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
 from pinecone import Index
 
-from models.ssm import HybridSearchRetriever, TextSplitter
+from models.hybrid_search_retreiver import HybridSearchRetriever, TextSplitter
 
 
 class TestSalesSupportModel:

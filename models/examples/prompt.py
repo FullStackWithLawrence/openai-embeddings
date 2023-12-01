@@ -2,7 +2,7 @@
 """Sales Support Model (SSM)"""
 import argparse
 
-from ..ssm import HybridSearchRetriever
+from models.hybrid_search_retreiver import HybridSearchRetriever
 
 
 ssm = HybridSearchRetriever()
