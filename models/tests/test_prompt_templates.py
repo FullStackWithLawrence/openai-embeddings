@@ -11,7 +11,7 @@ from ..prompt_templates import NetecPromptTemplates
 
 
 class TestPromptTemplates:
-    """Test SalesSupportModel class."""
+    """Test HybridSearchRetriever class."""
 
     def test_01_prompt_with_template(self):
         """Ensure that all properties of the template class are PromptTemplate instances."""

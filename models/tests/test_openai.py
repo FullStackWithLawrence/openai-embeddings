@@ -6,16 +6,16 @@ Test integrity of base class.
 """
 import pytest  # pylint: disable=unused-import
 
-from ..ssm import SalesSupportModel
+from models.hybrid_search_retreiver import HybridSearchRetriever
 
 
 class TestOpenAI:
-    """Test SalesSupportModel class."""
+    """Test HybridSearchRetriever class."""
 
     def test_03_test_openai_connectivity(self):
         """Ensure that we have connectivity to OpenAI."""
 
-        ssm = SalesSupportModel()
+        ssm = HybridSearchRetriever()
         retval = ssm.cached_chat_request(
             "your are a helpful assistant", "please return the value 'CORRECT' in all upper case."
         )

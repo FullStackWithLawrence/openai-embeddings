@@ -13,7 +13,7 @@ from ..const import Credentials
 
 
 class TestPinecone:
-    """Test SalesSupportModel class."""
+    """Test HybridSearchRetriever class."""
 
     def test_01_test_pinecone_connectivity(self):
         """Ensure that we have connectivity to Pinecone."""
