@@ -54,6 +54,16 @@ export PINECONE_API_KEY=SET-ME-PLEASE
 export PINECONE_ENVIRONMENT=SET-ME-PLEASE
 ```
 
+### Pinecone setup
+
+You'll need to manually create an index with the following characteristics
+
+- Environment: gcp-starter
+- Index name: netec-rag
+- Metric: dotproduct
+- Dimensions: 1536
+- Pod Type: starter
+
 ## Contributing
 
 This project uses a mostly automated pull request and unit testing process. See the resources in .github for additional details. You additionally should ensure that pre-commit is installed and working correctly on your dev machine by running the following command from the root of the repo.
