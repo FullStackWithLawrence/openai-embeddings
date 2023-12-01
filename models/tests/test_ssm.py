@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa: F401
-# pylint: disable=too-few-public-methods
 """
 Test integrity of base class.
 """
