@@ -10,6 +10,7 @@ import glob
 import os
 from typing import List  # ClassVar
 
+# pinecone integration
 import pinecone
 from langchain.cache import InMemoryCache
 
@@ -76,7 +77,8 @@ class SalesSupportModel:
             HumanMessage(content=human_message),
         ]
         # pylint: disable=not-callable
-        return self.chat(messages)
+        retval = self.chat(messages).content
+        return retval
 
     def prompt_with_template(self, prompt: PromptTemplate, concept: str, model: str = DEFAULT_MODEL_NAME) -> str:
         """Prompt with template."""
