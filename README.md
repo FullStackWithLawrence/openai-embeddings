@@ -1,6 +1,6 @@
 # Netec Large Language Models
 
-A Python [OpenAI](https://openai.com/)/[LangChain](https://www.langchain.com/)/[Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept Retrieval Augmented Generation (RAG) models using PDF documents as the data source for embeddings.
+A Python [OpenAI](https://openai.com/) / [LangChain](https://www.langchain.com/) / [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept Retrieval Augmented Generation (RAG) model using PDF documents as the embeddings data source.
 
 Implements the following:
 
