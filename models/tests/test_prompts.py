@@ -10,16 +10,11 @@ from ..prompt_templates import NetecPromptTemplates
 from ..ssm import SalesSupportModel
 
 
-class TestSalesSupportModel:
+class TestPrompts:
     """Test SalesSupportModel class."""
 
     ssm = SalesSupportModel()
     templates = NetecPromptTemplates()
-
-    def test_01_basic(self):
-        """Test a basic request"""
-
-        SalesSupportModel()
 
     def test_oracle_training_services(self):
         """Test a prompt with the Oracle training services template"""

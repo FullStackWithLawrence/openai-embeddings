@@ -2,9 +2,10 @@
 """
     LangChain Quickstart
     ~~~~~~~~~~~~~~~~~~~~
+    LangChain Explained in 13 Minutes | QuickStart Tutorial for Beginners
 
     see: https://www.youtube.com/watch?v=aywZrzNaKjs
-        https://github.com/rabbitmetrics/langchain-13-min
+         https://github.com/rabbitmetrics/langchain-13-min
 """
 import os
 
