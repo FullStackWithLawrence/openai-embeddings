@@ -54,7 +54,7 @@ from models.const import Config, Credentials
 # initializations
 ###############################################################################
 DEFAULT_MODEL_NAME = Config.OPENAI_PROMPT_MODEL_NAME
-pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Credentials.PINECONE_ENVIRONMENT)
+pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
 set_llm_cache(InMemoryCache())
 logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.INFO)
 
@@ -92,8 +92,10 @@ class HybridSearchRetriever:
     openai_embeddings = OpenAIEmbeddings(
         api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
     )
-    pinecone_index = pinecone.Index(index_name=Credentials.PINECONE_INDEX_NAME)
-    vector_store = Pinecone(index=pinecone_index, embedding=openai_embeddings, text_key="lc_id")
+    pinecone_index = pinecone.Index(index_name=Config.PINECONE_INDEX_NAME)
+    vector_store = Pinecone(
+        index=pinecone_index, embedding=openai_embeddings, text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY
+    )
 
     text_splitter = TextSplitter()
     bm25_encoder = BM25Encoder().default()
@@ -135,17 +137,17 @@ class HybridSearchRetriever:
         """
         try:
             logging.debug("Deleting index...")
-            pinecone.delete_index(Credentials.PINECONE_INDEX_NAME)
+            pinecone.delete_index(Config.PINECONE_INDEX_NAME)
         except pinecone.exceptions.PineconeException:
             logging.debug("Index does not exist. Continuing...")
 
         metadata_config = {
-            "indexed": ["lc_id", "lc_type"],
+            "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
             "context": ["lc_text"],
         }
         logging.debug("Creating index. This may take a few minutes...")
         pinecone.create_index(
-            Credentials.PINECONE_INDEX_NAME, dimension=1536, metric="dotproduct", metadata_config=metadata_config
+            Config.PINECONE_INDEX_NAME, dimension=1536, metric="dotproduct", metadata_config=metadata_config
         )
 
         pdf_files = glob.glob(os.path.join(filepath, "*.pdf"))
@@ -187,11 +189,13 @@ class HybridSearchRetriever:
             logging.debug("Converting human_message to HumanMessage")
             human_message = HumanMessage(content=human_message)
 
+        # ---------------------------------------------------------------------
+        # 1.) Retrieve relevant documents from Pinecone vector database
+        # ---------------------------------------------------------------------
         retriever = PineconeHybridSearchRetriever(
             embeddings=self.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone_index
         )
         documents = retriever.get_relevant_documents(query=human_message.content)
-        logging.debug("Retrieved %i related documents from Pinecone", len(documents))
 
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
@@ -202,13 +206,19 @@ class HybridSearchRetriever:
             into your responses:\n\n
         """
         )
-        system_message = f"{leader} {'. '.join(document_texts)}"
+        system_message_content = f"{leader} {'. '.join(document_texts)}"
+        system_message = SystemMessage(content=system_message_content)
+        # ---------------------------------------------------------------------
+        # finished with hybrid search setup
+        # ---------------------------------------------------------------------
 
-        logging.debug("System messages contains %i words", len(system_message.split()))
-        logging.debug("Prompt: %s", system_message)
-        system_message = SystemMessage(content=system_message)
+        # 2.) get a response from the chat model
         response = self.cached_chat_request(system_message=system_message, human_message=human_message)
 
+        logging.debug("------------------------------------------------------")
+        logging.debug("Retrieved %i related documents from Pinecone", len(documents))
+        logging.debug("System messages contains %i words", len(system_message.content.split()))
+        logging.debug("Prompt: %s", system_message.content)
         logging.debug("Response:")
         logging.debug("------------------------------------------------------")
         return response.content
