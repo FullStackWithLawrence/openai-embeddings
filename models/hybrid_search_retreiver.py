@@ -73,7 +73,7 @@ class TextSplitter:
 
 
 class HybridSearchRetriever:
-    """Hybrid Search Retriever (OpenAI + Pinecone)"""
+    """Hybrid Search Retriever"""
 
     _chat: ChatOpenAI = None
     _openai_embeddings: OpenAIEmbeddings = None
@@ -182,16 +182,16 @@ class HybridSearchRetriever:
         https://docs.pinecone.io/docs/manage-indexes#selective-metadata-indexing
         """
         try:
-            logging.debug("Deleting index...")
+            logging.info("Deleting index...")
             pinecone.delete_index(Config.PINECONE_INDEX_NAME)
         except pinecone.exceptions.PineconeException:
-            logging.debug("Index does not exist. Continuing...")
+            logging.info("Index does not exist. Continuing...")
 
         metadata_config = {
             "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
             "context": ["lc_text"],
         }
-        logging.debug("Creating index. This may take a few minutes...")
+        logging.info("Creating index. This may take a few minutes...")
         pinecone.create_index(
             Config.PINECONE_INDEX_NAME,
             dimension=Config.PINECONE_DIMENSIONS,
@@ -204,23 +204,23 @@ class HybridSearchRetriever:
         for pdf_file in pdf_files:
             i += 1
             j = len(pdf_files)
-            logging.debug("Loading PDF %s of %s: %s", i, j, pdf_file)
+            logging.info("Loading PDF %s of %s: %s", i, j, pdf_file)
             loader = PyPDFLoader(file_path=pdf_file)
             docs = loader.load()
             k = 0
             for doc in docs:
                 k += 1
-                logging.debug(k * "-", end="\r")
+                logging.info(k * "-", end="\r")
                 documents = self.text_splitter.create_documents([doc.page_content])
                 document_texts = [doc.page_content for doc in documents]
                 embeddings = self.openai_embeddings.embed_documents(document_texts)
                 self.vector_store.add_documents(documents=documents, embeddings=embeddings)
 
-        logging.debug("Finished loading PDFs")
+        logging.info("Finished loading PDFs")
 
     def rag(self, human_message: Union[str, HumanMessage]):
         """
-        Embedded prompt.
+        Retrieval Augmented Generation prompt.
         1. Retrieve human message prompt: Given a user input, relevant splits are retrieved
            from storage using a Retriever.
         2. Generate: A ChatModel / LLM produces an answer using a prompt that includes
@@ -265,9 +265,10 @@ class HybridSearchRetriever:
         response = self.cached_chat_request(system_message=system_message, human_message=human_message)
 
         logging.debug("------------------------------------------------------")
-        logging.debug("Retrieved %i related documents from Pinecone", len(documents))
-        logging.debug("System messages contains %i words", len(system_message.content.split()))
-        logging.debug("Prompt: %s", system_message.content)
-        logging.debug("Response:")
+        logging.debug("rag() Retrieval Augmented Generation prompt")
+        logging.debug("Diagnostic information:")
+        logging.debug("  Retrieved %i related documents from Pinecone", len(documents))
+        logging.debug("  System messages contains %i words", len(system_message.content.split()))
+        logging.debug("  Prompt: %s", system_message.content)
         logging.debug("------------------------------------------------------")
         return response.content
