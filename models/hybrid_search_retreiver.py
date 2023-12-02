@@ -18,9 +18,12 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
 
 # document loading
 import glob
+
+# general purpose imports
 import logging
 import os
 import textwrap
+from typing import Union
 
 # pinecone integration
 import pinecone
@@ -38,7 +41,7 @@ from langchain.prompts import PromptTemplate
 
 # hybrid search capability
 from langchain.retrievers import PineconeHybridSearchRetriever
-from langchain.schema import HumanMessage, SystemMessage
+from langchain.schema import BaseMessage, HumanMessage, SystemMessage
 from langchain.text_splitter import Document
 from langchain.vectorstores.pinecone import Pinecone
 from pinecone_text.sparse import BM25Encoder
@@ -95,14 +98,20 @@ class HybridSearchRetriever:
     text_splitter = TextSplitter()
     bm25_encoder = BM25Encoder().default()
 
-    def cached_chat_request(self, system_message: str, human_message: str) -> SystemMessage:
+    def cached_chat_request(
+        self, system_message: Union[str, SystemMessage], human_message: Union[str, HumanMessage]
+    ) -> BaseMessage:
         """Cached chat request."""
-        messages = [
-            SystemMessage(content=system_message),
-            HumanMessage(content=human_message),
-        ]
+        if not isinstance(system_message, SystemMessage):
+            logging.debug("Converting system message to SystemMessage")
+            system_message = SystemMessage(content=str(system_message))
+
+        if not isinstance(human_message, HumanMessage):
+            logging.debug("Converting human message to HumanMessage")
+            human_message = HumanMessage(content=str(human_message))
+        messages = [system_message, human_message]
         # pylint: disable=not-callable
-        retval = self.chat(messages).content
+        retval = self.chat(messages)
         return retval
 
     def prompt_with_template(self, prompt: PromptTemplate, concept: str, model: str = DEFAULT_MODEL_NAME) -> str:
@@ -158,10 +167,10 @@ class HybridSearchRetriever:
 
         logging.debug("Finished loading PDFs")
 
-    def rag(self, prompt: str):
+    def rag(self, human_message: Union[str, HumanMessage]):
         """
         Embedded prompt.
-        1. Retrieve prompt: Given a user input, relevant splits are retrieved
+        1. Retrieve human message prompt: Given a user input, relevant splits are retrieved
            from storage using a Retriever.
         2. Generate: A ChatModel / LLM produces an answer using a prompt that includes
            the question and the retrieved data
@@ -174,33 +183,32 @@ class HybridSearchRetriever:
         The typical workflow is to use the embeddings to retrieve relevant documents,
         and then use the text of these documents as part of the prompt for GPT-3.
         """
+        if not isinstance(human_message, HumanMessage):
+            logging.debug("Converting human_message to HumanMessage")
+            human_message = HumanMessage(content=human_message)
+
         retriever = PineconeHybridSearchRetriever(
             embeddings=self.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone_index
         )
-        documents = retriever.get_relevant_documents(query=prompt)
+        documents = retriever.get_relevant_documents(query=human_message.content)
         logging.debug("Retrieved %i related documents from Pinecone", len(documents))
 
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
         leader = textwrap.dedent(
-            """\
-            \n\nYou can assume that the following is true.
+            """You are a helpful assistant.
+            You can assume that all of the following is true.
             You should attempt to incorporate these facts
-            into your response:\n\n
+            into your responses:\n\n
         """
         )
+        system_message = f"{leader} {'. '.join(document_texts)}"
 
-        # Create a prompt that includes the document texts
-        prompt_with_relevant_documents = f"{prompt + leader} {'. '.join(document_texts)}"
-
-        logging.debug("Prompt contains %i words", len(prompt_with_relevant_documents.split()))
-        logging.debug("Prompt: %s", prompt_with_relevant_documents)
-
-        # Get a response from the GPT-3.5-turbo model
-        response = self.cached_chat_request(
-            system_message="You are a helpful assistant.", human_message=prompt_with_relevant_documents
-        )
+        logging.debug("System messages contains %i words", len(system_message.split()))
+        logging.debug("Prompt: %s", system_message)
+        system_message = SystemMessage(content=system_message)
+        response = self.cached_chat_request(system_message=system_message, human_message=human_message)
 
         logging.debug("Response:")
         logging.debug("------------------------------------------------------")
-        return response
+        return response.content
