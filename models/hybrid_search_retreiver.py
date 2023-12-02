@@ -18,6 +18,7 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
 
 # document loading
 import glob
+import logging
 import os
 import textwrap
 
@@ -52,6 +53,7 @@ from models.const import Config, Credentials
 DEFAULT_MODEL_NAME = Config.OPENAI_PROMPT_MODEL_NAME
 pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Credentials.PINECONE_ENVIRONMENT)
 set_llm_cache(InMemoryCache())
+logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.INFO)
 
 
 class TextSplitter:
@@ -123,16 +125,16 @@ class HybridSearchRetriever:
         https://docs.pinecone.io/docs/manage-indexes#selective-metadata-indexing
         """
         try:
-            print("Deleting index...")
+            logging.debug("Deleting index...")
             pinecone.delete_index(Credentials.PINECONE_INDEX_NAME)
         except pinecone.exceptions.PineconeException:
-            print("Index does not exist. Continuing...")
+            logging.debug("Index does not exist. Continuing...")
 
         metadata_config = {
             "indexed": ["lc_id", "lc_type"],
             "context": ["lc_text"],
         }
-        print("Creating index. This may take a few minutes...")
+        logging.debug("Creating index. This may take a few minutes...")
         pinecone.create_index(
             Credentials.PINECONE_INDEX_NAME, dimension=1536, metric="dotproduct", metadata_config=metadata_config
         )
@@ -142,19 +144,19 @@ class HybridSearchRetriever:
         for pdf_file in pdf_files:
             i += 1
             j = len(pdf_files)
-            print(f"Loading PDF {i} of {j}: ", pdf_file)
+            logging.debug("Loading PDF %s of %s: %s", i, j, pdf_file)
             loader = PyPDFLoader(file_path=pdf_file)
             docs = loader.load()
             k = 0
             for doc in docs:
                 k += 1
-                print(k * "-", end="\r")
+                logging.debug(k * "-", end="\r")
                 documents = self.text_splitter.create_documents([doc.page_content])
                 document_texts = [doc.page_content for doc in documents]
                 embeddings = self.openai_embeddings.embed_documents(document_texts)
                 self.vector_store.add_documents(documents=documents, embeddings=embeddings)
 
-        print("Finished loading PDFs")
+        logging.debug("Finished loading PDFs")
 
     def rag(self, prompt: str):
         """
@@ -176,7 +178,7 @@ class HybridSearchRetriever:
             embeddings=self.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone_index
         )
         documents = retriever.get_relevant_documents(query=prompt)
-        print(f"Retrieved {len(documents)} related documents from Pinecone")
+        logging.debug("Retrieved %i related documents from Pinecone", len(documents))
 
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
@@ -191,14 +193,14 @@ class HybridSearchRetriever:
         # Create a prompt that includes the document texts
         prompt_with_relevant_documents = f"{prompt + leader} {'. '.join(document_texts)}"
 
-        print(f"Prompt contains {len(prompt_with_relevant_documents.split())} words")
-        print("Prompt:", prompt_with_relevant_documents)
+        logging.debug("Prompt contains %i words", len(prompt_with_relevant_documents.split()))
+        logging.debug("Prompt: %s", prompt_with_relevant_documents)
 
         # Get a response from the GPT-3.5-turbo model
         response = self.cached_chat_request(
             system_message="You are a helpful assistant.", human_message=prompt_with_relevant_documents
         )
 
-        print("Response:")
-        print("------------------------------------------------------")
+        logging.debug("Response:")
+        logging.debug("------------------------------------------------------")
         return response

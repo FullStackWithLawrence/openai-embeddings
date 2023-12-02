@@ -21,6 +21,7 @@ if os.path.exists(dotenv_path):
     OPENAI_CHAT_TEMPERATURE = float(os.environ.get("OPENAI_CHAT_TEMPERATURE", 0.0))
     OPENAI_CHAT_MAX_RETRIES = int(os.environ.get("OPENAI_CHAT_MAX_RETRIES", 3))
     OPENAI_CHAT_CACHE = bool(os.environ.get("OPENAI_CHAT_CACHE", True))
+    DEBUG_MODE = bool(os.environ.get("DEBUG_MODE", False))
 else:
     raise FileNotFoundError("No .env file found in root directory of repository")
 
@@ -28,6 +29,7 @@ else:
 class Config:
     """Configuration parameters."""
 
+    DEBUG_MODE: bool = DEBUG_MODE
     OPENAI_CHAT_MODEL_NAME: str = OPENAI_CHAT_MODEL_NAME
     OPENAI_PROMPT_MODEL_NAME: str = OPENAI_PROMPT_MODEL_NAME
     OPENAI_CHAT_TEMPERATURE: float = OPENAI_CHAT_TEMPERATURE
