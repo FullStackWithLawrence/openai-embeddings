@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=too-few-public-methods
 """
 Hybrid Search Retriever. A class that combines the following:
     - OpenAI prompting and ChatModel
@@ -16,12 +15,8 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
      https://python.langchain.com/docs/integrations/retrievers/pinecone_hybrid_search
 """
 
-# document loading
-import glob
-
 # general purpose imports
 import logging
-import os
 import textwrap
 from typing import Union
 
@@ -29,7 +24,6 @@ from typing import Union
 import pinecone
 from langchain.cache import InMemoryCache
 from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import PyPDFLoader
 
 # embedding
 from langchain.embeddings import OpenAIEmbeddings
@@ -42,12 +36,12 @@ from langchain.prompts import PromptTemplate
 # hybrid search capability
 from langchain.retrievers import PineconeHybridSearchRetriever
 from langchain.schema import BaseMessage, HumanMessage, SystemMessage
-from langchain.text_splitter import Document
 from langchain.vectorstores.pinecone import Pinecone
 from pinecone_text.sparse import BM25Encoder
 
 # this project
 from models.const import Config, Credentials
+from models.pinecone import PineConeIndex, TextSplitter
 
 
 ###############################################################################
@@ -56,36 +50,28 @@ from models.const import Config, Credentials
 logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.INFO)
 
 
-class TextSplitter:
-    """
-    Custom text splitter that adds metadata to the Document object
-    which is required by PineconeHybridSearchRetriever.
-    """
-
-    def create_documents(self, texts):
-        """Create documents"""
-        documents = []
-        for text in texts:
-            # Create a Document object with the text and metadata
-            document = Document(page_content=text, metadata={"context": text})
-            documents.append(document)
-        return documents
-
-
 class HybridSearchRetriever:
     """Hybrid Search Retriever"""
 
     _chat: ChatOpenAI = None
     _openai_embeddings: OpenAIEmbeddings = None
-    _pinecone_index: pinecone.Index = None
     _vector_store: Pinecone = None
     _text_splitter: TextSplitter = None
     _b25_encoder: BM25Encoder = None
+    _pinecone: PineConeIndex = None
+    _retriever: PineconeHybridSearchRetriever = None
 
     def __init__(self):
         """Constructor"""
         pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
         set_llm_cache(InMemoryCache())
+
+    @property
+    def pinecone(self) -> PineConeIndex:
+        """PineConeIndex lazy read-only property."""
+        if self._pinecone is None:
+            self._pinecone = PineConeIndex()
+        return self._pinecone
 
     # prompting wrapper
     @property
@@ -113,18 +99,11 @@ class HybridSearchRetriever:
         return self._openai_embeddings
 
     @property
-    def pinecone_index(self) -> pinecone.Index:
-        """pinecone.Index lazy read-only property."""
-        if self._pinecone_index is None:
-            self._pinecone_index = pinecone.Index(index_name=Config.PINECONE_INDEX_NAME)
-        return self._pinecone_index
-
-    @property
     def vector_store(self) -> Pinecone:
         """Pinecone lazy read-only property."""
         if self._vector_store is None:
             self._vector_store = Pinecone(
-                index=self.pinecone_index,
+                index=self.pinecone.index,
                 embedding=self.openai_embeddings,
                 text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY,
             )
@@ -143,6 +122,15 @@ class HybridSearchRetriever:
         if self._b25_encoder is None:
             self._b25_encoder = BM25Encoder().default()
         return self._b25_encoder
+
+    @property
+    def retriever(self) -> PineconeHybridSearchRetriever:
+        """PineconeHybridSearchRetriever lazy read-only property."""
+        if self._retriever is None:
+            self._retriever = PineconeHybridSearchRetriever(
+                embeddings=self.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone.index
+            )
+        return self._retriever
 
     def cached_chat_request(
         self, system_message: Union[str, SystemMessage], human_message: Union[str, HumanMessage]
@@ -169,54 +157,8 @@ class HybridSearchRetriever:
         return retval
 
     def load(self, filepath: str):
-        """
-        Embed PDF.
-        1. Load PDF document text data
-        2. Split into pages
-        3. Embed each page
-        4. Store in Pinecone
-
-        Note: it's important to make sure that the "context" field that holds the document text
-        in the metadata is not indexed. Currently you need to specify explicitly the fields you
-        do want to index. For more information checkout
-        https://docs.pinecone.io/docs/manage-indexes#selective-metadata-indexing
-        """
-        try:
-            logging.info("Deleting index...")
-            pinecone.delete_index(Config.PINECONE_INDEX_NAME)
-        except pinecone.exceptions.PineconeException:
-            logging.info("Index does not exist. Continuing...")
-
-        metadata_config = {
-            "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
-            "context": ["lc_text"],
-        }
-        logging.info("Creating index. This may take a few minutes...")
-        pinecone.create_index(
-            Config.PINECONE_INDEX_NAME,
-            dimension=Config.PINECONE_DIMENSIONS,
-            metric=Config.PINECONE_METRIC,
-            metadata_config=metadata_config,
-        )
-
-        pdf_files = glob.glob(os.path.join(filepath, "*.pdf"))
-        i = 0
-        for pdf_file in pdf_files:
-            i += 1
-            j = len(pdf_files)
-            logging.info("Loading PDF %s of %s: %s", i, j, pdf_file)
-            loader = PyPDFLoader(file_path=pdf_file)
-            docs = loader.load()
-            k = 0
-            for doc in docs:
-                k += 1
-                logging.info(k * "-", end="\r")
-                documents = self.text_splitter.create_documents([doc.page_content])
-                document_texts = [doc.page_content for doc in documents]
-                embeddings = self.openai_embeddings.embed_documents(document_texts)
-                self.vector_store.add_documents(documents=documents, embeddings=embeddings)
-
-        logging.info("Finished loading PDFs")
+        """Pdf loader."""
+        self.pinecone.pdf_loader(filepath=filepath)
 
     def rag(self, human_message: Union[str, HumanMessage]):
         """
@@ -241,10 +183,7 @@ class HybridSearchRetriever:
         # ---------------------------------------------------------------------
         # 1.) Retrieve relevant documents from Pinecone vector database
         # ---------------------------------------------------------------------
-        retriever = PineconeHybridSearchRetriever(
-            embeddings=self.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone_index
-        )
-        documents = retriever.get_relevant_documents(query=human_message.content)
+        documents = self.retriever.get_relevant_documents(query=human_message.content)
 
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]

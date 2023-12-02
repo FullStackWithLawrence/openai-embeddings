@@ -6,9 +6,9 @@ Test integrity of base class.
 import pytest  # pylint: disable=unused-import
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
-from pinecone import Index
 
 from models.hybrid_search_retreiver import HybridSearchRetriever, TextSplitter
+from models.pinecone import PineConeIndex
 
 
 class TestSalesSupportModel:
@@ -28,6 +28,6 @@ class TestSalesSupportModel:
 
         hsr = HybridSearchRetriever()
         assert isinstance(hsr.chat, ChatOpenAI)
-        assert isinstance(hsr.pinecone_index, Index)
+        assert isinstance(hsr.pinecone, PineConeIndex)
         assert isinstance(hsr.text_splitter, TextSplitter)
         assert isinstance(hsr.openai_embeddings, OpenAIEmbeddings)
