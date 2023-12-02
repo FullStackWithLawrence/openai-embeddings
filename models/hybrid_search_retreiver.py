@@ -21,12 +21,10 @@ import textwrap
 from typing import Union
 
 # pinecone integration
-import pinecone
 from langchain.cache import InMemoryCache
 from langchain.chat_models import ChatOpenAI
 
 # embedding
-from langchain.embeddings import OpenAIEmbeddings
 from langchain.globals import set_llm_cache
 
 # prompting and chat
@@ -36,12 +34,11 @@ from langchain.prompts import PromptTemplate
 # hybrid search capability
 from langchain.retrievers import PineconeHybridSearchRetriever
 from langchain.schema import BaseMessage, HumanMessage, SystemMessage
-from langchain.vectorstores.pinecone import Pinecone
 from pinecone_text.sparse import BM25Encoder
 
 # this project
 from models.const import Config, Credentials
-from models.pinecone import PineConeIndex, TextSplitter
+from models.pinecone import PineConeIndex
 
 
 ###############################################################################
@@ -54,16 +51,12 @@ class HybridSearchRetriever:
     """Hybrid Search Retriever"""
 
     _chat: ChatOpenAI = None
-    _openai_embeddings: OpenAIEmbeddings = None
-    _vector_store: Pinecone = None
-    _text_splitter: TextSplitter = None
     _b25_encoder: BM25Encoder = None
     _pinecone: PineConeIndex = None
     _retriever: PineconeHybridSearchRetriever = None
 
     def __init__(self):
         """Constructor"""
-        pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
         set_llm_cache(InMemoryCache())
 
     @property
@@ -88,34 +81,6 @@ class HybridSearchRetriever:
             )
         return self._chat
 
-    # embeddings
-    @property
-    def openai_embeddings(self) -> OpenAIEmbeddings:
-        """OpenAIEmbeddings lazy read-only property."""
-        if self._openai_embeddings is None:
-            self._openai_embeddings = OpenAIEmbeddings(
-                api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
-            )
-        return self._openai_embeddings
-
-    @property
-    def vector_store(self) -> Pinecone:
-        """Pinecone lazy read-only property."""
-        if self._vector_store is None:
-            self._vector_store = Pinecone(
-                index=self.pinecone.index,
-                embedding=self.openai_embeddings,
-                text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY,
-            )
-        return self._vector_store
-
-    @property
-    def text_splitter(self) -> TextSplitter:
-        """TextSplitter lazy read-only property."""
-        if self._text_splitter is None:
-            self._text_splitter = TextSplitter()
-        return self._text_splitter
-
     @property
     def bm25_encoder(self) -> BM25Encoder:
         """BM25Encoder lazy read-only property."""
@@ -128,7 +93,7 @@ class HybridSearchRetriever:
         """PineconeHybridSearchRetriever lazy read-only property."""
         if self._retriever is None:
             self._retriever = PineconeHybridSearchRetriever(
-                embeddings=self.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone.index
+                embeddings=self.pinecone.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone.index
             )
         return self._retriever
 
