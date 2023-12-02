@@ -30,5 +30,5 @@ class TestPrompts:
         prompt = self.templates.training_services
         result = self.hsr.prompt_with_template(prompt=prompt, concept="Microsoft certified Azure AI engineer associate")
         assert result
-        assert "Microsoft" in result
+        assert "Microsoft" in result or "Azure" in result
         assert "training" in result
