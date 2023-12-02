@@ -8,7 +8,7 @@ from setup_utils import get_semantic_version  # pylint: disable=import-error
 setup(
     name="netec_models",
     version=get_semantic_version(),
-    description="Netec Sales Support Model (SSM)",
+    description="Netec Sales Support Model (hsr)",
     author="Lawrence McDaniel",
     author_email="lpm0073@gmail.com",
     packages=find_packages(),

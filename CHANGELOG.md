@@ -7,10 +7,9 @@
 
 ## [1.1.1](https://github.com/lpm0073/netec-llm/compare/v1.1.0...v1.1.1) (2023-12-01)
 
-
 ### Bug Fixes
 
-* had to switch to bm25_encoder so that vector store is searchable ([bad6994](https://github.com/lpm0073/netec-llm/commit/bad699481d217dde81877d85124395529652dabe))
+- had to switch to bm25_encoder so that vector store is searchable ([bad6994](https://github.com/lpm0073/netec-llm/commit/bad699481d217dde81877d85124395529652dabe))
 
 # [1.1.0](https://github.com/lpm0073/netec-llm/compare/v1.0.0...v1.1.0) (2023-12-01)
 
