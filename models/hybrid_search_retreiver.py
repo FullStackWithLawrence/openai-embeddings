@@ -44,24 +44,22 @@ from langchain.vectorstores.pinecone import Pinecone
 from pinecone_text.sparse import BM25Encoder
 
 # this project
-from models.const import Credentials
+from models.const import Config, Credentials
 
 
 ###############################################################################
 # initializations
 ###############################################################################
-DEFAULT_MODEL_NAME = "text-davinci-003"
+DEFAULT_MODEL_NAME = Config.OPENAI_PROMPT_MODEL_NAME
 pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Credentials.PINECONE_ENVIRONMENT)
 set_llm_cache(InMemoryCache())
 
 
 class TextSplitter:
     """
-    Custom text splitter that add metadata to the Document object
+    Custom text splitter that adds metadata to the Document object
     which is required by PineconeHybridSearchRetriever.
     """
-
-    # ...
 
     def create_documents(self, texts):
         """Create documents"""
@@ -74,7 +72,7 @@ class TextSplitter:
 
 
 class HybridSearchRetriever:
-    """Sales Support Model (SSM)."""
+    """Hybrid Search Retriever (OpenAI + Pinecone)"""
 
     # prompting wrapper
     chat = ChatOpenAI(
@@ -82,7 +80,7 @@ class HybridSearchRetriever:
         organization=Credentials.OPENAI_API_ORGANIZATION,
         cache=True,
         max_retries=3,
-        model="gpt-3.5-turbo",
+        model=Config.OPENAI_CHAT_MODEL_NAME,
         temperature=0.0,
     )
 
@@ -201,9 +199,9 @@ class HybridSearchRetriever:
         document_texts = [doc.page_content for doc in documents]
         leader = textwrap.dedent(
             """\
-            You can assume that the following is true,
-            and you should attempt to incorporate these facts
-            in your response:
+            \n\nYou can assume that the following is true.
+            You should attempt to incorporate these facts
+            into your response:\n\n
         """
         )
 
