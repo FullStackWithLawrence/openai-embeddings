@@ -27,7 +27,16 @@ else:
     raise FileNotFoundError("No .env file found in root directory of repository")
 
 
-class Config:
+class ReadOnly(type):
+    """Metaclass to make all class attributes read-only."""
+
+    def __setattr__(cls, name, value):
+        if name in cls.__dict__:
+            raise TypeError(f"Cannot change a read-only attribute {name}")
+        super().__setattr__(name, value)
+
+
+class Config(metaclass=ReadOnly):
     """Configuration parameters."""
 
     DEBUG_MODE: bool = DEBUG_MODE
@@ -41,7 +50,7 @@ class Config:
     PINECONE_VECTORSTORE_TEXT_KEY: str = PINECONE_VECTORSTORE_TEXT_KEY
 
 
-class Credentials:
+class Credentials(metaclass=ReadOnly):
     """Credentials."""
 
     OPENAI_API_KEY = OPENAI_API_KEY
