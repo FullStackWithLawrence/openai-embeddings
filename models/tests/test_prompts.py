@@ -12,14 +12,14 @@ from models.prompt_templates import NetecPromptTemplates
 class TestPrompts:
     """Test HybridSearchRetriever class."""
 
-    ssm = HybridSearchRetriever()
+    hsr = HybridSearchRetriever()
     templates = NetecPromptTemplates()
 
     def test_oracle_training_services(self):
         """Test a prompt with the Oracle training services template"""
 
         prompt = self.templates.oracle_training_services
-        result = self.ssm.prompt_with_template(prompt=prompt, concept="Oracle database administrator")
+        result = self.hsr.prompt_with_template(prompt=prompt, concept="Oracle database administrator")
         assert result
         assert "Oracle" in result
         assert "training" in result
@@ -28,7 +28,7 @@ class TestPrompts:
         """Test a prompt with the training services template"""
 
         prompt = self.templates.training_services
-        result = self.ssm.prompt_with_template(prompt=prompt, concept="Microsoft certified Azure AI engineer associate")
+        result = self.hsr.prompt_with_template(prompt=prompt, concept="Microsoft certified Azure AI engineer associate")
         assert result
         assert "Microsoft" in result
         assert "training" in result

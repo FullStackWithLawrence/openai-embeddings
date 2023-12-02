@@ -15,8 +15,8 @@ class TestOpenAI:
     def test_03_test_openai_connectivity(self):
         """Ensure that we have connectivity to OpenAI."""
 
-        ssm = HybridSearchRetriever()
-        retval = ssm.cached_chat_request(
+        hsr = HybridSearchRetriever()
+        retval = hsr.cached_chat_request(
             "your are a helpful assistant", "please return the value 'CORRECT' in all upper case."
         )
         assert retval == "CORRECT"

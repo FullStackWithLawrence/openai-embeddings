@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-few-public-methods
-"""Sales Support Model (SSM) for the LangChain project."""
+"""Sales Support Model (hsr) for the LangChain project."""
 
 import os
 

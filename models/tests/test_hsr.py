@@ -26,8 +26,8 @@ class TestSalesSupportModel:
     def test_02_class_aatribute_types(self):
         """ensure that class attributes are of the correct type"""
 
-        ssm = HybridSearchRetriever()
-        assert isinstance(ssm.chat, ChatOpenAI)
-        assert isinstance(ssm.pinecone_index, Index)
-        assert isinstance(ssm.text_splitter, TextSplitter)
-        assert isinstance(ssm.openai_embeddings, OpenAIEmbeddings)
+        hsr = HybridSearchRetriever()
+        assert isinstance(hsr.chat, ChatOpenAI)
+        assert isinstance(hsr.pinecone_index, Index)
+        assert isinstance(hsr.text_splitter, TextSplitter)
+        assert isinstance(hsr.openai_embeddings, OpenAIEmbeddings)
