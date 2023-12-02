@@ -1,11 +1,10 @@
 ## [1.1.3](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.2...v1.1.3) (2023-12-02)
 
-
 ### Bug Fixes
 
-* add langchain-experimental for yt example ([f9d6d6d](https://github.com/lpm0073/hybrid-search-retriever/commit/f9d6d6d0b11ff9c1f06faf7eb69511bc5702066d))
-* correct type error with DEBUG_MODE ([a96bdfd](https://github.com/lpm0073/hybrid-search-retriever/commit/a96bdfdb5a0b015740110e02f9f9b06917cd31c7))
-* move retriever results to system_message ([203c8b3](https://github.com/lpm0073/hybrid-search-retriever/commit/203c8b300cda156ac44a0c6e02510c2ab6a2b074))
+- add langchain-experimental for yt example ([f9d6d6d](https://github.com/lpm0073/hybrid-search-retriever/commit/f9d6d6d0b11ff9c1f06faf7eb69511bc5702066d))
+- correct type error with DEBUG_MODE ([a96bdfd](https://github.com/lpm0073/hybrid-search-retriever/commit/a96bdfdb5a0b015740110e02f9f9b06917cd31c7))
+- move retriever results to system_message ([203c8b3](https://github.com/lpm0073/hybrid-search-retriever/commit/203c8b300cda156ac44a0c6e02510c2ab6a2b074))
 
 ## [1.1.2](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.1...v1.1.2) (2023-12-01)
 
