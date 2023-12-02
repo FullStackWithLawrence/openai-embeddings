@@ -53,9 +53,6 @@ from models.const import Config, Credentials
 ###############################################################################
 # initializations
 ###############################################################################
-DEFAULT_MODEL_NAME = Config.OPENAI_PROMPT_MODEL_NAME
-pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
-set_llm_cache(InMemoryCache())
 logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.INFO)
 
 
@@ -84,6 +81,11 @@ class HybridSearchRetriever:
     _vector_store: Pinecone = None
     _text_splitter: TextSplitter = None
     _b25_encoder: BM25Encoder = None
+
+    def __init__(self):
+        """Constructor"""
+        pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
+        set_llm_cache(InMemoryCache())
 
     # prompting wrapper
     @property
@@ -158,7 +160,9 @@ class HybridSearchRetriever:
         retval = self.chat(messages)
         return retval
 
-    def prompt_with_template(self, prompt: PromptTemplate, concept: str, model: str = DEFAULT_MODEL_NAME) -> str:
+    def prompt_with_template(
+        self, prompt: PromptTemplate, concept: str, model: str = Config.OPENAI_PROMPT_MODEL_NAME
+    ) -> str:
         """Prompt with template."""
         llm = OpenAI(model=model)
         retval = llm(prompt.format(concept=concept))
