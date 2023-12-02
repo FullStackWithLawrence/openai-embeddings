@@ -17,6 +17,8 @@ if os.path.exists(dotenv_path):
     PINECONE_ENVIRONMENT = os.environ["PINECONE_ENVIRONMENT"]
     PINECONE_INDEX_NAME = os.environ.get("PINECONE_INDEX_NAME", "hsr")
     PINECONE_VECTORSTORE_TEXT_KEY = os.environ.get("PINECONE_VECTORSTORE_TEXT_KEY", "lc_id")
+    PINECONE_METRIC = os.environ.get("PINECONE_METRIC", "dotproduct")
+    PINECONE_DIMENSIONS = int(os.environ.get("PINECONE_DIMENSIONS", 1536))
     OPENAI_CHAT_MODEL_NAME = os.environ.get("OPENAI_CHAT_MODEL_NAME", "gpt-3.5-turbo")
     OPENAI_PROMPT_MODEL_NAME = os.environ.get("OPENAI_PROMPT_MODEL_NAME", "text-davinci-003")
     OPENAI_CHAT_TEMPERATURE = float(os.environ.get("OPENAI_CHAT_TEMPERATURE", 0.0))
@@ -48,6 +50,8 @@ class Config(metaclass=ReadOnly):
     PINECONE_ENVIRONMENT = PINECONE_ENVIRONMENT
     PINECONE_INDEX_NAME = PINECONE_INDEX_NAME
     PINECONE_VECTORSTORE_TEXT_KEY: str = PINECONE_VECTORSTORE_TEXT_KEY
+    PINECONE_METRIC: str = PINECONE_METRIC
+    PINECONE_DIMENSIONS: int = PINECONE_DIMENSIONS
 
 
 class Credentials(metaclass=ReadOnly):

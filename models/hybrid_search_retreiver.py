@@ -89,7 +89,7 @@ class HybridSearchRetriever:
 
     # prompting wrapper
     @property
-    def chat(self):
+    def chat(self) -> ChatOpenAI:
         """ChatOpenAI lazy read-only property."""
         if self._chat is None:
             self._chat = ChatOpenAI(
@@ -104,7 +104,7 @@ class HybridSearchRetriever:
 
     # embeddings
     @property
-    def openai_embeddings(self):
+    def openai_embeddings(self) -> OpenAIEmbeddings:
         """OpenAIEmbeddings lazy read-only property."""
         if self._openai_embeddings is None:
             self._openai_embeddings = OpenAIEmbeddings(
@@ -113,14 +113,14 @@ class HybridSearchRetriever:
         return self._openai_embeddings
 
     @property
-    def pinecone_index(self):
+    def pinecone_index(self) -> pinecone.Index:
         """pinecone.Index lazy read-only property."""
         if self._pinecone_index is None:
             self._pinecone_index = pinecone.Index(index_name=Config.PINECONE_INDEX_NAME)
         return self._pinecone_index
 
     @property
-    def vector_store(self):
+    def vector_store(self) -> Pinecone:
         """Pinecone lazy read-only property."""
         if self._vector_store is None:
             self._vector_store = Pinecone(
@@ -131,14 +131,14 @@ class HybridSearchRetriever:
         return self._vector_store
 
     @property
-    def text_splitter(self):
+    def text_splitter(self) -> TextSplitter:
         """TextSplitter lazy read-only property."""
         if self._text_splitter is None:
             self._text_splitter = TextSplitter()
         return self._text_splitter
 
     @property
-    def bm25_encoder(self):
+    def bm25_encoder(self) -> BM25Encoder:
         """BM25Encoder lazy read-only property."""
         if self._b25_encoder is None:
             self._b25_encoder = BM25Encoder().default()
@@ -193,7 +193,10 @@ class HybridSearchRetriever:
         }
         logging.debug("Creating index. This may take a few minutes...")
         pinecone.create_index(
-            Config.PINECONE_INDEX_NAME, dimension=1536, metric="dotproduct", metadata_config=metadata_config
+            Config.PINECONE_INDEX_NAME,
+            dimension=Config.PINECONE_DIMENSIONS,
+            metric=Config.PINECONE_METRIC,
+            metadata_config=metadata_config,
         )
 
         pdf_files = glob.glob(os.path.join(filepath, "*.pdf"))
