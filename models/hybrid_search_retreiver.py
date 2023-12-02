@@ -88,7 +88,7 @@ class HybridSearchRetriever:
     # prompting wrapper
     @property
     def chat(self):
-        """ChatOpenAI read-only property."""
+        """ChatOpenAI lazy read-only property."""
         if self._chat is None:
             self._chat = ChatOpenAI(
                 api_key=Credentials.OPENAI_API_KEY,
@@ -103,7 +103,7 @@ class HybridSearchRetriever:
     # embeddings
     @property
     def openai_embeddings(self):
-        """OpenAIEmbeddings read-only property."""
+        """OpenAIEmbeddings lazy read-only property."""
         if self._openai_embeddings is None:
             self._openai_embeddings = OpenAIEmbeddings(
                 api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
@@ -112,14 +112,14 @@ class HybridSearchRetriever:
 
     @property
     def pinecone_index(self):
-        """pinecone.Index read-only property."""
+        """pinecone.Index lazy read-only property."""
         if self._pinecone_index is None:
             self._pinecone_index = pinecone.Index(index_name=Config.PINECONE_INDEX_NAME)
         return self._pinecone_index
 
     @property
     def vector_store(self):
-        """Pinecone read-only property."""
+        """Pinecone lazy read-only property."""
         if self._vector_store is None:
             self._vector_store = Pinecone(
                 index=self.pinecone_index,
@@ -130,14 +130,14 @@ class HybridSearchRetriever:
 
     @property
     def text_splitter(self):
-        """TextSplitter read-only property."""
+        """TextSplitter lazy read-only property."""
         if self._text_splitter is None:
             self._text_splitter = TextSplitter()
         return self._text_splitter
 
     @property
     def bm25_encoder(self):
-        """BM25Encoder read-only property."""
+        """BM25Encoder lazy read-only property."""
         if self._b25_encoder is None:
             self._b25_encoder = BM25Encoder().default()
         return self._b25_encoder
