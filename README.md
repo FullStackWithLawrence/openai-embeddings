@@ -46,7 +46,7 @@ python3 -m models.examples.training_services_oracle "Oracle database administrat
 python3 -m models.examples.load "./data/"
 
 # example 6 - Retrieval Augmented Generation
-python3 -m models.examples.rag "What is Accounting Based Valuation?"
+python3 -m models.examples.rag "What analytics and accounting courses does Wharton offer?"
 ```
 
 ## Setup
