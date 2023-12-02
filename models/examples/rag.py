@@ -2,6 +2,8 @@
 """Sales Support Model (hsr) Retrieval Augmented Generation (RAG)"""
 import argparse
 
+from langchain.schema import HumanMessage
+
 from models.hybrid_search_retreiver import HybridSearchRetriever
 
 
@@ -12,5 +14,6 @@ if __name__ == "__main__":
     parser.add_argument("prompt", type=str, help="A question about the PDF contents")
     args = parser.parse_args()
 
-    result = hsr.rag(prompt=args.prompt)
+    human_message = HumanMessage(text=args.prompt)
+    result = hsr.rag(human_message=human_message)
     print(result)

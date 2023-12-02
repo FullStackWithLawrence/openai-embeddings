@@ -21,6 +21,7 @@ codespell==2.2.6
 # ------------
 langchain==0.0.343
 langchainhub==0.1.14
+langchain-experimental==0.0.43
 openai==1.3.5
 pinecone-client==2.2.4
 pinecone-text==0.7.0
