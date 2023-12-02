@@ -1,9 +1,15 @@
-## [1.1.1](https://github.com/lpm0073/netec-llm/compare/v1.1.0...v1.1.1) (2023-12-01)
+## [1.1.2](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.1...v1.1.2) (2023-12-01)
 
 
 ### Bug Fixes
 
-* had to switch to bm25_encoder so that vector store is searchable ([bad6994](https://github.com/lpm0073/netec-llm/commit/bad699481d217dde81877d85124395529652dabe))
+* syntax error in examples.prompt ([230b709](https://github.com/lpm0073/hybrid-search-retriever/commit/230b7090c96bdd4d7d8757b182f891ab1b82c6f4))
+
+## [1.1.1](https://github.com/lpm0073/netec-llm/compare/v1.1.0...v1.1.1) (2023-12-01)
+
+### Bug Fixes
+
+- had to switch to bm25_encoder so that vector store is searchable ([bad6994](https://github.com/lpm0073/netec-llm/commit/bad699481d217dde81877d85124395529652dabe))
 
 # [1.1.0](https://github.com/lpm0073/netec-llm/compare/v1.0.0...v1.1.0) (2023-12-01)
 
