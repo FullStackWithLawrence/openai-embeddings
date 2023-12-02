@@ -20,7 +20,6 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
 import glob
 import os
 import textwrap
-from typing import List
 
 # pinecone integration
 import pinecone
@@ -78,10 +77,10 @@ class HybridSearchRetriever:
     chat = ChatOpenAI(
         api_key=Credentials.OPENAI_API_KEY,
         organization=Credentials.OPENAI_API_ORGANIZATION,
-        cache=True,
-        max_retries=3,
+        cache=Config.OPENAI_CHAT_CACHE,
+        max_retries=Config.OPENAI_CHAT_MAX_RETRIES,
         model=Config.OPENAI_CHAT_MODEL_NAME,
-        temperature=0.0,
+        temperature=Config.OPENAI_CHAT_TEMPERATURE,
     )
 
     # embeddings
@@ -109,22 +108,6 @@ class HybridSearchRetriever:
         llm = OpenAI(model=model)
         retval = llm(prompt.format(concept=concept))
         return retval
-
-    def fit_tf_idf_values(self, corpus: List[str]):
-        """Fit TF-IDF values.
-        1. Fit the BM25 encoder on the corpus
-        2. Encode the corpus
-        3. Store the encoded corpus in Pinecone
-        """
-        corpus = ["foo", "bar", "world", "hello"]
-
-        # fit tf-idf values on your corpus
-        self.bm25_encoder.fit(corpus)
-
-        # persist the values to a json file
-        self.bm25_encoder.dump("bm25_values.json")
-        self.bm25_encoder = BM25Encoder().load("bm25_values.json")
-        self.bm25_encoder.fit(corpus)
 
     def load(self, filepath: str):
         """
