@@ -78,27 +78,69 @@ class TextSplitter:
 class HybridSearchRetriever:
     """Hybrid Search Retriever (OpenAI + Pinecone)"""
 
+    _chat: ChatOpenAI = None
+    _openai_embeddings: OpenAIEmbeddings = None
+    _pinecone_index: pinecone.Index = None
+    _vector_store: Pinecone = None
+    _text_splitter: TextSplitter = None
+    _b25_encoder: BM25Encoder = None
+
     # prompting wrapper
-    chat = ChatOpenAI(
-        api_key=Credentials.OPENAI_API_KEY,
-        organization=Credentials.OPENAI_API_ORGANIZATION,
-        cache=Config.OPENAI_CHAT_CACHE,
-        max_retries=Config.OPENAI_CHAT_MAX_RETRIES,
-        model=Config.OPENAI_CHAT_MODEL_NAME,
-        temperature=Config.OPENAI_CHAT_TEMPERATURE,
-    )
+    @property
+    def chat(self):
+        """ChatOpenAI read-only property."""
+        if self._chat is None:
+            self._chat = ChatOpenAI(
+                api_key=Credentials.OPENAI_API_KEY,
+                organization=Credentials.OPENAI_API_ORGANIZATION,
+                cache=Config.OPENAI_CHAT_CACHE,
+                max_retries=Config.OPENAI_CHAT_MAX_RETRIES,
+                model=Config.OPENAI_CHAT_MODEL_NAME,
+                temperature=Config.OPENAI_CHAT_TEMPERATURE,
+            )
+        return self._chat
 
     # embeddings
-    openai_embeddings = OpenAIEmbeddings(
-        api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
-    )
-    pinecone_index = pinecone.Index(index_name=Config.PINECONE_INDEX_NAME)
-    vector_store = Pinecone(
-        index=pinecone_index, embedding=openai_embeddings, text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY
-    )
+    @property
+    def openai_embeddings(self):
+        """OpenAIEmbeddings read-only property."""
+        if self._openai_embeddings is None:
+            self._openai_embeddings = OpenAIEmbeddings(
+                api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
+            )
+        return self._openai_embeddings
 
-    text_splitter = TextSplitter()
-    bm25_encoder = BM25Encoder().default()
+    @property
+    def pinecone_index(self):
+        """pinecone.Index read-only property."""
+        if self._pinecone_index is None:
+            self._pinecone_index = pinecone.Index(index_name=Config.PINECONE_INDEX_NAME)
+        return self._pinecone_index
+
+    @property
+    def vector_store(self):
+        """Pinecone read-only property."""
+        if self._vector_store is None:
+            self._vector_store = Pinecone(
+                index=self.pinecone_index,
+                embedding=self.openai_embeddings,
+                text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY,
+            )
+        return self._vector_store
+
+    @property
+    def text_splitter(self):
+        """TextSplitter read-only property."""
+        if self._text_splitter is None:
+            self._text_splitter = TextSplitter()
+        return self._text_splitter
+
+    @property
+    def bm25_encoder(self):
+        """BM25Encoder read-only property."""
+        if self._b25_encoder is None:
+            self._b25_encoder = BM25Encoder().default()
+        return self._b25_encoder
 
     def cached_chat_request(
         self, system_message: Union[str, SystemMessage], human_message: Union[str, HumanMessage]
