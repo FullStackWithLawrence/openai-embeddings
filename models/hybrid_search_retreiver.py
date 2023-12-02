@@ -53,9 +53,6 @@ from models.const import Config, Credentials
 ###############################################################################
 # initializations
 ###############################################################################
-DEFAULT_MODEL_NAME = Config.OPENAI_PROMPT_MODEL_NAME
-pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Credentials.PINECONE_ENVIRONMENT)
-set_llm_cache(InMemoryCache())
 logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.INFO)
 
 
@@ -78,25 +75,74 @@ class TextSplitter:
 class HybridSearchRetriever:
     """Hybrid Search Retriever (OpenAI + Pinecone)"""
 
+    _chat: ChatOpenAI = None
+    _openai_embeddings: OpenAIEmbeddings = None
+    _pinecone_index: pinecone.Index = None
+    _vector_store: Pinecone = None
+    _text_splitter: TextSplitter = None
+    _b25_encoder: BM25Encoder = None
+
+    def __init__(self):
+        """Constructor"""
+        pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
+        set_llm_cache(InMemoryCache())
+
     # prompting wrapper
-    chat = ChatOpenAI(
-        api_key=Credentials.OPENAI_API_KEY,
-        organization=Credentials.OPENAI_API_ORGANIZATION,
-        cache=Config.OPENAI_CHAT_CACHE,
-        max_retries=Config.OPENAI_CHAT_MAX_RETRIES,
-        model=Config.OPENAI_CHAT_MODEL_NAME,
-        temperature=Config.OPENAI_CHAT_TEMPERATURE,
-    )
+    @property
+    def chat(self) -> ChatOpenAI:
+        """ChatOpenAI lazy read-only property."""
+        if self._chat is None:
+            self._chat = ChatOpenAI(
+                api_key=Credentials.OPENAI_API_KEY,
+                organization=Credentials.OPENAI_API_ORGANIZATION,
+                cache=Config.OPENAI_CHAT_CACHE,
+                max_retries=Config.OPENAI_CHAT_MAX_RETRIES,
+                model=Config.OPENAI_CHAT_MODEL_NAME,
+                temperature=Config.OPENAI_CHAT_TEMPERATURE,
+            )
+        return self._chat
 
     # embeddings
-    openai_embeddings = OpenAIEmbeddings(
-        api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
-    )
-    pinecone_index = pinecone.Index(index_name=Credentials.PINECONE_INDEX_NAME)
-    vector_store = Pinecone(index=pinecone_index, embedding=openai_embeddings, text_key="lc_id")
+    @property
+    def openai_embeddings(self) -> OpenAIEmbeddings:
+        """OpenAIEmbeddings lazy read-only property."""
+        if self._openai_embeddings is None:
+            self._openai_embeddings = OpenAIEmbeddings(
+                api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
+            )
+        return self._openai_embeddings
 
-    text_splitter = TextSplitter()
-    bm25_encoder = BM25Encoder().default()
+    @property
+    def pinecone_index(self) -> pinecone.Index:
+        """pinecone.Index lazy read-only property."""
+        if self._pinecone_index is None:
+            self._pinecone_index = pinecone.Index(index_name=Config.PINECONE_INDEX_NAME)
+        return self._pinecone_index
+
+    @property
+    def vector_store(self) -> Pinecone:
+        """Pinecone lazy read-only property."""
+        if self._vector_store is None:
+            self._vector_store = Pinecone(
+                index=self.pinecone_index,
+                embedding=self.openai_embeddings,
+                text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY,
+            )
+        return self._vector_store
+
+    @property
+    def text_splitter(self) -> TextSplitter:
+        """TextSplitter lazy read-only property."""
+        if self._text_splitter is None:
+            self._text_splitter = TextSplitter()
+        return self._text_splitter
+
+    @property
+    def bm25_encoder(self) -> BM25Encoder:
+        """BM25Encoder lazy read-only property."""
+        if self._b25_encoder is None:
+            self._b25_encoder = BM25Encoder().default()
+        return self._b25_encoder
 
     def cached_chat_request(
         self, system_message: Union[str, SystemMessage], human_message: Union[str, HumanMessage]
@@ -114,7 +160,9 @@ class HybridSearchRetriever:
         retval = self.chat(messages)
         return retval
 
-    def prompt_with_template(self, prompt: PromptTemplate, concept: str, model: str = DEFAULT_MODEL_NAME) -> str:
+    def prompt_with_template(
+        self, prompt: PromptTemplate, concept: str, model: str = Config.OPENAI_PROMPT_MODEL_NAME
+    ) -> str:
         """Prompt with template."""
         llm = OpenAI(model=model)
         retval = llm(prompt.format(concept=concept))
@@ -135,17 +183,20 @@ class HybridSearchRetriever:
         """
         try:
             logging.debug("Deleting index...")
-            pinecone.delete_index(Credentials.PINECONE_INDEX_NAME)
+            pinecone.delete_index(Config.PINECONE_INDEX_NAME)
         except pinecone.exceptions.PineconeException:
             logging.debug("Index does not exist. Continuing...")
 
         metadata_config = {
-            "indexed": ["lc_id", "lc_type"],
+            "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
             "context": ["lc_text"],
         }
         logging.debug("Creating index. This may take a few minutes...")
         pinecone.create_index(
-            Credentials.PINECONE_INDEX_NAME, dimension=1536, metric="dotproduct", metadata_config=metadata_config
+            Config.PINECONE_INDEX_NAME,
+            dimension=Config.PINECONE_DIMENSIONS,
+            metric=Config.PINECONE_METRIC,
+            metadata_config=metadata_config,
         )
 
         pdf_files = glob.glob(os.path.join(filepath, "*.pdf"))
@@ -187,11 +238,13 @@ class HybridSearchRetriever:
             logging.debug("Converting human_message to HumanMessage")
             human_message = HumanMessage(content=human_message)
 
+        # ---------------------------------------------------------------------
+        # 1.) Retrieve relevant documents from Pinecone vector database
+        # ---------------------------------------------------------------------
         retriever = PineconeHybridSearchRetriever(
             embeddings=self.openai_embeddings, sparse_encoder=self.bm25_encoder, index=self.pinecone_index
         )
         documents = retriever.get_relevant_documents(query=human_message.content)
-        logging.debug("Retrieved %i related documents from Pinecone", len(documents))
 
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
@@ -202,13 +255,19 @@ class HybridSearchRetriever:
             into your responses:\n\n
         """
         )
-        system_message = f"{leader} {'. '.join(document_texts)}"
+        system_message_content = f"{leader} {'. '.join(document_texts)}"
+        system_message = SystemMessage(content=system_message_content)
+        # ---------------------------------------------------------------------
+        # finished with hybrid search setup
+        # ---------------------------------------------------------------------
 
-        logging.debug("System messages contains %i words", len(system_message.split()))
-        logging.debug("Prompt: %s", system_message)
-        system_message = SystemMessage(content=system_message)
+        # 2.) get a response from the chat model
         response = self.cached_chat_request(system_message=system_message, human_message=human_message)
 
+        logging.debug("------------------------------------------------------")
+        logging.debug("Retrieved %i related documents from Pinecone", len(documents))
+        logging.debug("System messages contains %i words", len(system_message.content.split()))
+        logging.debug("Prompt: %s", system_message.content)
         logging.debug("Response:")
         logging.debug("------------------------------------------------------")
         return response.content
