@@ -50,9 +50,6 @@ PINECONE_API_KEY=PLEASE-ADD-ME
 ## Usage
 
 ```console
-# command-line help
-python3 -m models.ssm -h
-
 # example 1 - generic assistant
 python3 -m models.examples.prompt "your are a helpful assistant" "explain why LangChain is so popular for generative AI development"
 
@@ -66,7 +63,6 @@ python3 -m models.examples.training_services "Microsoft certified Azure AI engin
 python3 -m models.examples.training_services_oracle "Oracle database administrator"
 
 # example 5 - Retrieval Augmented Generation
-python3 -m models.examples.pinecone_init
 python3 -m models.examples.load "./data/"
 python3 -m models.examples.rag "What analytics and accounting courses does Wharton offer?"
 ```
