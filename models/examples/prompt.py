@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument("human_message", type=str, help="A human prompt to send to the model.")
     args = parser.parse_args()
 
-    system_message = SystemMessage(text=args.system_message)
-    human_message = HumanMessage(text=args.human_message)
+    system_message = SystemMessage(content=args.system_message)
+    human_message = HumanMessage(content=args.human_message)
     result = hsr.cached_chat_request(system_message=system_message, human_message=human_message)
     print(result.content)
