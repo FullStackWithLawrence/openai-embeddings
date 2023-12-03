@@ -172,7 +172,7 @@ class LangChainDev:
 
         # 7.) pinecone client. minute 11:00
         self.pinecone_search = Pinecone.from_documents(
-            self.texts_splitter_results,
+            documents=self.texts_splitter_results,
             embedding=self.openai_embedding,
             index_name=self.PINECONE_INDEX_NAME,
         )

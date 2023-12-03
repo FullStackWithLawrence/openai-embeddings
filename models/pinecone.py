@@ -1,0 +1,187 @@
+# -*- coding: utf-8 -*-
+"""Pinecone helper functions."""
+
+# document loading
+import glob
+
+# general purpose imports
+import json
+import logging
+import os
+
+# pinecone integration
+import pinecone
+from langchain.document_loaders import PyPDFLoader
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import Document
+from langchain.vectorstores.pinecone import Pinecone as LCPinecone
+
+# this project
+from models.const import Config, Credentials
+
+
+# pylint: disable=too-few-public-methods
+class TextSplitter:
+    """
+    Custom text splitter that adds metadata to the Document object
+    which is required by PineconeHybridSearchRetriever.
+    """
+
+    def create_documents(self, texts):
+        """Create documents"""
+        documents = []
+        for text in texts:
+            # Create a Document object with the text and metadata
+            document = Document(page_content=text, metadata={"context": text})
+            documents.append(document)
+        return documents
+
+
+class PineconeIndex:
+    """Pinecone helper class."""
+
+    _index: pinecone.Index = None
+    _index_name: str = None
+    _text_splitter: TextSplitter = None
+    _openai_embeddings: OpenAIEmbeddings = None
+    _vector_store: LCPinecone = None
+
+    def __init__(self, index_name: str = None):
+        self.init()
+        self.index_name = index_name or Config.PINECONE_INDEX_NAME
+
+    @property
+    def index_name(self) -> str:
+        """index name."""
+        return self._index_name
+
+    @index_name.setter
+    def index_name(self, value: str) -> None:
+        """Set index name."""
+        if self._index_name != value:
+            self.init()
+            self._index_name = value
+            self.init_index()
+
+    @property
+    def index(self) -> pinecone.Index:
+        """pinecone.Index lazy read-only property."""
+        if self._index is None:
+            self.init_index()
+            self._index = pinecone.Index(index_name=self.index_name)
+        return self._index
+
+    @property
+    def initialized(self) -> bool:
+        """initialized read-only property."""
+        indexes = pinecone.manage.list_indexes()
+        return self.index_name in indexes
+
+    @property
+    def vector_store(self) -> LCPinecone:
+        """Pinecone lazy read-only property."""
+        if self._vector_store is None:
+            if not self.initialized:
+                self.init_index()
+            self._vector_store = LCPinecone(
+                index=self.index,
+                embedding=self.openai_embeddings,
+                text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY,
+            )
+        return self._vector_store
+
+    @property
+    def openai_embeddings(self) -> OpenAIEmbeddings:
+        """OpenAIEmbeddings lazy read-only property."""
+        if self._openai_embeddings is None:
+            self._openai_embeddings = OpenAIEmbeddings(
+                api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
+            )
+        return self._openai_embeddings
+
+    @property
+    def text_splitter(self) -> TextSplitter:
+        """TextSplitter lazy read-only property."""
+        if self._text_splitter is None:
+            self._text_splitter = TextSplitter()
+        return self._text_splitter
+
+    def init_index(self):
+        """Verify that an index named self.index_name exists in Pinecone. If not, create it."""
+        indexes = pinecone.manage.list_indexes()
+        if self.index_name not in indexes:
+            logging.info("Index does not exist.")
+            self.create()
+
+    def init(self):
+        """Initialize Pinecone."""
+        pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
+        self._index = None
+        self._index_name = None
+        self._text_splitter = None
+        self._openai_embeddings = None
+        self._vector_store = None
+
+    def delete(self):
+        """Delete index."""
+        if not self.initialized:
+            logging.info("Index does not exist. Nothing to delete.")
+            return
+        logging.info("Deleting index...")
+        pinecone.delete_index(self.index_name)
+
+    def create(self):
+        """Create index."""
+        metadata_config = {
+            "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
+            "context": ["lc_text"],
+        }
+        logging.info("Creating index. This may take a few minutes...")
+
+        pinecone.create_index(
+            name=self.index_name,
+            dimension=Config.PINECONE_DIMENSIONS,
+            metric=Config.PINECONE_METRIC,
+            metadata_config=metadata_config,
+        )
+        logging.info("Index created.")
+
+    def initialize(self):
+        """Initialize index."""
+        self.delete()
+        self.create()
+
+    def pdf_loader(self, filepath: str):
+        """
+        Embed PDF.
+        1. Load PDF document text data
+        2. Split into pages
+        3. Embed each page
+        4. Store in Pinecone
+
+        Note: it's important to make sure that the "context" field that holds the document text
+        in the metadata is not indexed. Currently you need to specify explicitly the fields you
+        do want to index. For more information checkout
+        https://docs.pinecone.io/docs/manage-indexes#selective-metadata-indexing
+        """
+        self.initialize()
+
+        pdf_files = glob.glob(os.path.join(filepath, "*.pdf"))
+        i = 0
+        for pdf_file in pdf_files:
+            i += 1
+            j = len(pdf_files)
+            print("Loading PDF %s of %s: %s", i, j, pdf_file)
+            loader = PyPDFLoader(file_path=pdf_file)
+            docs = loader.load()
+            k = 0
+            for doc in docs:
+                k += 1
+                print(k * "-", end="\r")
+                documents = self.text_splitter.create_documents([doc.page_content])
+                document_texts = [doc.page_content for doc in documents]
+                embeddings = self.openai_embeddings.embed_documents(document_texts)
+                self.vector_store.add_documents(documents=documents, embeddings=embeddings)
+
+        index_stats_string = json.dumps(self.index.describe_index_stats(), indent=4)
+        print("Finished loading PDFs. \n" + index_stats_string)
