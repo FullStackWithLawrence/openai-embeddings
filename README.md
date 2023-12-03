@@ -1,6 +1,6 @@
 # Hybrid Search Retriever
 
-A Python [OpenAI](https://openai.com/) / [LangChain](https://www.langchain.com/) / [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept Retrieval Augmented Generation (RAG) model using PDF documents as the embeddings data source.
+A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
 
 Implements the following:
 
@@ -70,7 +70,7 @@ PINECONE_INDEX_NAME=SET-ME-PLEASE
 DEBUG_MODE=False
 ```
 
-### Configurable defaults
+### Configuration defaults
 
 Set these as environment variables on the command line, or in a .env file that should be located in the root of the repo.
 
