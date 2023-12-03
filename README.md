@@ -60,20 +60,7 @@ python3 -m models.examples.load "./data/"
 python3 -m models.examples.rag "What analytics and accounting courses does Wharton offer?"
 ```
 
-## Setup
-
-Set the following credentials in .env located in the root of this repository.
-
-```console
-OPENAI_API_ORGANIZATION=SET-ME-PLEASE
-OPENAI_API_KEY=SET-ME-PLEASE
-PINECONE_API_KEY=SET-ME-PLEASE
-PINECONE_ENVIRONMENT=SET-ME-PLEASE
-PINECONE_INDEX_NAME=SET-ME-PLEASE
-DEBUG_MODE=False
-```
-
-### Configuration defaults
+## Configuration defaults
 
 Set these as environment variables on the command line, or in a .env file that should be located in the root of the repo.
 
