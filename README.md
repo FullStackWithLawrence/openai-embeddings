@@ -17,6 +17,7 @@ Features:
 - Quickstart: `make init`
 - Parameterized modules
 - 20+ automated unit tests
+- Preconfigured for seamless integration between OpenAI and Pinecone
 
 See:
 

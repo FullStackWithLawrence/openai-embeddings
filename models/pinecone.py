@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Pinecone helper functions."""
+"""A class to manage the lifecycle of Pinecone vector database indexes."""
 
 # document loading
 import glob
