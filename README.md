@@ -30,8 +30,8 @@ See:
 ## Installation
 
 ```console
-git clone https://github.com/lpm0073/netec-llm.git
-cd netec-llm
+git clone https://github.com/lpm0073/hybrid-search-retriever.git
+cd hybrid-search-retriever
 make init
 source venv/bin/activate
 ```
