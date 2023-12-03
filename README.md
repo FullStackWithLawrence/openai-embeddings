@@ -1,6 +1,6 @@
 # Hybrid Search Retriever
 
-A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
+A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) API embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
 
 Implements the following:
 
@@ -20,6 +20,8 @@ Features:
 
 See:
 
+- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings)
+- [What is a Vector Database?](https://www.pinecone.io/learn/vector-database/)
 - [LangChain RAG](https://python.langchain.com/docs/use_cases/question_answering/)
 - [LangChain Document Loaders](https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf)
 - [LanchChain Caching](https://python.langchain.com/docs/modules/model_io/llms/llm_caching)
