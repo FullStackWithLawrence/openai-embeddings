@@ -33,7 +33,18 @@ See:
 git clone https://github.com/lpm0073/netec-llm.git
 cd netec-llm
 make init
-make activate
+source venv/bin/activate
+```
+
+You'll also need to add your api keys to the .env file in the root of the repo.
+
+- Get your [OpenAI API key](https://platform.openai.com/api-keys)
+- Get your [Pinecone API Key](https://app.pinecone.io/)
+
+```console
+OPENAI_API_ORGANIZATION=SET-ME-PLEASE
+OPENAI_API_KEY=SET-ME-PLEASE
+PINECONE_API_KEY=SET-ME-PLEASE
 ```
 
 ## Usage
