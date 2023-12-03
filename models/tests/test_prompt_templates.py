@@ -7,7 +7,7 @@ Test integrity of base class.
 import pytest  # pylint: disable=unused-import
 from langchain.prompts import PromptTemplate
 
-from ..prompt_templates import NetecPromptTemplates
+from models.prompt_templates import NetecPromptTemplates
 
 
 class TestPromptTemplates:

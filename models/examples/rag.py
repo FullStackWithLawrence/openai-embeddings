@@ -14,6 +14,6 @@ if __name__ == "__main__":
     parser.add_argument("prompt", type=str, help="A question about the PDF contents")
     args = parser.parse_args()
 
-    human_message = HumanMessage(text=args.prompt)
+    human_message = HumanMessage(content=args.prompt)
     result = hsr.rag(human_message=human_message)
     print(result)

@@ -7,6 +7,14 @@ import os
 from dotenv import find_dotenv, load_dotenv
 
 
+class ConfigurationError(Exception):
+    """Exception raised for errors in the configuration."""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
 # pylint: disable=duplicate-code
 dotenv_path = find_dotenv()
 if os.path.exists(dotenv_path):
@@ -25,6 +33,16 @@ if os.path.exists(dotenv_path):
     OPENAI_CHAT_MAX_RETRIES = int(os.environ.get("OPENAI_CHAT_MAX_RETRIES", 3))
     OPENAI_CHAT_CACHE = bool(os.environ.get("OPENAI_CHAT_CACHE", True))
     DEBUG_MODE = os.environ.get("DEBUG_MODE", "False") == "True"
+
+    if OPENAI_API_KEY == "PLEASE-ADD-ME":
+        raise ConfigurationError("OPENAI_API_KEY is not set. Please add your OpenAI API key to the .env file.")
+    if OPENAI_API_ORGANIZATION == "PLEASE-ADD-ME":
+        raise ConfigurationError(
+            "OPENAI_API_ORGANIZATION is not set. Please add your OpenAI API organization to the .env file."
+        )
+    if PINECONE_API_KEY == "PLEASE-ADD-ME":
+        raise ConfigurationError("PINECONE_API_KEY is not set. Please add your Pinecone API key to the .env file.")
+
 else:
     raise FileNotFoundError("No .env file found in root directory of repository")
 

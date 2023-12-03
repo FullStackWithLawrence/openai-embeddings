@@ -42,10 +42,9 @@ python3 -m models.examples.training_services "Microsoft certified Azure AI engin
 # example 4 - prompted assistant
 python3 -m models.examples.training_services_oracle "Oracle database administrator"
 
-# example 5 - Load PDF documents
+# example 5 - Retrieval Augmented Generation
+python3 -m models.examples.pinecone_init
 python3 -m models.examples.load "./data/"
-
-# example 6 - Retrieval Augmented Generation
 python3 -m models.examples.rag "What analytics and accounting courses does Wharton offer?"
 ```
 
@@ -67,7 +66,7 @@ DEBUG_MODE=False
 You'll need to manually create an index with the following characteristics
 
 - Environment: gcp-starter
-- Index name: netec-rag
+- Index name: rag
 - Metric: dotproduct
 - Dimensions: 1536
 - Pod Type: starter
