@@ -38,7 +38,7 @@ from pinecone_text.sparse import BM25Encoder
 
 # this project
 from models.const import Config, Credentials
-from models.pinecone import PineConeIndex
+from models.pinecone import PineconeIndex
 
 
 ###############################################################################
@@ -52,7 +52,7 @@ class HybridSearchRetriever:
 
     _chat: ChatOpenAI = None
     _b25_encoder: BM25Encoder = None
-    _pinecone: PineConeIndex = None
+    _pinecone: PineconeIndex = None
     _retriever: PineconeHybridSearchRetriever = None
 
     def __init__(self):
@@ -60,10 +60,10 @@ class HybridSearchRetriever:
         set_llm_cache(InMemoryCache())
 
     @property
-    def pinecone(self) -> PineConeIndex:
-        """PineConeIndex lazy read-only property."""
+    def pinecone(self) -> PineconeIndex:
+        """PineconeIndex lazy read-only property."""
         if self._pinecone is None:
-            self._pinecone = PineConeIndex()
+            self._pinecone = PineconeIndex()
         return self._pinecone
 
     # prompting wrapper
@@ -148,7 +148,8 @@ class HybridSearchRetriever:
         # ---------------------------------------------------------------------
         # 1.) Retrieve relevant documents from Pinecone vector database
         # ---------------------------------------------------------------------
-        documents = self.retriever.get_relevant_documents(query=human_message.content)
+        # documents = self.retriever.get_relevant_documents(query=human_message.content)
+        documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
 
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
@@ -165,9 +166,6 @@ class HybridSearchRetriever:
         # finished with hybrid search setup
         # ---------------------------------------------------------------------
 
-        # 2.) get a response from the chat model
-        response = self.cached_chat_request(system_message=system_message, human_message=human_message)
-
         logging.debug("------------------------------------------------------")
         logging.debug("rag() Retrieval Augmented Generation prompt")
         logging.debug("Diagnostic information:")
@@ -175,4 +173,8 @@ class HybridSearchRetriever:
         logging.debug("  System messages contains %i words", len(system_message.content.split()))
         logging.debug("  Prompt: %s", system_message.content)
         logging.debug("------------------------------------------------------")
+
+        # 2.) get a response from the chat model
+        response = self.cached_chat_request(system_message=system_message, human_message=human_message)
+
         return response.content

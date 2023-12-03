@@ -7,7 +7,7 @@ import pytest  # pylint: disable=unused-import
 from langchain.chat_models import ChatOpenAI
 
 from models.hybrid_search_retreiver import HybridSearchRetriever
-from models.pinecone import PineConeIndex
+from models.pinecone import PineconeIndex
 
 
 class TestSalesSupportModel:
@@ -27,4 +27,4 @@ class TestSalesSupportModel:
 
         hsr = HybridSearchRetriever()
         assert isinstance(hsr.chat, ChatOpenAI)
-        assert isinstance(hsr.pinecone, PineConeIndex)
+        assert isinstance(hsr.pinecone, PineconeIndex)

@@ -5,6 +5,7 @@
 import glob
 
 # general purpose imports
+import json
 import logging
 import os
 
@@ -36,7 +37,7 @@ class TextSplitter:
         return documents
 
 
-class PineConeIndex:
+class PineconeIndex:
     """Pinecone helper class."""
 
     _index: pinecone.Index = None
@@ -46,13 +47,42 @@ class PineConeIndex:
     _vector_store: LCPinecone = None
 
     def __init__(self, index_name: str = None):
-        self._index_name = index_name or Config.PINECONE_INDEX_NAME
         self.init()
+        self.index_name = index_name or Config.PINECONE_INDEX_NAME
+
+    @property
+    def index_name(self) -> str:
+        """index name."""
+        return self._index_name
+
+    @index_name.setter
+    def index_name(self, value: str) -> None:
+        """Set index name."""
+        if self._index_name != value:
+            self.init()
+            self._index_name = value
+            self.init_index()
+
+    @property
+    def index(self) -> pinecone.Index:
+        """pinecone.Index lazy read-only property."""
+        if self._index is None:
+            self.init_index()
+            self._index = pinecone.Index(index_name=self.index_name)
+        return self._index
+
+    @property
+    def initialized(self) -> bool:
+        """initialized read-only property."""
+        indexes = pinecone.manage.list_indexes()
+        return self.index_name in indexes
 
     @property
     def vector_store(self) -> LCPinecone:
         """Pinecone lazy read-only property."""
         if self._vector_store is None:
+            if not self.initialized:
+                self.init_index()
             self._vector_store = LCPinecone(
                 index=self.index,
                 embedding=self.openai_embeddings,
@@ -76,41 +106,29 @@ class PineConeIndex:
             self._text_splitter = TextSplitter()
         return self._text_splitter
 
-    @property
-    def index_name(self) -> str:
-        """index name."""
-        return self._index_name
-
-    @index_name.setter
-    def index_name(self, value: str) -> None:
-        """Set index name."""
-        if self._index_name != value:
-            self._index_name = value
-            self.initialize()
-
-    @property
-    def index(self) -> pinecone.Index:
-        """pinecone.Index lazy read-only property."""
-        if self._index is None:
-            try:
-                self._index = pinecone.Index(index_name=self.index_name)
-            except pinecone.exceptions.PineconeException:
-                # index does not exist, so create it.
-                self.create()
-                self._index = pinecone.Index(index_name=self.index_name)
-        return self._index
+    def init_index(self):
+        """Verify that an index named self.index_name exists in Pinecone. If not, create it."""
+        indexes = pinecone.manage.list_indexes()
+        if self.index_name not in indexes:
+            logging.info("Index does not exist.")
+            self.create()
 
     def init(self):
         """Initialize Pinecone."""
         pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
+        self._index = None
+        self._index_name = None
+        self._text_splitter = None
+        self._openai_embeddings = None
+        self._vector_store = None
 
     def delete(self):
         """Delete index."""
-        try:
-            logging.info("Deleting index...")
-            pinecone.delete_index(self.index_name)
-        except pinecone.exceptions.PineconeException:
-            logging.info("Index does not exist. Continuing...")
+        if not self.initialized:
+            logging.info("Index does not exist. Nothing to delete.")
+            return
+        logging.info("Deleting index...")
+        pinecone.delete_index(self.index_name)
 
     def create(self):
         """Create index."""
@@ -121,11 +139,12 @@ class PineConeIndex:
         logging.info("Creating index. This may take a few minutes...")
 
         pinecone.create_index(
-            self.index_name,
+            name=self.index_name,
             dimension=Config.PINECONE_DIMENSIONS,
             metric=Config.PINECONE_METRIC,
             metadata_config=metadata_config,
         )
+        logging.info("Index created.")
 
     def initialize(self):
         """Initialize index."""
@@ -152,16 +171,17 @@ class PineConeIndex:
         for pdf_file in pdf_files:
             i += 1
             j = len(pdf_files)
-            logging.info("Loading PDF %s of %s: %s", i, j, pdf_file)
+            print("Loading PDF %s of %s: %s", i, j, pdf_file)
             loader = PyPDFLoader(file_path=pdf_file)
             docs = loader.load()
             k = 0
             for doc in docs:
                 k += 1
-                logging.info(k * "-", end="\r")
+                print(k * "-", end="\r")
                 documents = self.text_splitter.create_documents([doc.page_content])
                 document_texts = [doc.page_content for doc in documents]
                 embeddings = self.openai_embeddings.embed_documents(document_texts)
                 self.vector_store.add_documents(documents=documents, embeddings=embeddings)
 
-        logging.info("Finished loading PDFs")
+        index_stats_string = json.dumps(self.index.describe_index_stats(), indent=4)
+        print("Finished loading PDFs. \n" + index_stats_string)

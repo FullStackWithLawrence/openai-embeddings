@@ -10,7 +10,7 @@ import pinecone as oem_pinecone
 import pytest  # pylint: disable=unused-import
 
 from models.const import Config
-from models.pinecone import PineConeIndex
+from models.pinecone import PineconeIndex
 
 
 class TestPinecone:
@@ -20,13 +20,13 @@ class TestPinecone:
         """Ensure that we instantiate the object."""
         # pylint: disable=broad-except
         try:
-            PineConeIndex()
+            PineconeIndex()
         except Exception as e:
             assert False, f"Pinecone() failed with exception: {e}"
 
     def test_02_init(self):
         """Ensure that we can initialize Pinecone."""
-        pinecone = PineConeIndex()
+        pinecone = PineconeIndex()
         # pylint: disable=broad-except
         try:
             pinecone.init()
@@ -35,12 +35,12 @@ class TestPinecone:
 
     def test_03_index(self):
         """Test that the index name is correct."""
-        pinecone = PineConeIndex()
+        pinecone = PineconeIndex()
         assert pinecone.index_name == Config.PINECONE_INDEX_NAME
 
     def test_04_initialize(self):
         """Test that the index initializes."""
-        pinecone = PineConeIndex()
+        pinecone = PineconeIndex()
         # pylint: disable=broad-except
         try:
             pinecone.initialize()
@@ -50,7 +50,9 @@ class TestPinecone:
 
     def test_05_delete(self):
         """Test that the index can be deleted."""
-        pinecone = PineConeIndex()
+        pinecone = PineconeIndex()
+        indexes = oem_pinecone.manage.list_indexes()
+        assert pinecone.index_name in indexes
         # pylint: disable=broad-except
         try:
             pinecone.delete()
@@ -59,12 +61,17 @@ class TestPinecone:
 
     def test_06_create(self):
         """Test that the index can be created."""
-        pinecone = PineConeIndex()
+        pinecone = PineconeIndex()
+        indexes = oem_pinecone.manage.list_indexes()
+        if pinecone.index_name in indexes:
+            pinecone.delete()
+
         # pylint: disable=broad-except
         try:
             pinecone.create()
         except Exception as e:
             assert False, f"Pinecone.create() failed with exception: {e}"
+        assert isinstance(pinecone.index, oem_pinecone.Index)
         pinecone.delete()
 
     def test_07_load_pdf(self):
@@ -72,7 +79,7 @@ class TestPinecone:
         if not os.path.exists("./data/test_07_load.pdf"):
             pytest.skip("File './data/test_07_load.pdf' does not exist")
 
-        pinecone = PineConeIndex()
+        pinecone = PineconeIndex()
         # pylint: disable=broad-except
         try:
             pinecone.pdf_loader(filepath="./data/test_07_load.pdf")
