@@ -76,7 +76,8 @@ class PineconeIndex:
     @property
     def index_stats(self) -> dict:
         """index stats."""
-        return json.dumps(self.index.describe_index_stats(), indent=4)
+        retval = self.index.describe_index_stats()
+        return json.dumps(retval.to_dict(), indent=4)
 
     @property
     def initialized(self) -> bool:
