@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Pinecone helper functions."""
+"""A class to manage the lifecycle of Pinecone vector database indexes."""
 
 # document loading
 import glob
@@ -49,6 +49,8 @@ class PineconeIndex:
     def __init__(self, index_name: str = None):
         self.init()
         self.index_name = index_name or Config.PINECONE_INDEX_NAME
+        logging.debug("PineconeIndex initialized with index_name: %s", self.index_name)
+        logging.debug(self.index_stats)
 
     @property
     def index_name(self) -> str:
@@ -70,6 +72,11 @@ class PineconeIndex:
             self.init_index()
             self._index = pinecone.Index(index_name=self.index_name)
         return self._index
+
+    @property
+    def index_stats(self) -> dict:
+        """index stats."""
+        return json.dumps(self.index.describe_index_stats(), indent=4)
 
     @property
     def initialized(self) -> bool:
@@ -183,5 +190,4 @@ class PineconeIndex:
                 embeddings = self.openai_embeddings.embed_documents(document_texts)
                 self.vector_store.add_documents(documents=documents, embeddings=embeddings)
 
-        index_stats_string = json.dumps(self.index.describe_index_stats(), indent=4)
-        print("Finished loading PDFs. \n" + index_stats_string)
+        print("Finished loading PDFs. \n" + self.index_stats)
