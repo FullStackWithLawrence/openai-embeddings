@@ -1,9 +1,8 @@
 # [1.2.0](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.3...v1.2.0) (2023-12-03)
 
-
 ### Features
 
-* refactor pinecone logic and add pinecone unit tests ([2b8585b](https://github.com/lpm0073/hybrid-search-retriever/commit/2b8585b36e400d04f22e2a5565ea96f4482fd5f4))
+- refactor pinecone logic and add pinecone unit tests ([2b8585b](https://github.com/lpm0073/hybrid-search-retriever/commit/2b8585b36e400d04f22e2a5565ea96f4482fd5f4))
 
 ## [1.1.3](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.2...v1.1.3) (2023-12-02)
 

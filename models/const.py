@@ -3,6 +3,7 @@
 """Sales Support Model (hsr) for the LangChain project."""
 
 import os
+import re
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -34,13 +35,13 @@ if os.path.exists(dotenv_path):
     OPENAI_CHAT_CACHE = bool(os.environ.get("OPENAI_CHAT_CACHE", True))
     DEBUG_MODE = os.environ.get("DEBUG_MODE", "False") == "True"
 
-    if OPENAI_API_KEY == "PLEASE-ADD-ME":
+    if not re.match(r"^sk-\w+$", OPENAI_API_KEY):
         raise ConfigurationError("OPENAI_API_KEY is not set. Please add your OpenAI API key to the .env file.")
-    if OPENAI_API_ORGANIZATION == "PLEASE-ADD-ME":
+    if not re.match(r"^org-\w+$", OPENAI_API_ORGANIZATION):
         raise ConfigurationError(
             "OPENAI_API_ORGANIZATION is not set. Please add your OpenAI API organization to the .env file."
         )
-    if PINECONE_API_KEY == "PLEASE-ADD-ME":
+    if not re.match(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", PINECONE_API_KEY):
         raise ConfigurationError("PINECONE_API_KEY is not set. Please add your Pinecone API key to the .env file.")
 
 else:
