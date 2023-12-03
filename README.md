@@ -1,6 +1,6 @@
 # Hybrid Search Retriever
 
-A Python [OpenAI](https://openai.com/) / [LangChain](https://www.langchain.com/) / [Pinecone](https://docs.pinecone.io/docs/python-client) proof of concept Retrieval Augmented Generation (RAG) model using PDF documents as the embeddings data source.
+A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) API embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
 
 Implements the following:
 
@@ -9,8 +9,20 @@ Implements the following:
 
 - a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
 
+Features:
+
+- automated PDF document loader
+- Seamless OpenAI embeddings using Langchain
+- PineconeIndex helper class that fully manages the lifecycle of Pinecone vector database indexes
+- Quickstart: `make init`
+- Parameterized modules
+- 20+ automated unit tests
+- Preconfigured for seamless integration between OpenAI and Pinecone
+
 See:
 
+- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings)
+- [What is a Vector Database?](https://www.pinecone.io/learn/vector-database/)
 - [LangChain RAG](https://python.langchain.com/docs/use_cases/question_answering/)
 - [LangChain Document Loaders](https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf)
 - [LanchChain Caching](https://python.langchain.com/docs/modules/model_io/llms/llm_caching)
@@ -61,15 +73,30 @@ PINECONE_INDEX_NAME=SET-ME-PLEASE
 DEBUG_MODE=False
 ```
 
-### Pinecone setup
+### Configuration defaults
 
-You'll need to manually create an index with the following characteristics
+Set these as environment variables on the command line, or in a .env file that should be located in the root of the repo.
 
-- Environment: gcp-starter
-- Index name: rag
-- Metric: dotproduct
-- Dimensions: 1536
-- Pod Type: starter
+```console
+# OpenAI API
+OPENAI_API_ORGANIZATION=YOUR-API-ORGANIZATION-ID
+OPENAI_API_KEY=YOUR-API-KEY
+OPENAI_CHAT_MODEL_NAME=gpt-3.5-turbo
+OPENAI_PROMPT_MODEL_NAME=text-davinci-003
+OPENAI_CHAT_TEMPERATURE=0.0
+OPENAI_CHAT_MAX_RETRIES=3
+
+# Pinecone API
+PINECONE_API_KEY=YOUR-API-KEY
+PINECONE_ENVIRONMENT=gcp-starter
+PINECONE_INDEX_NAME=rag
+PINECONE_VECTORSTORE_TEXT_KEY=lc_id
+PINECONE_METRIC=dotproduct
+PINECONE_DIMENSIONS=1536
+
+# This package
+DEBUG_MODE=False
+```
 
 ## Contributing
 
