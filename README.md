@@ -10,14 +10,11 @@
 
 # OpenAI Embeddings Example
 
-A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) API embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
+A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) API embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/). Implements the following:
 
-Implements the following:
-
-- a command-line pdf loader program that extracts text, vectorizes, and
+- **PDF Loader**. a command-line pdf loader program that extracts text, vectorizes, and
   loads into a Pinecone dot product vector database that is dimensioned to match OpenAI embeddings.
-
-- a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
+- **Retrieval Augments Generation**. A chatGPT prompt based on a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
 
 ## Installation
 
