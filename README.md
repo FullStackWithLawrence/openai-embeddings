@@ -51,19 +51,20 @@ PINECONE_API_KEY=PLEASE-ADD-ME
 
 ```console
 # example 1 - generic assistant
-python3 -m models.examples.prompt "your are a helpful assistant" "explain why LangChain is so popular for generative AI development"
+python3 -m models.examples.prompt "your are a helpful assistant" "What analytics and accounting courses does Wharton offer?"
 
 # example 2 - untrained assistant with expertise on Mexico City businesses
-python3 -m models.examples.prompt "You are an expert on businesses located in Mexico City. You provide concise answers of 100 words or less." "What kinds of training does Netec offer?"
+python3 -m models.examples.prompt "You are a student advisor at University of Pennsylvania. You provide concise answers of 100 words or less." "What analytics and accounting courses does Wharton offer?"
 
-# example 3 - prompted assistant
-python3 -m models.examples.training_services "Microsoft certified Azure AI engineer associate"
+# example 3 - prompted assistant: Online courses
+python3 -m models.examples.online_courses "analytics and accounting"
 
-# example 4 - prompted assistant
-python3 -m models.examples.training_services_oracle "Oracle database administrator"
+# example 4 - prompted assistant: Certification programs
+python3 -m models.examples.certification_programs "analytics and accounting"
 
 # example 5 - Retrieval Augmented Generation
-python3 -m models.examples.load "./data/"
+# download sample data from https://cdn.lawrencemcdaniel.com/fswl/hybrid-search-retriever-data.zip
+python3 -m models.examples.load "/path/to/your/pdf/documents"
 python3 -m models.examples.rag "What analytics and accounting courses does Wharton offer?"
 ```
 

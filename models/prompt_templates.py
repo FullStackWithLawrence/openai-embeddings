@@ -5,6 +5,42 @@
 from langchain.prompts import PromptTemplate
 
 
+class UofPennPromptTemplates:
+    """Netec Prompt Templates."""
+
+    sales_role: str = """You are a helpful student advisor at Wharton School of the
+        University of Pennsylvania. You provide concise explanations to questions about
+        the courses they offer in 100 words or less."""
+
+    @classmethod
+    def get_properties(cls):
+        """return a list of properties of this class."""
+        return [attr for attr in dir(cls) if isinstance(getattr(cls, attr), property)]
+
+    @property
+    def online_courses(self) -> PromptTemplate:
+        """Get prompt."""
+        template = (
+            self.sales_role
+            + """
+        Explain the online courses Wharton offers about {concept}
+        """
+        )
+        return PromptTemplate(input_variables=["concept"], template=template)
+
+    @property
+    def certification_programs(self) -> PromptTemplate:
+        """Get prompt."""
+        template = (
+            self.sales_role
+            + """
+        Summarize their executive and online programs in which learner
+        can earns certificates for {concept}
+        """
+        )
+        return PromptTemplate(input_variables=["concept"], template=template)
+
+
 class NetecPromptTemplates:
     """Netec Prompt Templates."""
 
