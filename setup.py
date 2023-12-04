@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Setup for hybrid_search_retriever package."""
+"""Setup for openai_embeddings package."""
 from setuptools import find_packages, setup
 
 from setup_utils import get_semantic_version  # pylint: disable=import-error
 
 
 setup(
-    name="hybrid_search_retriever",
+    name="openai_embeddings",
     version=get_semantic_version(),
     description="""A Hybrid Search and Augmented Generation prompting solution using
     Python [OpenAI](https://openai.com/) embeddings sourced from
@@ -16,7 +16,7 @@ setup(
     author_email="lpm0073@gmail.com",
     packages=find_packages(),
     package_data={
-        "hybrid_search_retriever": ["*.md"],
+        "openai_embeddings": ["*.md"],
     },
     install_requires=[
         "langchain>=0.0.341",
