@@ -3,6 +3,10 @@
 [![Pinecone](https://a11ybadges.com/badge?text=Pinecone&badgeColor=000000)](https://www.pinecone.io/)
 [![FullStackWithLawrence](https://a11ybadges.com/badge?text=FullStackWithLawrence&badgeColor=orange&logo=youtube&logoColor=282828)](https://www.youtube.com/@FullStackWithLawrence)
 
+![GHA pushMain Status](https://img.shields.io/github/actions/workflow/status/FullStackWithLawrence/hybrid-search-retriever/pushMain.yml?branch=main)
+[![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
+[![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
+
 # Hybrid Search Retriever
 
 A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) API embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
