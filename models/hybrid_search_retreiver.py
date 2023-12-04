@@ -41,7 +41,7 @@ from models.const import Config, Credentials
 from models.pinecone import PineconeIndex
 
 
-logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.INFO)
+logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.ERROR)
 
 
 class HybridSearchRetriever:
