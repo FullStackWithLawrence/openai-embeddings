@@ -12,7 +12,7 @@ Implements the following:
 ## Installation
 
 ```console
-git clone https://github.com/lpm0073/hybrid-search-retriever.git
+git clone https://github.com/FullStackWithLawrence/hybrid-search-retriever.git
 cd hybrid-search-retriever
 make init
 source venv/bin/activate
