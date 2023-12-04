@@ -3,11 +3,11 @@
 [![Pinecone](https://a11ybadges.com/badge?text=Pinecone&badgeColor=000000)](https://www.pinecone.io/)
 [![FullStackWithLawrence](https://a11ybadges.com/badge?text=FullStackWithLawrence&badgeColor=orange&logo=youtube&logoColor=282828)](https://www.youtube.com/@FullStackWithLawrence)
 
-![GHA pushMain Status](https://img.shields.io/github/actions/workflow/status/FullStackWithLawrence/hybrid-search-retriever/pushMain.yml?branch=main)
+![GHA pushMain Status](https://img.shields.io/github/actions/workflow/status/FullStackWithLawrence/openai-embeddings/pushMain.yml?branch=main)
 [![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
 [![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
 
-# Hybrid Search Retriever
+# OpenAI Embeddings Example
 
 A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) API embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
 
@@ -21,8 +21,8 @@ Implements the following:
 ## Installation
 
 ```console
-git clone https://github.com/FullStackWithLawrence/hybrid-search-retriever.git
-cd hybrid-search-retriever
+git clone https://github.com/FullStackWithLawrence/openai-embeddings.git
+cd openai-embeddings
 make init
 source venv/bin/activate
 ```
@@ -60,7 +60,7 @@ python3 -m models.examples.rag "What analytics and accounting courses does Whart
 
 ### More about example 5 Retrieval Augmented Generation
 
-I uploaded a batch of 21 sets of lecture notes in PDF format for an online analytics course taught by [Professor Brian Bushee](https://accounting.wharton.upenn.edu/profile/bushee/). You can download these from https://cdn.lawrencemcdaniel.com/fswl/hybrid-search-retriever-data.zip to test whether your results are consistent.
+I uploaded a batch of 21 sets of lecture notes in PDF format for an online analytics course taught by [Professor Brian Bushee](https://accounting.wharton.upenn.edu/profile/bushee/). You can download these from https://cdn.lawrencemcdaniel.com/fswl/openai-embeddings-data.zip to test whether your results are consistent.
 
 After creating an embedding of these pdf documents, you can call models.examples.rag, which should
 provide a quite different response compared to a standard chatGPT prompt. It should resemble the following:
