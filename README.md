@@ -1,13 +1,16 @@
+# OpenAI Embeddings Example
+
+🤖 Retrieval Augmented Generation and Hybrid Search 🤖
+
 [![FullStackWithLawrence](https://a11ybadges.com/badge?text=FullStackWithLawrence&badgeColor=orange&logo=youtube&logoColor=282828)](https://www.youtube.com/@FullStackWithLawrence)<br>
 [![OpenAI](https://a11ybadges.com/badge?logo=openai)](https://platform.openai.com/)
 [![LangChain](https://a11ybadges.com/badge?text=LangChain&badgeColor=0834ac)](https://www.langchain.com/)
 [![Pinecone](https://a11ybadges.com/badge?text=Pinecone&badgeColor=000000)](https://www.pinecone.io/)
 [![Python](https://a11ybadges.com/badge?logo=python)](https://www.python.org/)<br>
+[![Release Notes](https://img.shields.io/github/release/FullStackWithLawrence/openai-embeddings)](https://github.com/FullStackWithLawrence/openai-embeddings/releases)
 ![GHA pushMain Status](https://img.shields.io/github/actions/workflow/status/FullStackWithLawrence/openai-embeddings/pushMain.yml?branch=main)
 [![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
 [![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
-
-# OpenAI Embeddings Example
 
 A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI API Embeddings](https://platform.openai.com/docs/guides/embeddings) persisted to a [Pinecone](https://docs.pinecone.io/docs/python-client) vector database index and managed by [LangChain](https://www.langchain.com/). Implements the following:
 
