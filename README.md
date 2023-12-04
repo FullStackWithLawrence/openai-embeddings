@@ -14,7 +14,7 @@ A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI
 
 - **PDF Loader**. a command-line pdf loader program that extracts text, vectorizes, and
   loads into a Pinecone dot product vector database that is dimensioned to match OpenAI embeddings.
-- **Retrieval Augments Generation**. A chatGPT prompt based on a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
+- **Retrieval Augmented Generation**. A chatGPT prompt based on a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
 
 ## Installation
 
