@@ -19,6 +19,7 @@ codespell==2.2.6
 
 # production
 # ------------
+python-decouple==3.8
 langchain==0.0.345
 langchainhub==0.1.14
 langchain-experimental==0.0.43
@@ -27,5 +28,4 @@ pinecone-client==2.2.4
 pinecone-text==0.7.0
 pydantic==2.5.2
 pypdf==3.17.1
-python-dotenv==1.0.0
 tiktoken==0.5.2
