@@ -9,24 +9,6 @@ Implements the following:
 
 - a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
 
-Features:
-
-- automated PDF document loader
-- Seamless OpenAI embeddings using Langchain
-- PineconeIndex helper class that fully manages the lifecycle of Pinecone vector database indexes
-- Quickstart: `make init`
-- Parameterized modules
-- 20+ automated unit tests
-- Preconfigured for seamless integration between OpenAI and Pinecone
-
-See:
-
-- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings)
-- [What is a Vector Database?](https://www.pinecone.io/learn/vector-database/)
-- [LangChain RAG](https://python.langchain.com/docs/use_cases/question_answering/)
-- [LangChain Document Loaders](https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf)
-- [LanchChain Caching](https://python.langchain.com/docs/modules/model_io/llms/llm_caching)
-
 ## Installation
 
 ```console
@@ -148,3 +130,13 @@ PINECONE_API_KEY: {{ secrets.PINECONE_API_KEY }}
 PINECONE_ENVIRONMENT: {{ secrets.PINECONE_ENVIRONMENT }}
 PINECONE_INDEX_NAME: {{ secrets.PINECONE_INDEX_NAME }}
 ```
+
+## Additional reading
+
+- [Youtube - Vector Embeddings Tutorial – Code Your Own AI Assistant with GPT-4 API + LangChain + NLP](https://www.youtube.com/watch?v=yfHHvmaMkcA)
+- [Youtube - LangChain Explained in 13 Minutes | QuickStart Tutorial for Beginners](https://www.youtube.com/watch?v=aywZrzNaKjs)
+- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings)
+- [What is a Vector Database?](https://www.pinecone.io/learn/vector-database/)
+- [LangChain RAG](https://python.langchain.com/docs/use_cases/question_answering/)
+- [LangChain Document Loaders](https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf)
+- [LanchChain Caching](https://python.langchain.com/docs/modules/model_io/llms/llm_caching)
