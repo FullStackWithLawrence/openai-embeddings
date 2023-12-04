@@ -53,19 +53,39 @@ PINECONE_API_KEY=PLEASE-ADD-ME
 # example 1 - generic assistant
 python3 -m models.examples.prompt "your are a helpful assistant" "What analytics and accounting courses does Wharton offer?"
 
-# example 2 - untrained assistant with expertise on Mexico City businesses
+# example 2 - assistant with improved system prompting
 python3 -m models.examples.prompt "You are a student advisor at University of Pennsylvania. You provide concise answers of 100 words or less." "What analytics and accounting courses does Wharton offer?"
 
-# example 3 - prompted assistant: Online courses
+# example 3 - templated assistant: Online courses
 python3 -m models.examples.online_courses "analytics and accounting"
 
-# example 4 - prompted assistant: Certification programs
+# example 4 - templated assistant: Certification programs
 python3 -m models.examples.certification_programs "analytics and accounting"
 
 # example 5 - Retrieval Augmented Generation
-# download sample data from https://cdn.lawrencemcdaniel.com/fswl/hybrid-search-retriever-data.zip
 python3 -m models.examples.load "/path/to/your/pdf/documents"
 python3 -m models.examples.rag "What analytics and accounting courses does Wharton offer?"
+```
+
+### More about example 5 Retrieval Augmented Generation
+
+I uploaded a batch of 21 sets of lecture notes in PDF format for an online analytics course taught by [Professor Brian Bushee](https://accounting.wharton.upenn.edu/profile/bushee/). You can download these from https://cdn.lawrencemcdaniel.com/fswl/hybrid-search-retriever-data.zip to test whether your results are consistent.
+
+After creating an embedding of these pdf documents, you can call models.examples.rag, which should
+provide a quite different response compared to a standard chatGPT prompt. It should resemble the following:
+
+```console
+Wharton offers a variety of analytics and accounting courses. Some of the courses offered include:
+
+1. Accounting-Based Valuation: This course, taught by Professor Brian Bushee, focuses on using accounting information to value companies and make investment decisions.
+
+2. Review of Financial Statements: Also taught by Professor Brian Bushee, this course provides an in-depth understanding of financial statements and how to analyze them for decision-making purposes.
+
+3. Discretionary Accruals Model: Another course taught by Professor Brian Bushee, this course explores the concept of discretionary accruals and their impact on financial statements and financial analysis.
+
+4. Discretionary Accruals Cases: This course, also taught by Professor Brian Bushee, provides practical applications of the discretionary accruals model through case studies and real-world examples.
+
+These are just a few examples of the analytics and accounting courses offered at Wharton. The school offers a wide range of courses in these areas to provide students with a comprehensive understanding of financial analysis and decision-making.
 ```
 
 ## Configuration defaults
