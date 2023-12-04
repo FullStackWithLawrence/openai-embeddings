@@ -8,10 +8,10 @@ from unittest.mock import MagicMock, patch
 import pytest  # pylint: disable=unused-import
 from langchain.schema import HumanMessage, SystemMessage
 
+from models.examples.certification_programs import hsr as uofpenn_certification_program
+from models.examples.online_courses import hsr as uofpenn_online_hsr
 from models.examples.prompt import hsr as prompt_hrs
 from models.examples.rag import hsr as rag_hsr
-from models.examples.training_services import hsr as training_services_hsr
-from models.examples.training_services_oracle import hsr as training_services_oracle_hsr
 from models.prompt_templates import NetecPromptTemplates
 
 
@@ -55,7 +55,7 @@ class TestExamples:
         templates = NetecPromptTemplates()
         prompt = templates.training_services
 
-        result = training_services_hsr.prompt_with_template(prompt=prompt, concept=mock_args.human_message)
+        result = uofpenn_certification_program.prompt_with_template(prompt=prompt, concept=mock_args.human_message)
         assert "SUCCESS" in result
 
     @patch("argparse.ArgumentParser.parse_args")
@@ -68,5 +68,5 @@ class TestExamples:
         templates = NetecPromptTemplates()
         prompt = templates.oracle_training_services
 
-        result = training_services_oracle_hsr.prompt_with_template(prompt=prompt, concept=mock_args.human_message)
+        result = uofpenn_online_hsr.prompt_with_template(prompt=prompt, concept=mock_args.human_message)
         assert "SUCCESS" in result
