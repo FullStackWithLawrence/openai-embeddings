@@ -1,3 +1,8 @@
+[![OpenAI](https://a11ybadges.com/badge?logo=openai)](https://platform.openai.com/)
+[![LangChain](https://a11ybadges.com/badge?text=LangChain&badgeColor=0834ac)](https://www.langchain.com/)
+[![Pinecone](https://a11ybadges.com/badge?text=Pinecone&badgeColor=000000)](https://www.pinecone.io/)
+[![FullStackWithLawrence](https://a11ybadges.com/badge?text=FullStackWithLawrence&badgeColor=orange&logo=youtube&logoColor=282828)](https://www.youtube.com/@FullStackWithLawrence)
+
 # Hybrid Search Retriever
 
 A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI](https://openai.com/) API embeddings sourced from [Pinecone](https://docs.pinecone.io/docs/python-client) vector database indexes and managed by [LangChain](https://www.langchain.com/).
