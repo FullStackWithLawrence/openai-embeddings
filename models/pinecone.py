@@ -20,6 +20,9 @@ from langchain.vectorstores.pinecone import Pinecone as LCPinecone
 from models.const import Config, Credentials
 
 
+logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.ERROR)
+
+
 # pylint: disable=too-few-public-methods
 class TextSplitter:
     """
@@ -118,7 +121,7 @@ class PineconeIndex:
         """Verify that an index named self.index_name exists in Pinecone. If not, create it."""
         indexes = pinecone.manage.list_indexes()
         if self.index_name not in indexes:
-            logging.info("Index does not exist.")
+            logging.debug("Index does not exist.")
             self.create()
 
     def init(self):
@@ -133,9 +136,9 @@ class PineconeIndex:
     def delete(self):
         """Delete index."""
         if not self.initialized:
-            logging.info("Index does not exist. Nothing to delete.")
+            logging.debug("Index does not exist. Nothing to delete.")
             return
-        logging.info("Deleting index...")
+        logging.debug("Deleting index...")
         pinecone.delete_index(self.index_name)
 
     def create(self):
@@ -144,7 +147,7 @@ class PineconeIndex:
             "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
             "context": ["lc_text"],
         }
-        logging.info("Creating index. This may take a few minutes...")
+        logging.debug("Creating index. This may take a few minutes...")
 
         pinecone.create_index(
             name=self.index_name,
@@ -152,7 +155,7 @@ class PineconeIndex:
             metric=Config.PINECONE_METRIC,
             metadata_config=metadata_config,
         )
-        logging.info("Index created.")
+        logging.debug("Index created.")
 
     def initialize(self):
         """Initialize index."""
