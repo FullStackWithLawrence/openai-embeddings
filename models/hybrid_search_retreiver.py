@@ -114,7 +114,7 @@ class HybridSearchRetriever:
         self, prompt: PromptTemplate, concept: str, model: str = Config.OPENAI_PROMPT_MODEL_NAME
     ) -> str:
         """Prompt with template."""
-        llm = OpenAI(model=model)
+        llm = OpenAI(model=model, api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION)
         retval = llm(prompt.format(concept=concept))
         return retval
 

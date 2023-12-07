@@ -17,6 +17,10 @@ pydocstringformatter==0.7.3
 tox==4.11.4
 codespell==2.2.6
 
+# for YouTube example
+# ------------
+python-dotenv==1.0.0
+
 # production
 # ------------
 python-decouple==3.8
