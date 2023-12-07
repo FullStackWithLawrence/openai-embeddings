@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.0...v1.2.1) (2023-12-04)
+
+
+### Bug Fixes
+
+* force a new release ([e21f9c5](https://github.com/FullStackWithLawrence/openai-embeddings/commit/e21f9c56b6dc3be3320afb88a491b43fc04d365b))
+
 # [1.2.0](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.3...v1.2.0) (2023-12-03)
 
 ### Features

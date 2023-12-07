@@ -1,5 +1,4 @@
 # see:
-#  - https://github.com/FullStackWithLawrence/aws-openai/settings/installations
 #  - https://docs.mergify.com/getting-started/
 pull_request_rules:
   - name: automatic approve dependabot pull requests

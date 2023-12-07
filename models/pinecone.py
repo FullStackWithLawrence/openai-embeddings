@@ -138,7 +138,7 @@ class PineconeIndex:
         if not self.initialized:
             logging.debug("Index does not exist. Nothing to delete.")
             return
-        logging.debug("Deleting index...")
+        print("Deleting index...")
         pinecone.delete_index(self.index_name)
 
     def create(self):
@@ -147,7 +147,7 @@ class PineconeIndex:
             "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
             "context": ["lc_text"],
         }
-        logging.debug("Creating index. This may take a few minutes...")
+        print("Creating index. This may take a few minutes...")
 
         pinecone.create_index(
             name=self.index_name,
@@ -155,7 +155,7 @@ class PineconeIndex:
             metric=Config.PINECONE_METRIC,
             metadata_config=metadata_config,
         )
-        logging.debug("Index created.")
+        print("Index created.")
 
     def initialize(self):
         """Initialize index."""
@@ -182,7 +182,7 @@ class PineconeIndex:
         for pdf_file in pdf_files:
             i += 1
             j = len(pdf_files)
-            print("Loading PDF %s of %s: %s", i, j, pdf_file)
+            print(f"Loading PDF {i} of {j}: {pdf_file}")
             loader = PyPDFLoader(file_path=pdf_file)
             docs = loader.load()
             k = 0
