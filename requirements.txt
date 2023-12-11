@@ -24,7 +24,7 @@ python-dotenv==1.0.0
 # production
 # ------------
 python-decouple==3.8
-langchain==0.0.345
+langchain==0.0.348
 langchainhub==0.1.14
 langchain-experimental==0.0.45
 openai==1.3.7
