@@ -29,7 +29,7 @@ langchainhub==0.1.14
 langchain-experimental==0.0.43
 openai==1.3.7
 pinecone-client==2.2.4
-pinecone-text==0.7.0
+pinecone-text==0.7.1
 pydantic==2.5.2
 pypdf==3.17.1
 tiktoken==0.5.2
