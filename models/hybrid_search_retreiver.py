@@ -69,7 +69,7 @@ class HybridSearchRetriever:
         """ChatOpenAI lazy read-only property."""
         if self._chat is None:
             self._chat = ChatOpenAI(
-                api_key=settings.openai_api_key,
+                api_key=settings.openai_api_key.get_secret_value(),  # pylint: disable=no-member
                 organization=settings.openai_api_organization,
                 cache=settings.openai_chat_cache,
                 max_retries=settings.openai_chat_max_retries,
@@ -114,7 +114,11 @@ class HybridSearchRetriever:
         self, prompt: PromptTemplate, concept: str, model: str = settings.openai_prompt_model_name
     ) -> str:
         """Prompt with template."""
-        llm = OpenAI(model=model, api_key=settings.openai_api_key, organization=settings.openai_api_organization)
+        llm = OpenAI(
+            model=model,
+            api_key=settings.openai_api_key.get_secret_value(),  # pylint: disable=no-member
+            organization=settings.openai_api_organization,
+        )
         retval = llm(prompt.format(concept=concept))
         return retval
 

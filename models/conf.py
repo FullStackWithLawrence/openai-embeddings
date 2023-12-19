@@ -20,7 +20,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
-from pydantic import Field, ValidationError, validator
+from pydantic import Field, SecretStr, ValidationError, validator
 from pydantic_settings import BaseSettings
 
 from models.const import HERE
@@ -156,7 +156,7 @@ class Settings(BaseSettings):
     openai_api_organization: Optional[str] = Field(
         SettingsDefaults.OPENAI_API_ORGANIZATION, env="OPENAI_API_ORGANIZATION"
     )
-    openai_api_key: Optional[str] = Field(SettingsDefaults.OPENAI_API_KEY, env="OPENAI_API_KEY")
+    openai_api_key: Optional[SecretStr] = Field(SettingsDefaults.OPENAI_API_KEY, env="OPENAI_API_KEY")
     openai_endpoint_image_n: Optional[int] = Field(
         SettingsDefaults.OPENAI_ENDPOINT_IMAGE_N, env="OPENAI_ENDPOINT_IMAGE_N"
     )
@@ -180,7 +180,7 @@ class Settings(BaseSettings):
         SettingsDefaults.OPENAI_CHAT_MAX_RETRIES, env="OPENAI_CHAT_MAX_RETRIES"
     )
 
-    pinecone_api_key: Optional[str] = Field(SettingsDefaults.PINECONE_API_KEY, env="PINECONE_API_KEY")
+    pinecone_api_key: Optional[SecretStr] = Field(SettingsDefaults.PINECONE_API_KEY, env="PINECONE_API_KEY")
     pinecone_environment: Optional[str] = Field(SettingsDefaults.PINECONE_ENVIRONMENT, env="PINECONE_ENVIRONMENT")
     pinecone_index_name: Optional[str] = Field(SettingsDefaults.PINECONE_INDEX_NAME, env="PINECONE_INDEX_NAME")
     pinecone_vectorstore_text_key: Optional[str] = Field(

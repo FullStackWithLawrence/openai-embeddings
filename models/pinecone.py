@@ -105,8 +105,10 @@ class PineconeIndex:
     def openai_embeddings(self) -> OpenAIEmbeddings:
         """OpenAIEmbeddings lazy read-only property."""
         if self._openai_embeddings is None:
+            # pylint: disable=no-member
             self._openai_embeddings = OpenAIEmbeddings(
-                api_key=settings.openai_api_key, organization=settings.openai_api_organization
+                api_key=settings.openai_api_key.get_secret_value(),
+                organization=settings.openai_api_organization,
             )
         return self._openai_embeddings
 
@@ -126,7 +128,8 @@ class PineconeIndex:
 
     def init(self):
         """Initialize Pinecone."""
-        pinecone.init(api_key=settings.pinecone_api_key, environment=settings.pinecone_environment)
+        # pylint: disable=no-member
+        pinecone.init(api_key=settings.pinecone_api_key.get_secret_value(), environment=settings.pinecone_environment)
         self._index = None
         self._index_name = None
         self._text_splitter = None

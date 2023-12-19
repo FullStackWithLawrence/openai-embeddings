@@ -66,7 +66,10 @@ class LangChainDev:
         tool=PythonREPL(),
         verbose=True,
     )
-    pinecone.init(api_key=settings.pinecone_api_key, environment=settings.pinecone_environment)  # minute 10:43
+    # pylint: disable=no-member
+    pinecone.init(
+        api_key=settings.pinecone_api_key.get_secret_value(), environment=settings.pinecone_environment
+    )  # minute 10:43
 
     # LLM wrappers. minute 5:46
     def test_01_basic(self):
