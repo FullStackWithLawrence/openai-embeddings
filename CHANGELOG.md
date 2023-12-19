@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.1...v1.2.2) (2023-12-19)
+
+
+### Bug Fixes
+
+* force a new release ([6c04b0b](https://github.com/FullStackWithLawrence/openai-embeddings/commit/6c04b0b95486fa25b40c6f4d1954bd22b58df7c9))
+
 ## [1.2.1](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.0...v1.2.1) (2023-12-04)
 
 ### Bug Fixes
