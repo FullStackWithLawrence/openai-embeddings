@@ -34,7 +34,7 @@ from langchain.prompts import PromptTemplate
 # hybrid search capability
 from langchain.retrievers import PineconeHybridSearchRetriever
 from langchain.schema import BaseMessage, HumanMessage, SystemMessage
-from pinecone_text.sparse import BM25Encoder
+from pinecone_text.sparse import BM25Encoder  # pylint: disable=import-error
 
 # this project
 from models.const import Config, Credentials
