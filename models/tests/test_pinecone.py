@@ -9,7 +9,7 @@ import os
 import pinecone as oem_pinecone
 import pytest  # pylint: disable=unused-import
 
-from models.const import Config
+from models.conf import settings
 from models.pinecone import PineconeIndex
 
 
@@ -36,7 +36,7 @@ class TestPinecone:
     def test_03_index(self):
         """Test that the index name is correct."""
         pinecone = PineconeIndex()
-        assert pinecone.index_name == Config.PINECONE_INDEX_NAME
+        assert pinecone.index_name == settings.pinecone_index_name
 
     def test_04_initialize(self):
         """Test that the index initializes."""

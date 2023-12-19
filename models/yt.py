@@ -37,7 +37,7 @@ from langchain.vectorstores.pinecone import Pinecone
 # 8.) LangChain agents
 from langchain_experimental.agents.agent_toolkits.python.base import create_python_agent
 
-from models.const import Config, Credentials
+from models.conf import settings
 
 
 # Load environment variables from .env file in all folders
@@ -66,7 +66,7 @@ class LangChainDev:
         tool=PythonREPL(),
         verbose=True,
     )
-    pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)  # minute 10:43
+    pinecone.init(api_key=settings.pinecone_api_key, environment=settings.pinecone_environment)  # minute 10:43
 
     # LLM wrappers. minute 5:46
     def test_01_basic(self):

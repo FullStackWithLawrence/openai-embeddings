@@ -17,10 +17,10 @@ from langchain.text_splitter import Document
 from langchain.vectorstores.pinecone import Pinecone as LCPinecone
 
 # this project
-from models.const import Config, Credentials
+from models.conf import settings
 
 
-logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.ERROR)
+logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.ERROR)
 
 
 # pylint: disable=too-few-public-methods
@@ -51,7 +51,7 @@ class PineconeIndex:
 
     def __init__(self, index_name: str = None):
         self.init()
-        self.index_name = index_name or Config.PINECONE_INDEX_NAME
+        self.index_name = index_name or settings.pinecone_index_name
         logging.debug("PineconeIndex initialized with index_name: %s", self.index_name)
         logging.debug(self.index_stats)
 
@@ -97,7 +97,7 @@ class PineconeIndex:
             self._vector_store = LCPinecone(
                 index=self.index,
                 embedding=self.openai_embeddings,
-                text_key=Config.PINECONE_VECTORSTORE_TEXT_KEY,
+                text_key=settings.pinecone_vectorstore_text_key,
             )
         return self._vector_store
 
@@ -106,7 +106,7 @@ class PineconeIndex:
         """OpenAIEmbeddings lazy read-only property."""
         if self._openai_embeddings is None:
             self._openai_embeddings = OpenAIEmbeddings(
-                api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION
+                api_key=settings.openai_api_key, organization=settings.openai_api_organization
             )
         return self._openai_embeddings
 
@@ -126,7 +126,7 @@ class PineconeIndex:
 
     def init(self):
         """Initialize Pinecone."""
-        pinecone.init(api_key=Credentials.PINECONE_API_KEY, environment=Config.PINECONE_ENVIRONMENT)
+        pinecone.init(api_key=settings.pinecone_api_key, environment=settings.pinecone_environment)
         self._index = None
         self._index_name = None
         self._text_splitter = None
@@ -144,15 +144,15 @@ class PineconeIndex:
     def create(self):
         """Create index."""
         metadata_config = {
-            "indexed": [Config.PINECONE_VECTORSTORE_TEXT_KEY, "lc_type"],
+            "indexed": [settings.pinecone_vectorstore_text_key, "lc_type"],
             "context": ["lc_text"],
         }
         print("Creating index. This may take a few minutes...")
 
         pinecone.create_index(
             name=self.index_name,
-            dimension=Config.PINECONE_DIMENSIONS,
-            metric=Config.PINECONE_METRIC,
+            dimension=settings.pinecone_dimensions,
+            metric=settings.pinecone_metric,
             metadata_config=metadata_config,
         )
         print("Index created.")
