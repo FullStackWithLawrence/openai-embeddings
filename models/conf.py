@@ -126,6 +126,7 @@ class Settings(BaseSettings):
     _dump: dict = None
     _pinecone_api_key_source: str = "unset"
     _openai_api_key_source: str = "unset"
+    _initialized: bool = False
 
     def __init__(self, **data: Any):
         super().__init__(**data)
@@ -137,6 +138,7 @@ class Settings(BaseSettings):
             self._openai_api_key_source = "environment variable"
         elif data.get("openai_api_key"):
             self._openai_api_key_source = "init argument"
+        self._initialized = True
 
     debug_mode: Optional[bool] = Field(
         SettingsDefaults.DEBUG_MODE,
@@ -241,7 +243,7 @@ class Settings(BaseSettings):
         def recursive_sort_dict(d):
             return {k: recursive_sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(d.items())}
 
-        if self._dump:
+        if self._dump and self._initialized:
             return self._dump
 
         self._dump = {
