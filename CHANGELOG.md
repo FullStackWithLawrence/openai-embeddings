@@ -1,9 +1,14 @@
-## [1.2.2](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.1...v1.2.2) (2023-12-19)
+# Change Log
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.2.2](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.1...v1.2.2) (2023-12-19)
 
 ### Bug Fixes
 
-* force a new release ([6c04b0b](https://github.com/FullStackWithLawrence/openai-embeddings/commit/6c04b0b95486fa25b40c6f4d1954bd22b58df7c9))
+- force a new release ([6c04b0b](https://github.com/FullStackWithLawrence/openai-embeddings/commit/6c04b0b95486fa25b40c6f4d1954bd22b58df7c9))
 
 ## [1.2.1](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.0...v1.2.1) (2023-12-04)
 
@@ -11,7 +16,7 @@
 
 - force a new release ([e21f9c5](https://github.com/FullStackWithLawrence/openai-embeddings/commit/e21f9c56b6dc3be3320afb88a491b43fc04d365b))
 
-# [1.2.0](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.3...v1.2.0) (2023-12-03)
+## [1.2.0](https://github.com/lpm0073/hybrid-search-retriever/compare/v1.1.3...v1.2.0) (2023-12-03)
 
 ### Features
 
