@@ -24,7 +24,12 @@ A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI
 git clone https://github.com/FullStackWithLawrence/openai-embeddings.git
 cd openai-embeddings
 make init
+
+# Linux/macOS
 source venv/bin/activate
+
+# Windows Powershell (admin)
+venv\Scripts\activate
 ```
 
 You'll also need to add your api keys to the .env file in the root of the repo.
