@@ -17,10 +17,6 @@ pydocstringformatter==0.7.3
 tox==4.11.4
 codespell==2.2.6
 
-# for YouTube example
-# ------------
-python-dotenv==1.0.0
-
 # production
 # ------------
 python-decouple==3.8
@@ -31,5 +27,7 @@ openai==1.5.0
 pinecone-client==2.2.4
 pinecone-text==0.7.1
 pydantic==2.5.2
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
 pypdf==3.17.2
 tiktoken==0.5.2
