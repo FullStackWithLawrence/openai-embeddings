@@ -110,6 +110,16 @@ Wharton offers a variety of analytics and accounting courses. Some of the course
 These are just a few examples of the analytics and accounting courses offered at Wharton. The school offers a wide range of courses in these areas to provide students with a comprehensive understanding of financial analysis and decision-making.
 ```
 
+## Requirements
+
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). _pre-installed on Linux and macOS_
+- [make](https://gnuwin32.sourceforge.net/packages/make.htm). _pre-installed on Linux and macOS._
+- [OpenAI platform API key](https://platform.openai.com/).
+  _If you're new to OpenAI API then see [How to Get an OpenAI API Key](./doc/OPENAI_API_GETTING_STARTED_GUIDE.md)_
+- [Pinecone](https://www.pinecone.io/) API key.
+- [Python 3.11](https://www.python.org/downloads/): for creating virtual environment used for building AWS Lambda Layer, and locally by pre-commit linters and code formatters.
+- [NodeJS](https://nodejs.org/en/download): used with NPM for local ReactJS developer environment, and for configuring/testing Semantic Release.
+
 ## Configuration defaults
 
 Set these as environment variables on the command line, or in a .env file that should be located in the root of the repo.
