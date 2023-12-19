@@ -1,4 +1,12 @@
 SHELL := /bin/bash
+ifeq ($(OS),Windows_NT)
+    PYTHON = python.exe
+    ACTIVATE_VENV = venv\Scripts\activate
+else
+    PYTHON = python3.11
+    ACTIVATE_VENV = source venv/bin/activate
+endif
+PIP = $(PYTHON) -m pip
 
 ifneq ("$(wildcard .env)","")
     include .env
@@ -25,12 +33,14 @@ all: help
 
 analyze:
 	cloc . --exclude-ext=svg,json,zip --vcs=git
+
 init:
+	make clean && \
+	$(PYTHON) -m venv venv && \
+	$(ACTIVATE_VENV) && \
+	$(PIP) install --upgrade pip && \
+	$(PIP) install -r requirements.txt && \
 	npm install && \
-	python3.11 -m venv venv && \
-	source venv/bin/activate && \
-	pip install --upgrade pip && \
-	pip install -r requirements.txt && \
 	pre-commit install
 
 activate:
@@ -42,10 +52,14 @@ test:
 
 lint:
 	pre-commit run --all-files && \
+	pylint models && \
+	flake8 . && \
+	isort . && \
 	black .
 
 clean:
-	rm -rf venv && rm -rf node_modules
+	rm -rf venv && rm -rf node_modules && \
+	find ./models/ -name __pycache__ -type d -exec rm -rf {} +
 
 release:
 	git commit -m "fix: force a new release" --allow-empty && git push
