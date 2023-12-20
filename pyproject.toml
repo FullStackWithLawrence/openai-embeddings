@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flake8", "gitlint", "bump2version"]
+requires = ["setuptools", "wheel"]
 
 [tool.isort]
 profile = "black"
