@@ -74,15 +74,15 @@ class SettingsDefaults:
 
     LANGCHAIN_MEMORY_KEY = "chat_history"
 
-    PINECONE_API_KEY = None
+    PINECONE_API_KEY: SecretStr = SecretStr(None)
     PINECONE_ENVIRONMENT = "gcp-starter"
     PINECONE_INDEX_NAME = "rag"
     PINECONE_VECTORSTORE_TEXT_KEY = "lc_id"
     PINECONE_METRIC = "dotproduct"
     PINECONE_DIMENSIONS = 1536
 
-    OPENAI_API_ORGANIZATION = None
-    OPENAI_API_KEY = None
+    OPENAI_API_ORGANIZATION: str = None
+    OPENAI_API_KEY: SecretStr = SecretStr(None)
     OPENAI_ENDPOINT_IMAGE_N = 4
     OPENAI_ENDPOINT_IMAGE_SIZE = "1024x768"
     OPENAI_CHAT_CACHE = True
@@ -126,6 +126,7 @@ class Settings(BaseSettings):
     _dump: dict = None
     _pinecone_api_key_source: str = "unset"
     _openai_api_key_source: str = "unset"
+    _initialized: bool = False
 
     def __init__(self, **data: Any):
         super().__init__(**data)
@@ -137,6 +138,7 @@ class Settings(BaseSettings):
             self._openai_api_key_source = "environment variable"
         elif data.get("openai_api_key"):
             self._openai_api_key_source = "init argument"
+        self._initialized = True
 
     debug_mode: Optional[bool] = Field(
         SettingsDefaults.DEBUG_MODE,
@@ -235,13 +237,13 @@ class Settings(BaseSettings):
         return get_semantic_version()
 
     @property
-    def dump(self):
+    def dump(self) -> dict:
         """Dump all settings."""
 
         def recursive_sort_dict(d):
             return {k: recursive_sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(d.items())}
 
-        if self._dump:
+        if self._dump and self._initialized:
             return self._dump
 
         self._dump = {
@@ -299,7 +301,7 @@ class Settings(BaseSettings):
         frozen = True
 
     @validator("debug_mode", pre=True)
-    def parse_debug_mode(cls, v):
+    def parse_debug_mode(cls, v) -> bool:
         """Parse debug_mode"""
         if isinstance(v, bool):
             return v
@@ -308,7 +310,7 @@ class Settings(BaseSettings):
         return v.lower() in ["true", "1", "t", "y", "yes"]
 
     @validator("dump_defaults", pre=True)
-    def parse_dump_defaults(cls, v):
+    def parse_dump_defaults(cls, v) -> bool:
         """Parse dump_defaults"""
         if isinstance(v, bool):
             return v
@@ -317,30 +319,28 @@ class Settings(BaseSettings):
         return v.lower() in ["true", "1", "t", "y", "yes"]
 
     @validator("langchain_memory_key", pre=True)
-    def check_langchain_memory_key(cls, v):
+    def check_langchain_memory_key(cls, v) -> str:
         """Check langchain_memory_key"""
-        if isinstance(v, int):
-            return v
         if v in [None, ""]:
             return SettingsDefaults.LANGCHAIN_MEMORY_KEY
         return v
 
     @validator("openai_api_organization", pre=True)
-    def check_openai_api_organization(cls, v):
+    def check_openai_api_organization(cls, v) -> str:
         """Check openai_api_organization"""
         if v in [None, ""]:
             return SettingsDefaults.OPENAI_API_ORGANIZATION
         return v
 
     @validator("openai_api_key", pre=True)
-    def check_openai_api_key(cls, v):
+    def check_openai_api_key(cls, v) -> SecretStr:
         """Check openai_api_key"""
         if v in [None, ""]:
             return SettingsDefaults.OPENAI_API_KEY
         return v
 
     @validator("openai_endpoint_image_n", pre=True)
-    def check_openai_endpoint_image_n(cls, v):
+    def check_openai_endpoint_image_n(cls, v) -> int:
         """Check openai_endpoint_image_n"""
         if isinstance(v, int):
             return v
@@ -349,14 +349,14 @@ class Settings(BaseSettings):
         return int(v)
 
     @validator("openai_endpoint_image_size", pre=True)
-    def check_openai_endpoint_image_size(cls, v):
+    def check_openai_endpoint_image_size(cls, v) -> str:
         """Check openai_endpoint_image_size"""
         if v in [None, ""]:
             return SettingsDefaults.OPENAI_ENDPOINT_IMAGE_SIZE
         return v
 
     @validator("openai_chat_cache", pre=True)
-    def check_openai_chat_cache(cls, v):
+    def check_openai_chat_cache(cls, v) -> bool:
         """Check openai_chat_cache"""
         if isinstance(v, bool):
             return v
@@ -365,70 +365,70 @@ class Settings(BaseSettings):
         return v.lower() in ["true", "1", "t", "y", "yes"]
 
     @validator("openai_chat_model_name", pre=True)
-    def check_openai_chat_model_name(cls, v):
+    def check_openai_chat_model_name(cls, v) -> str:
         """Check openai_chat_model_name"""
         if v in [None, ""]:
             return SettingsDefaults.OPENAI_CHAT_MODEL_NAME
         return v
 
     @validator("openai_prompt_model_name", pre=True)
-    def check_openai_prompt_model_name(cls, v):
+    def check_openai_prompt_model_name(cls, v) -> str:
         """Check openai_prompt_model_name"""
         if v in [None, ""]:
             return SettingsDefaults.OPENAI_PROMPT_MODEL_NAME
         return v
 
     @validator("openai_chat_temperature", pre=True)
-    def check_openai_chat_temperature(cls, v):
+    def check_openai_chat_temperature(cls, v) -> float:
         """Check openai_chat_temperature"""
         if v in [None, ""]:
             return SettingsDefaults.OPENAI_CHAT_TEMPERATURE
         return float(v)
 
     @validator("openai_chat_max_retries", pre=True)
-    def check_openai_chat_max_retries(cls, v):
+    def check_openai_chat_max_retries(cls, v) -> int:
         """Check openai_chat_max_retries"""
         if v in [None, ""]:
             return SettingsDefaults.OPENAI_CHAT_MAX_RETRIES
         return int(v)
 
     @validator("pinecone_api_key", pre=True)
-    def check_pinecone_api_key(cls, v):
+    def check_pinecone_api_key(cls, v) -> SecretStr:
         """Check pinecone_api_key"""
         if v in [None, ""]:
             return SettingsDefaults.PINECONE_API_KEY
         return v
 
     @validator("pinecone_environment", pre=True)
-    def check_pinecone_environment(cls, v):
+    def check_pinecone_environment(cls, v) -> str:
         """Check pinecone_environment"""
         if v in [None, ""]:
             return SettingsDefaults.PINECONE_ENVIRONMENT
         return v
 
     @validator("pinecone_index_name", pre=True)
-    def check_pinecone_index_name(cls, v):
+    def check_pinecone_index_name(cls, v) -> str:
         """Check pinecone_index_name"""
         if v in [None, ""]:
             return SettingsDefaults.PINECONE_INDEX_NAME
         return v
 
     @validator("pinecone_vectorstore_text_key", pre=True)
-    def check_pinecone_vectorstore_text_key(cls, v):
+    def check_pinecone_vectorstore_text_key(cls, v) -> str:
         """Check pinecone_vectorstore_text_key"""
         if v in [None, ""]:
             return SettingsDefaults.PINECONE_VECTORSTORE_TEXT_KEY
         return v
 
     @validator("pinecone_metric", pre=True)
-    def check_pinecone_metric(cls, v):
+    def check_pinecone_metric(cls, v) -> str:
         """Check pinecone_metric"""
         if v in [None, ""]:
             return SettingsDefaults.PINECONE_METRIC
         return v
 
     @validator("pinecone_dimensions", pre=True)
-    def check_pinecone_dimensions(cls, v):
+    def check_pinecone_dimensions(cls, v) -> int:
         """Check pinecone_dimensions"""
         if v in [None, ""]:
             return SettingsDefaults.PINECONE_DIMENSIONS

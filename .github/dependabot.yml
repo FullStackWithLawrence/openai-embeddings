@@ -1,22 +1,7 @@
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels:
-      - "dependencies"
-      - "python"
-      - "automated pr"
-    assignees:
-      - "lpm0073"
-    reviewers:
-      - "lpm0073"
   - package-ecosystem: "github-actions"
     directory: "/"
-    labels:
-      - "dependencies"
-      - "automated pr"
     schedule:
       interval: "weekly"
     assignees:
@@ -25,12 +10,22 @@ updates:
       - "lpm0073"
   - package-ecosystem: "npm"
     directory: "/"
+    schedule:
+      interval: "weekly"
     labels:
       - "dependencies"
       - "javascript"
-      - "automated pr"
+    assignees:
+      - "FullStackWithLawrence"
+    reviewers:
+      - "FullStackWithLawrence"
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+      - "dependencies"
+      - "python"
     assignees:
       - "lpm0073"
     reviewers:
