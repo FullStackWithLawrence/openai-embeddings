@@ -20,6 +20,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Python tests
-        uses: ./.github/actions/tests/python
+        uses: .github/actions/tests/python
         with:
           python-version: "${{ env.python-version}}"
