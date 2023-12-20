@@ -176,10 +176,15 @@ class Settings(BaseSettings):
         SettingsDefaults.OPENAI_PROMPT_MODEL_NAME, env="OPENAI_PROMPT_MODEL_NAME"
     )
     openai_chat_temperature: Optional[float] = Field(
-        SettingsDefaults.OPENAI_CHAT_TEMPERATURE, env="OPENAI_CHAT_TEMPERATURE"
+        SettingsDefaults.OPENAI_CHAT_TEMPERATURE,
+        env="OPENAI_CHAT_TEMPERATURE",
+        ge=0.0,
+        le=1.0,
     )
     openai_chat_max_retries: Optional[int] = Field(
-        SettingsDefaults.OPENAI_CHAT_MAX_RETRIES, env="OPENAI_CHAT_MAX_RETRIES"
+        SettingsDefaults.OPENAI_CHAT_MAX_RETRIES,
+        env="OPENAI_CHAT_MAX_RETRIES",
+        ge=0,
     )
 
     pinecone_api_key: Optional[SecretStr] = Field(SettingsDefaults.PINECONE_API_KEY, env="PINECONE_API_KEY")
@@ -189,7 +194,7 @@ class Settings(BaseSettings):
         SettingsDefaults.PINECONE_VECTORSTORE_TEXT_KEY, env="PINECONE_VECTORSTORE_TEXT_KEY"
     )
     pinecone_metric: Optional[str] = Field(SettingsDefaults.PINECONE_METRIC, env="PINECONE_METRIC")
-    pinecone_dimensions: Optional[int] = Field(SettingsDefaults.PINECONE_DIMENSIONS, env="PINECONE_DIMENSIONS")
+    pinecone_dimensions: Optional[int] = Field(SettingsDefaults.PINECONE_DIMENSIONS, env="PINECONE_DIMENSIONS", gt=0)
 
     @property
     def pinecone_api_key_source(self) -> str:
