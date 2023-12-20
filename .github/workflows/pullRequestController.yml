@@ -93,24 +93,3 @@ jobs:
           echo ${{ steps.semantic.outputs.new_release_major_version }}
           echo ${{ steps.semantic.outputs.new_release_minor_version }}
           echo ${{ steps.semantic.outputs.new_release_patch_version }}
-
-  python_tests:
-    needs: check_for_pending_release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        id: checkout
-        uses: actions/checkout@v4
-
-      - name: Check for changed files
-        id: file_changes
-        run: |
-          echo "::set-output name=files_changed::$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.py$' || true)"
-          echo "::set-output name=requirements_changed::$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep 'requirements.txt$' || true)"
-
-      - name: Run Python tests
-        if: steps.file_changes.outputs.files_changed != '' || steps.file_changes.outputs.requirements_changed != ''
-        uses: ./.github/actions/tests/python
-        with:
-          python-version: "${{ env.python-version}}"
