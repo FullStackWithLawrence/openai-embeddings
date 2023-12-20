@@ -5,10 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [1.3.0](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.2...v1.3.0) (2023-12-19)
 
-
 ### Features
 
-* add pydantic and refactor settings and credentials management ([332e4da](https://github.com/FullStackWithLawrence/openai-embeddings/commit/332e4dab89924b6ac2436e6d260e645bed26a0b4))
+- add pydantic and refactor settings and credentials management ([332e4da](https://github.com/FullStackWithLawrence/openai-embeddings/commit/332e4dab89924b6ac2436e6d260e645bed26a0b4))
 
 ## [1.2.2](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.1...v1.2.2) (2023-12-19)
 
