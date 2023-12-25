@@ -10,7 +10,7 @@ flake8==6.1.0
 flake8-coding==1.3.2
 pre-commit==3.6.0
 isort==5.13.2
-mypy==1.7.1
+mypy==1.8.0
 pylint==3.0.3
 bandit==1.7.6
 pydocstringformatter==0.7.3
@@ -20,14 +20,14 @@ codespell==2.2.6
 # production
 # ------------
 python-decouple==3.8
-langchain==0.0.351
+langchain==0.0.352
 langchainhub==0.1.14
 langchain-experimental==0.0.47
-openai==1.6.0
+openai==1.6.1
 pinecone-client==2.2.4
 pinecone-text==0.7.1
-pydantic==2.5.2
+pydantic==2.5.3
 pydantic-settings==2.1.0
 python-dotenv==1.0.0
-pypdf==3.17.3
+pypdf==3.17.4
 tiktoken==0.5.2
