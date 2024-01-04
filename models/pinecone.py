@@ -9,6 +9,7 @@ import json
 import logging
 import os
 
+
 # pinecone integration
 import pinecone
 from langchain.document_loaders import PyPDFLoader
@@ -195,3 +196,6 @@ class PineconeIndex:
                 self.vector_store.add_documents(documents=documents, embeddings=embeddings)
 
         print("Finished loading PDFs. \n" + self.index_stats)
+    
+
+

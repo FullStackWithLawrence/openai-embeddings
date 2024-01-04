@@ -33,3 +33,5 @@ pinecone-text==0.7.1
 pydantic==2.5.2
 pypdf==3.17.2
 tiktoken==0.5.2
+pyodbc==5.0.1
+

@@ -19,6 +19,9 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
 import logging
 import textwrap
 from typing import Union
+import pyodbc
+
+
 
 # pinecone integration
 from langchain.cache import InMemoryCache
@@ -118,9 +121,30 @@ class HybridSearchRetriever:
         retval = llm(prompt.format(concept=concept))
         return retval
 
-    def load(self, filepath: str):
-        """Pdf loader."""
-        self.pinecone.pdf_loader(filepath=filepath)
+    # def load(self, filepath: str):
+    #     #aquí iría el de la conexión a la base de datos
+    #     # """Pdf loader."""
+    #     self.pinecone.pdf_loader(filepath=filepath)
+
+    #Load modification
+    def load(self,sql:str):
+        #Connect to the bd
+        conn=pyodbc.connect("netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com")
+        cursor=conn.cursor()
+
+        #Extract data from the bd
+        cursor.execute("SELECT *FROM dbo.cursos_habilitados")
+        rows=cursor.fetchall()
+
+        #Create the embeddings
+        embeddings=[]
+        for row in rows:
+            text=row[0]
+            embeddings.append(self.pinecone.openai_embeddings.embed_text(text))
+
+            #Add the embeddings to the index
+            self.pinecone.vector_store.add_documents(documents=embeddings)
+
 
     def rag(self, human_message: Union[str, HumanMessage]):
         """
@@ -146,8 +170,8 @@ class HybridSearchRetriever:
         # 1.) Retrieve relevant documents from Pinecone vector database
         # ---------------------------------------------------------------------
         # documents = self.retriever.get_relevant_documents(query=human_message.content)
-        documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
-
+        #documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
+        documents = self.pinecone.vector_store.bm25_search(query=human_message.content)
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
         leader = textwrap.dedent(

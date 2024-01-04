@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """Sales Support Model (hsr) Retrieval Augmented Generation (RAG)"""
 import argparse
-
 from models.hybrid_search_retreiver import HybridSearchRetriever
-
-
 hsr = HybridSearchRetriever()
 
 if __name__ == "__main__":
@@ -13,3 +10,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     hsr.load(filepath=args.filepath)
+
+
