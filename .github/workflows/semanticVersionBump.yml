@@ -1,7 +1,7 @@
 ---
 #------------------------------------------------------------------------------
 # Lawrence McDaniel - https://lawrencemcdaniel.com
-# Version Bump Workflow for Python package openai_utils
+# Version Bump Workflow for Python package.
 #
 # Calculate the version of the 'next' branch based on semantic-release rules.
 # Compares the existing value of __version__.py to the calculated value.
@@ -110,6 +110,8 @@ jobs:
         id: update_version
         run: |
           echo "# -*- coding: utf-8 -*-" > ${{ env.VERSION_FILE }}
+          echo "# DO NOT EDIT." > ${{ env.VERSION_FILE }}
+          echo "# Managed via automated CI/CD in .github/workflows/semanticVersionBump.yml." > ${{ env.VERSION_FILE }}
           echo "__version__ = \"${{ env.NEXT_VERSION }}\"" >>  ${{ env.VERSION_FILE }}
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"

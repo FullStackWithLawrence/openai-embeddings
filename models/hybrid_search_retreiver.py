@@ -37,14 +37,14 @@ from langchain.prompts import PromptTemplate
 # hybrid search capability
 from langchain.retrievers import PineconeHybridSearchRetriever
 from langchain.schema import BaseMessage, HumanMessage, SystemMessage
-from pinecone_text.sparse import BM25Encoder
+from pinecone_text.sparse import BM25Encoder  # pylint: disable=import-error
 
 # this project
-from models.const import Config, Credentials
+from models.conf import settings
 from models.pinecone import PineconeIndex
 
 
-logging.basicConfig(level=logging.DEBUG if Config.DEBUG_MODE else logging.ERROR)
+logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.ERROR)
 
 
 class HybridSearchRetriever:
@@ -72,12 +72,12 @@ class HybridSearchRetriever:
         """ChatOpenAI lazy read-only property."""
         if self._chat is None:
             self._chat = ChatOpenAI(
-                api_key=Credentials.OPENAI_API_KEY,
-                organization=Credentials.OPENAI_API_ORGANIZATION,
-                cache=Config.OPENAI_CHAT_CACHE,
-                max_retries=Config.OPENAI_CHAT_MAX_RETRIES,
-                model=Config.OPENAI_CHAT_MODEL_NAME,
-                temperature=Config.OPENAI_CHAT_TEMPERATURE,
+                api_key=settings.openai_api_key.get_secret_value(),  # pylint: disable=no-member
+                organization=settings.openai_api_organization,
+                cache=settings.openai_chat_cache,
+                max_retries=settings.openai_chat_max_retries,
+                model=settings.openai_chat_model_name,
+                temperature=settings.openai_chat_temperature,
             )
         return self._chat
 
@@ -114,10 +114,14 @@ class HybridSearchRetriever:
         return retval
 
     def prompt_with_template(
-        self, prompt: PromptTemplate, concept: str, model: str = Config.OPENAI_PROMPT_MODEL_NAME
+        self, prompt: PromptTemplate, concept: str, model: str = settings.openai_prompt_model_name
     ) -> str:
         """Prompt with template."""
-        llm = OpenAI(model=model, api_key=Credentials.OPENAI_API_KEY, organization=Credentials.OPENAI_API_ORGANIZATION)
+        llm = OpenAI(
+            model=model,
+            api_key=settings.openai_api_key.get_secret_value(),  # pylint: disable=no-member
+            organization=settings.openai_api_organization,
+        )
         retval = llm(prompt.format(concept=concept))
         return retval
 
@@ -145,6 +149,9 @@ class HybridSearchRetriever:
             #Add the embeddings to the index
             self.pinecone.vector_store.add_documents(documents=embeddings)
 
+
+    def load_sql(self, sql: str):
+        """MySQL loader"""
 
     def rag(self, human_message: Union[str, HumanMessage]):
         """

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flake8", "gitlint", "bump2version"]
+requires = ["setuptools", "wheel"]
 
 [tool.isort]
 profile = "black"
@@ -24,14 +24,6 @@ exclude = '''
   | dist
 )/
 '''
-
-[tool.flake8]
-ignore = "D205,D413,D400,D401"
-max-line-length =120
-max-complexity = 10
-exclude = "venv"
-extend-exclude = "*__init__.py,*__version__.py,venv"
-select = "C101"
 
 [tool.codespell]
 skip = '*.svg,models/prompt_templates.py'
