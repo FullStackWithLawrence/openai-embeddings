@@ -126,6 +126,9 @@ class HybridSearchRetriever:
         """Pdf loader."""
         self.pinecone.pdf_loader(filepath=filepath)
 
+    def load_sql(self, sql: str):
+        """MySQL loader"""
+
     def rag(self, human_message: Union[str, HumanMessage]):
         """
         Retrieval Augmented Generation prompt.

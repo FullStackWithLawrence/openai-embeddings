@@ -61,6 +61,10 @@ python3 -m models.examples.certification_programs "analytics and accounting"
 # example 5 - Retrieval Augmented Generation
 python3 -m models.examples.load "/path/to/your/pdf/documents"
 python3 -m models.examples.rag "What analytics and accounting courses does Wharton offer?"
+
+# example 6 - Retrieval Augmented Generation - MySQL
+python3 -m models.examples.load_mysql "SELECT * FROM my_database.my_table;"
+
 ```
 
 ### Retrieval Augmented Generation

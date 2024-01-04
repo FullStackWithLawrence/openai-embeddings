@@ -31,3 +31,4 @@ pydantic-settings==2.1.0
 python-dotenv==1.0.0
 pypdf==3.17.3
 tiktoken==0.5.2
+pyodbc==5.0.1
