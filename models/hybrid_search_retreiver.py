@@ -20,6 +20,11 @@ import logging
 import textwrap
 from typing import Union
 import pyodbc
+import io
+import pdfplumber
+import requests
+from bs4 import BeautifulSoup
+# from bs4.element import Tag
 
 
 
@@ -131,7 +136,25 @@ class HybridSearchRetriever:
     #     self.pinecone.pdf_loader(filepath=filepath)
 
     #Load modification
-    def load(self,sql:str):
+    def load_sql(self,sql:str):
+        #Connect to the bd
+        connectionString = f'DRIVER={"MySQL ODBC 8.2.0 Driver"};SERVER={"netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com"};DATABASE={"netec_preprod_230929"};UID={"netec_readtest"};PWD={"R3ad55**N3teC+"}'
+        conn=pyodbc.connect(connectionString)
+        cursor=conn.cursor()
+
+        #Extract data from the bd
+        cursor.execute("SELECT *FROM dbo.cursos_habilitados")
+        rows=cursor.fetchall()
+
+        #Create the embeddings
+        embeddings=[]
+        for row in rows:
+            text=row[0]
+            embeddings.append(self.pinecone.openai_embeddings.embed_text(text))
+
+            #Add the embeddings to the index
+            self.pinecone.vector_store.add_documents(documents=embeddings)
+
         #Connect to the bd
         conn=pyodbc.connect("netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com")
         cursor=conn.cursor()
@@ -149,9 +172,44 @@ class HybridSearchRetriever:
             #Add the embeddings to the index
             self.pinecone.vector_store.add_documents(documents=embeddings)
 
+    #Load from dropbox
+    def load_data_from_dropbox(self,root_folder_url):
+        pdf_file_paths=[]
+        response=requests.get(root_folder_url)
+        soup=BeautifulSoup(response.content,'html.parser')
+        for file in soup.find_all(name='a',class_='text-link'):
+            if file.get('href').endswith('.pdf'):
+                pdf_file_paths.append(file.get('href'))
 
-    def load_sql(self, sql: str):
-        """MySQL loader"""
+        for pdf_path in pdf_file_paths:
+            try:
+                response=requests.get(pdf_path)
+                if response.status_code==200:
+                    pdf_bytes=response.content
+                    pdf=pdfplumber.open(io.BytesIO(pdf_bytes))
+        #extract text from each page
+                    text_data=[]
+                    for page in pdf.pages:
+                        text=page.extract_text()
+                        text_data.append(text)
+        #create embeddings
+                    embeddings=[]
+                    for text in text_data:
+                        embedding=self.pinecone.openai_embeddings.embed_documents(text)
+                        embeddings.append(embedding)
+        #add embeddings to the index
+                    self.pinecone.vector_store.aadd_documents(documents=embeddings)
+                else:
+                    print("Error al descargar datos de Dropbox: ", response.status_code)
+            except requests.exceptions.RequestException as e:
+                print("Error al descargar el PDF: ", e)
+            except Exception as a:
+                print("Erro al procesar el PDF: ", e)
+            
+
+
+    # def load_sql(self, sql: str):
+    #     """MySQL loader"""
 
     def rag(self, human_message: Union[str, HumanMessage]):
         """
@@ -176,9 +234,9 @@ class HybridSearchRetriever:
         # ---------------------------------------------------------------------
         # 1.) Retrieve relevant documents from Pinecone vector database
         # ---------------------------------------------------------------------
-        # documents = self.retriever.get_relevant_documents(query=human_message.content)
-        #documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
-        documents = self.pinecone.vector_store.bm25_search(query=human_message.content)
+        documents = self.retriever.get_relevant_documents(query=human_message.content)
+        documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
+        #documents = self.pinecone.vector_store.bm25_search(query=human_message.content)
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
         leader = textwrap.dedent(

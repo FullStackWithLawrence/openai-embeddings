@@ -32,3 +32,5 @@ python-dotenv==1.0.0
 pypdf==3.17.3
 tiktoken==0.5.2
 pyodbc==5.0.1
+dropbox==11.36.2
+bs4==0.0.1

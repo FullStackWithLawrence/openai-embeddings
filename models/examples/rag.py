@@ -10,7 +10,7 @@ hsr = HybridSearchRetriever()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RAG example")
-    parser.add_argument("prompt", type=str, help="A question about the PDF contents")
+    parser.add_argument("prompt", type=str, help="A question about the Dropbox PDF's content")
     args = parser.parse_args()
 
     human_message = HumanMessage(content=args.prompt)

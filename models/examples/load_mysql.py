@@ -2,7 +2,6 @@
 """Sales Support Model (hsr) Retrieval Augmented Generation (RAG)"""
 import argparse
 import os
-
 import pyodbc
 from dotenv import find_dotenv, load_dotenv
 
@@ -15,9 +14,11 @@ dotenv_path = find_dotenv()
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path=dotenv_path, verbose=True)
     MYSQL_PASSWORD = os.environ["MYSQL_PASSWORD"]
+    DRIVER_NAME=os.environ["DRIVER_NAME"]
     MYSQL_HOST = os.environ["MYSQL_HOST"]
     MYSQL_USERNAME = os.environ["MYSQL_USERNAME"]
     MYSQL_PORT = os.environ["MYSQL_PORT"]
+
 else:
     raise FileNotFoundError("No .env file found in root directory of repository")
 
@@ -27,11 +28,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     connstring = (
-        "DRIVER={driver_name};"
+        "DRIVER={DRIVER_NAME};"
         "SERVER={MYSQL_HOST};"
-        "DATABASE=database_name;"
+        "DATABASE={DATABASE_NAME};"
         "UID={MYSQL_USERNAME};"
         "PWD={MYSQL_PASSWORD};"
+        "PORT={MYSQL_PORT}"
     )
 
     try:
