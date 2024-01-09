@@ -138,7 +138,7 @@ class HybridSearchRetriever:
     #Load modification
     def load_sql(self,sql:str):
         #Connect to the bd
-        connectionString = f'DRIVER={"MySQL ODBC 8.2.0 Driver"};SERVER={"netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com"};DATABASE={"netec_preprod_230929"};UID={"netec_readtest"};PWD={"R3ad55**N3teC+"}'
+        connectionString = f'DRIVER={""};SERVER={""};DATABASE={""};UID={""};PWD={""}'
         conn=pyodbc.connect(connectionString)
         cursor=conn.cursor()
 
@@ -156,11 +156,11 @@ class HybridSearchRetriever:
             self.pinecone.vector_store.add_documents(documents=embeddings)
 
         #Connect to the bd
-        conn=pyodbc.connect("netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com")
+        conn=pyodbc.connect("")
         cursor=conn.cursor()
 
         #Extract data from the bd
-        cursor.execute("SELECT *FROM dbo.cursos_habilitados")
+        cursor.execute("SELECT *FROM ")
         rows=cursor.fetchall()
 
         #Create the embeddings
