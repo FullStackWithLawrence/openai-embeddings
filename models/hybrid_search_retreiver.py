@@ -143,7 +143,7 @@ class HybridSearchRetriever:
         cursor=conn.cursor()
 
         #Extract data from the bd
-        cursor.execute("SELECT *FROM dbo.cursos_habilitados")
+        cursor.execute("SELECT *FROM ")
         rows=cursor.fetchall()
 
         #Create the embeddings
