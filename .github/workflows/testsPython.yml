@@ -8,6 +8,11 @@ on:
   push:
     paths:
       - "**.py"
+    branches:
+      - alpha
+      - beta
+      - next
+      - next-major
 
 env:
   python-version: "3.11"
