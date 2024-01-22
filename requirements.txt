@@ -14,20 +14,20 @@ mypy==1.8.0
 pylint==3.0.3
 bandit==1.7.6
 pydocstringformatter==0.7.3
-tox==4.12.0
+tox==4.12.1
 codespell==2.2.6
 
 # production
 # ------------
 python-decouple==3.8
-langchain==0.1.0
+langchain==0.1.2
 langchainhub==0.1.14
 langchain-experimental
-openai==1.7.2
+openai==1.9.0
 pinecone-client==2.2.4
 pinecone-text==0.7.2
 pydantic==2.5.3
 pydantic-settings==2.1.0
 python-dotenv==1.0.0
-pypdf==3.17.4
+pypdf==4.0.0
 tiktoken==0.5.2
