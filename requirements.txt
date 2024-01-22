@@ -24,7 +24,7 @@ langchain==0.1.2
 langchainhub==0.1.14
 langchain-experimental
 openai==1.9.0
-pinecone-client==2.2.4
+pinecone-client==3.0.1
 pinecone-text==0.7.2
 pydantic==2.5.3
 pydantic-settings==2.1.0
