@@ -8,10 +8,13 @@ import glob
 import json
 import logging
 import os
+import pyodbc
 
 
 # pinecone integration
 import pinecone
+from langchain.schema import BaseMessage, HumanMessage, SystemMessage
+
 from langchain.document_loaders import PyPDFLoader
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import Document
@@ -36,11 +39,12 @@ class TextSplitter:
         documents = []
         for text in texts:
             # Create a Document object with the text and metadata
-            document = Document(page_content=text, metadata={"context": text})
+            #document = Document(page_content=text, metadata={"context": text})
+            document = Document(page_content=text, metadata={"context":text})            
             documents.append(document)
         return documents
-
-
+    
+    
 class PineconeIndex:
     """Pinecone helper class."""
 
@@ -55,6 +59,12 @@ class PineconeIndex:
         self.index_name = index_name or settings.pinecone_index_name
         logging.debug("PineconeIndex initialized with index_name: %s", self.index_name)
         logging.debug(self.index_stats)
+           
+        self.message_history=[]
+    def add_to_history(self,message:BaseMessage):
+        self.message_history.append(message)
+    def get_history(self):
+        return self.message_history
 
     @property
     def index_name(self) -> str:
@@ -199,6 +209,47 @@ class PineconeIndex:
                 self.vector_store.add_documents(documents=documents, embeddings=embeddings)
 
         print("Finished loading PDFs. \n" + self.index_stats)
+
+    def tokenize(self,text):
+        if text is not None:
+            return text.split()
+        else:
+            return[]
     
+    def load_sql(self,sql):
+        """
+        Load data from SQL database
+        """
+        self.initialize()
+        
+        #Establecer conexión a la base de datos
+        connectionString =("DRIVER={ODBC Driver 18 for SQL Server};""SERVER=netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com;" "DATABASE=netec_preprod_230929;""UID=netec_readtest;""PWD=R3ad55**N3teC+;""TrustServerCertificate=yes;")
+        
+        conn=pyodbc.connect(connectionString)
+        cursor=conn.cursor()
+
+        #ejecutar consulta SQL
+        sql="SELECT clave, nombre, certificacion, disponible, tipo_curso_id, sesiones, pecio_lista, tecnologia_id, subcontratado, pre_requisitos, complejidad_id FROM cursos_habilitados WHERE disponible = 1 OR subcontratado = 1"
+        cursor.execute(sql)
+        rows=cursor.fetchall()
+        
+        #Procesar cada fila y crear documentos
+        for row in rows:
+            content=" ".join(str(col) for col in row if col is not None)
+            tokens=self.tokenize(content)
+            document=Document(
+                page_content=content,
+                metadata={
+                    "context": content,
+                    "tokens":tokens
+                 })
+            
+        #Embed the document
+            embeddings=self.openai_embeddings.embed_documents([content])
+            self.vector_store.add_documents(documents=[document], embeddings=embeddings)
+        print("Finished loading data from SQL. \n"+ self.index_stats)
+        conn.close()
+
+        
 
 

@@ -24,6 +24,7 @@ import io
 import pdfplumber
 import requests
 from bs4 import BeautifulSoup
+import datetime
 # from bs4.element import Tag
 
 
@@ -48,6 +49,10 @@ from pinecone_text.sparse import BM25Encoder  # pylint: disable=import-error
 from models.conf import settings
 from models.pinecone import PineconeIndex
 
+class Document:
+    def __init__(self,page_content,metadata=None):
+        self.page_content=page_content
+        self.metadata=metadata if metadata is not None else {}
 
 logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.ERROR)
 
@@ -63,6 +68,11 @@ class HybridSearchRetriever:
     def __init__(self):
         """Constructor"""
         set_llm_cache(InMemoryCache())
+        self.message_history=[]
+    def add_to_history(self,message:BaseMessage):
+        self.message_history.append(message)
+    def get_history(self):
+        return self.message_history
 
     @property
     def pinecone(self) -> PineconeIndex:
@@ -130,86 +140,47 @@ class HybridSearchRetriever:
         retval = llm(prompt.format(concept=concept))
         return retval
 
-    # def load(self, filepath: str):
-    #     #aquí iría el de la conexión a la base de datos
-    #     # """Pdf loader."""
-    #     self.pinecone.pdf_loader(filepath=filepath)
-
-    #Load modification
-    def load_sql(self,sql:str):
+    def load(self, filepath: str):
+        #aquí iría el de la conexión a la base de datos
+         # """Pdf loader."""
+        self.pinecone.pdf_loader(filepath=filepath)
+    def tokenize (self,text):
+        if text is not None:
+            return text.split()
+        else:
+            return[]
+  
+    #Load sql database
+    def load_sql(self,sql):
+        
         #Connect to the bd
-        connectionString = f'DRIVER={"MySQL ODBC 8.2.0 Driver"};SERVER={"netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com"};DATABASE={"netec_preprod_230929"};UID={"netec_readtest"};PWD={"R3ad55**N3teC+"}'
+        connectionString =("DRIVER={ODBC Driver 18 for SQL Server};""SERVER=netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com;" "DATABASE=netec_preprod_230929;""UID=netec_readtest;""PWD=R3ad55**N3teC+;""TrustServerCertificate=yes;")
         conn=pyodbc.connect(connectionString)
         cursor=conn.cursor()
 
-        #Extract data from the bd
-        cursor.execute("SELECT *FROM dbo.cursos_habilitados")
-        rows=cursor.fetchall()
-
-        #Create the embeddings
-        embeddings=[]
+        #Execute the provided SQL command
+        sql="SELECT clave,nombre, certificacion, disponible, tipo_curso_id, sesiones, pecio_lista, tecnologia_id, subcontratado, pre_requisitos, complejidad_id FROM cursos_habilitados WHERE disponible = 1 OR subcontratado = 1"
+        cursor.execute(sql)      
+        rows=cursor.fetchall() 
+        
         for row in rows:
-            text=row[0]
-            embeddings.append(self.pinecone.openai_embeddings.embed_text(text))
+            content=" ".join(str(col) for col in row if col is not None)           
+            tokens=self.tokenize(content)
+            document=Document(
+                page_content=content,
+                metadata={
+                    "context":content,
+                    "tokens":tokens
+            })
+            embeddings=self.pinecone.openai_embeddings.embed_documents([content])
+            self.pinecone.vector_store.add_documents(documents=[document],embeddings=embeddings) 
+            print(", ".join(f"{col}" for col in row))
 
-            #Add the embeddings to the index
-            self.pinecone.vector_store.add_documents(documents=embeddings)
-
-        #Connect to the bd
-        conn=pyodbc.connect("netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com")
-        cursor=conn.cursor()
-
-        #Extract data from the bd
-        cursor.execute("SELECT *FROM dbo.cursos_habilitados")
-        rows=cursor.fetchall()
-
-        #Create the embeddings
-        embeddings=[]
-        for row in rows:
-            text=row[0]
-            embeddings.append(self.pinecone.openai_embeddings.embed_text(text))
-
-            #Add the embeddings to the index
-            self.pinecone.vector_store.add_documents(documents=embeddings)
-
-    #Load from dropbox
-    def load_data_from_dropbox(self,root_folder_url):
-        pdf_file_paths=[]
-        response=requests.get(root_folder_url)
-        soup=BeautifulSoup(response.content,'html.parser')
-        for file in soup.find_all(name='a',class_='text-link'):
-            if file.get('href').endswith('.pdf'):
-                pdf_file_paths.append(file.get('href'))
-
-        for pdf_path in pdf_file_paths:
-            try:
-                response=requests.get(pdf_path)
-                if response.status_code==200:
-                    pdf_bytes=response.content
-                    pdf=pdfplumber.open(io.BytesIO(pdf_bytes))
-        #extract text from each page
-                    text_data=[]
-                    for page in pdf.pages:
-                        text=page.extract_text()
-                        text_data.append(text)
-        #create embeddings
-                    embeddings=[]
-                    for text in text_data:
-                        embedding=self.pinecone.openai_embeddings.embed_documents(text)
-                        embeddings.append(embedding)
-        #add embeddings to the index
-                    self.pinecone.vector_store.aadd_documents(documents=embeddings)
-                else:
-                    print("Error al descargar datos de Dropbox: ", response.status_code)
-            except requests.exceptions.RequestException as e:
-                print("Error al descargar el PDF: ", e)
-            except Exception as a:
-                print("Erro al procesar el PDF: ", e)
-            
-
-
-    # def load_sql(self, sql: str):
-    #     """MySQL loader"""
+        print("Finished loading data from SQL "+ self.pinecone.index_stats)
+        conn.close()
+    
+           
+        
 
     def rag(self, human_message: Union[str, HumanMessage]):
         """
@@ -229,16 +200,27 @@ class HybridSearchRetriever:
         """
         if not isinstance(human_message, HumanMessage):
             logging.debug("Converting human_message to HumanMessage")
-            human_message = HumanMessage(content=human_message)
+            human_message = HumanMessage(content=str(human_message))
+
+        #Add new message to history
+        self.add_to_history(human_message)
 
         # ---------------------------------------------------------------------
         # 1.) Retrieve relevant documents from Pinecone vector database
         # ---------------------------------------------------------------------
         documents = self.retriever.get_relevant_documents(query=human_message.content)
+        print("Documents retrieved from Pinecone: ")
+        for doc in documents:
+            print(doc.page_content)
         documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
         #documents = self.pinecone.vector_store.bm25_search(query=human_message.content)
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
+
+        #Create system message taking into account either history and retrieved documents
+        history_text=" ".join([human_message.content for message in self.message_history[-5:] ]) #Last 5 messages
+        combined_context=f"{history_text}{' '.join(document_texts)}"
+
         leader = textwrap.dedent(
             """You are a helpful assistant.
             You can assume that all of the following is true.
@@ -246,7 +228,7 @@ class HybridSearchRetriever:
             into your responses:\n\n
         """
         )
-        system_message_content = f"{leader} {'. '.join(document_texts)}"
+        system_message_content = f"{leader} {combined_context}"
         system_message = SystemMessage(content=system_message_content)
         # ---------------------------------------------------------------------
         # finished with hybrid search setup
@@ -262,5 +244,10 @@ class HybridSearchRetriever:
 
         # 2.) get a response from the chat model
         response = self.cached_chat_request(system_message=system_message, human_message=human_message)
+
+        #Add response to history system
+        self.add_to_history(response)
+        print("Response from the chat model: ")
+        print(response.content)
 
         return response.content

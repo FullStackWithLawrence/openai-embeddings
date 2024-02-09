@@ -10,9 +10,9 @@ hsr = HybridSearchRetriever()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RAG example")
-    parser.add_argument("prompt", type=str, help="A question about the Dropbox PDF's content")
+    parser.add_argument("prompt", type=str, help="A question about the database's table content")
     args = parser.parse_args()
-
     human_message = HumanMessage(content=args.prompt)
+    
     result = hsr.rag(human_message=human_message)
     print(result)
