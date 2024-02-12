@@ -8,7 +8,7 @@ pytest_mock==3.12.0
 black==24.1.1
 flake8==7.0.0
 flake8-coding==1.3.2
-pre-commit==3.6.0
+pre-commit==3.6.1
 isort==5.13.2
 mypy==1.8.0
 pylint==3.0.3
@@ -20,7 +20,7 @@ codespell==2.2.6
 # production
 # ------------
 python-decouple==3.8
-langchain==0.1.4
+langchain==0.1.6
 langchainhub==0.1.14
 langchain-experimental
 openai==1.11.1
@@ -30,4 +30,4 @@ pydantic==2.6.1
 pydantic-settings==2.1.0
 python-dotenv==1.0.1
 pypdf==4.0.1
-tiktoken==0.5.2
+tiktoken==0.6.0
