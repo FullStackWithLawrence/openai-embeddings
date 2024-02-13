@@ -223,7 +223,7 @@ class PineconeIndex:
         self.initialize()
         
         #Establecer conexión a la base de datos
-        connectionString =("DRIVER={ODBC Driver 18 for SQL Server};""SERVER=netecdb-1.czbotsckvb07.us-west-2.rds.amazonaws.com;" "DATABASE=netec_preprod_230929;""UID=netec_readtest;""PWD=R3ad55**N3teC+;""TrustServerCertificate=yes;")
+        connectionString =("DRIVER={};""SERVER=;" "DATABASE=;""UID=;""PWD=;""TrustServerCertificate=yes;")
         
         conn=pyodbc.connect(connectionString)
         cursor=conn.cursor()
