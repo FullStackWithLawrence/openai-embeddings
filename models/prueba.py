@@ -4,9 +4,9 @@ from shareplum.site import Version
 
 
 
-site_url = "https://netec.sharepoint.com/sites/my-site"
-username = "gabriela.garcia@netec.com.mx"
-password = "Mj2919587Bm*"
+site_url = 
+username = 
+password = 
 authcookie = Office365(site_url).GetCookies(username=username, password=password)
 p_ctx = Office365(site_url, authcookie=authcookie)
 
