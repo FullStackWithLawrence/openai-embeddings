@@ -29,5 +29,5 @@ pinecone-text==0.8.0
 pydantic==2.6.3
 pydantic-settings==2.2.1
 python-dotenv==1.0.1
-pypdf==4.0.2
+pypdf==4.1.0
 tiktoken==0.6.0
