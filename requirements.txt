@@ -1,6 +1,6 @@
 # dev and test
 # ------------
-pytest==8.0.2
+pytest==8.1.1
 pytest_mock==3.12.0
 
 # Code linters, formatters, and security scanners
@@ -12,7 +12,7 @@ pre-commit==3.6.2
 isort==5.13.2
 mypy==1.8.0
 pylint==3.1.0
-bandit==1.7.7
+bandit==1.7.8
 pydocstringformatter==0.7.3
 tox==4.13.0
 codespell==2.2.6
@@ -21,7 +21,7 @@ codespell==2.2.6
 # ------------
 python-decouple==3.8
 langchain==0.1.10
-langchainhub==0.1.14
+langchainhub==0.1.15
 langchain-experimental
 openai==1.13.3
 pinecone-client==3.1.0
