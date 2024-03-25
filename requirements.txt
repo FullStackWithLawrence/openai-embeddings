@@ -23,7 +23,7 @@ python-decouple==3.8
 langchain==0.1.12
 langchainhub==0.1.15
 langchain-experimental
-openai==1.14.1
+openai==1.14.3
 pinecone-client==3.1.0
 pinecone-text==0.8.0
 pydantic==2.6.4
