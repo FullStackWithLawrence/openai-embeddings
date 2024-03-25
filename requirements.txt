@@ -1,7 +1,7 @@
 # dev and test
 # ------------
 pytest==8.1.1
-pytest_mock==3.12.0
+pytest_mock==3.14.0
 
 # Code linters, formatters, and security scanners
 # ------------
@@ -20,12 +20,12 @@ codespell==2.2.6
 # production
 # ------------
 python-decouple==3.8
-langchain==0.1.12
+langchain==0.1.13
 langchainhub==0.1.15
 langchain-experimental
 openai==1.14.1
 pinecone-client==3.1.0
-pinecone-text==0.8.0
+pinecone-text==0.9.0
 pydantic==2.6.4
 pydantic-settings==2.2.1
 python-dotenv==1.0.1
