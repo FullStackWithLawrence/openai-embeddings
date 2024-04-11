@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=E0611,E1101
 # flake8: noqa: F401
 """
 Test integrity of base class.
 """
 import pytest  # pylint: disable=unused-import
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 
 from models.hybrid_search_retreiver import HybridSearchRetriever
 from models.pinecone import PineconeIndex
