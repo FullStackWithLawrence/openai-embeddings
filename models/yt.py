@@ -30,15 +30,14 @@ from langchain.schema import HumanMessage, SystemMessage  # AIMessage (not used)
 # 6.) embeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# 7.) pinecode client
-from langchain.vectorstores.pinecone import Pinecone
-from langchain_community.embeddings import OpenAIEmbeddings
-
 # 8.) LangChain agents
 from langchain_experimental.agents.agent_toolkits.python.base import create_python_agent
 
 # from langchain_community.chat_models import ChatOpenAI
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+# 7.) pinecode client
+from langchain_pinecone import PineconeVectorStore as Pinecone
 
 from models.conf import settings
 
