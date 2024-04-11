@@ -87,7 +87,7 @@ class SettingsDefaults:
     OPENAI_ENDPOINT_IMAGE_SIZE = "1024x768"
     OPENAI_CHAT_CACHE = True
     OPENAI_CHAT_MODEL_NAME = "gpt-3.5-turbo"
-    OPENAI_PROMPT_MODEL_NAME = "text-davinci-003"
+    OPENAI_PROMPT_MODEL_NAME = "gpt-3.5-turbo"
     OPENAI_CHAT_TEMPERATURE = 0.0
     OPENAI_CHAT_MAX_RETRIES = 3
 
