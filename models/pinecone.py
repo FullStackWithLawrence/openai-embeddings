@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=E0611,E1101
 """A class to manage the lifecycle of Pinecone vector database indexes."""
 
 # document loading
@@ -9,12 +10,16 @@ import json
 import logging
 import os
 
-# pinecone integration
-import pinecone
-from langchain.document_loaders import PyPDFLoader
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.text_splitter import Document
+# from langchain.text_splitter import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores.pinecone import Pinecone as LCPinecone
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.embeddings import OpenAIEmbeddings
+
+# pinecone integration
+# import pinecone
+from pinecone import Pinecone, ServerlessSpec
+from pinecone.core.client.exceptions import PineconeApiException
 
 # this project
 from models.conf import settings
@@ -24,28 +29,29 @@ logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.ERRO
 
 
 # pylint: disable=too-few-public-methods
-class TextSplitter:
-    """
-    Custom text splitter that adds metadata to the Document object
-    which is required by PineconeHybridSearchRetriever.
-    """
+# class TextSplitter:
+#     """
+#     Custom text splitter that adds metadata to the Document object
+#     which is required by PineconeHybridSearchRetriever.
+#     """
 
-    def create_documents(self, texts):
-        """Create documents"""
-        documents = []
-        for text in texts:
-            # Create a Document object with the text and metadata
-            document = Document(page_content=text, metadata={"context": text})
-            documents.append(document)
-        return documents
+#     def create_documents(self, texts):
+#         """Create documents"""
+#         documents = []
+#         for text in texts:
+#             # Create a Document object with the text and metadata
+#             document = Document(page_content=text, metadata={"context": text})
+#             documents.append(document)
+#         return documents
 
 
 class PineconeIndex:
     """Pinecone helper class."""
 
-    _index: pinecone.Index = None
+    _pinecone = None
+    _index: Pinecone.Index = None
     _index_name: str = None
-    _text_splitter: TextSplitter = None
+    _text_splitter: RecursiveCharacterTextSplitter = None
     _openai_embeddings: OpenAIEmbeddings = None
     _vector_store: LCPinecone = None
 
@@ -69,11 +75,11 @@ class PineconeIndex:
             self.init_index()
 
     @property
-    def index(self) -> pinecone.Index:
+    def index(self) -> Pinecone.Index:
         """pinecone.Index lazy read-only property."""
         if self._index is None:
             self.init_index()
-            self._index = pinecone.Index(index_name=self.index_name)
+            self._index = self.pinecone.Index(name=self.index_name)
         return self._index
 
     @property
@@ -85,7 +91,7 @@ class PineconeIndex:
     @property
     def initialized(self) -> bool:
         """initialized read-only property."""
-        indexes = pinecone.manage.list_indexes()
+        indexes = self.pinecone.list_indexes()
         return self.index_name in indexes
 
     @property
@@ -113,15 +119,22 @@ class PineconeIndex:
         return self._openai_embeddings
 
     @property
-    def text_splitter(self) -> TextSplitter:
-        """TextSplitter lazy read-only property."""
+    def pinecone(self):
+        """Pinecone lazy read-only property."""
+        if self._pinecone is None:
+            self._pinecone = Pinecone(api_key=settings.pinecone_api_key.get_secret_value())
+        return self._pinecone
+
+    @property
+    def text_splitter(self) -> RecursiveCharacterTextSplitter:
+        """lazy read-only property."""
         if self._text_splitter is None:
-            self._text_splitter = TextSplitter()
+            self._text_splitter = RecursiveCharacterTextSplitter()
         return self._text_splitter
 
     def init_index(self):
         """Verify that an index named self.index_name exists in Pinecone. If not, create it."""
-        indexes = pinecone.manage.list_indexes()
+        indexes = self.pinecone.list_indexes()
         if self.index_name not in indexes:
             logging.debug("Index does not exist.")
             self.create()
@@ -129,7 +142,8 @@ class PineconeIndex:
     def init(self):
         """Initialize Pinecone."""
         # pylint: disable=no-member
-        pinecone.init(api_key=settings.pinecone_api_key.get_secret_value(), environment=settings.pinecone_environment)
+
+        # pinecone.init(api_key=settings.pinecone_api_key.get_secret_value(), environment=settings.pinecone_environment)
         self._index = None
         self._index_name = None
         self._text_splitter = None
@@ -142,23 +156,30 @@ class PineconeIndex:
             logging.debug("Index does not exist. Nothing to delete.")
             return
         print("Deleting index...")
-        pinecone.delete_index(self.index_name)
+        self.pinecone.delete_index(self.index_name)
 
     def create(self):
         """Create index."""
-        metadata_config = {
-            "indexed": [settings.pinecone_vectorstore_text_key, "lc_type"],
-            "context": ["lc_text"],
-        }
+        # deprecated?
+        # metadata_config = {
+        #     "indexed": [settings.pinecone_vectorstore_text_key, "lc_type"],
+        #     "context": ["lc_text"],
+        # }
         print("Creating index. This may take a few minutes...")
-
-        pinecone.create_index(
-            name=self.index_name,
-            dimension=settings.pinecone_dimensions,
-            metric=settings.pinecone_metric,
-            metadata_config=metadata_config,
+        serverless_spec = ServerlessSpec(
+            cloud="aws",
+            region="us-west-2",
         )
-        print("Index created.")
+        try:
+            self.pinecone.create_index(
+                name=self.index_name,
+                dimension=settings.pinecone_dimensions,
+                metric=settings.pinecone_metric,
+                spec=serverless_spec,
+            )
+            print("Index created.")
+        except PineconeApiException:
+            pass
 
     def initialize(self):
         """Initialize index."""

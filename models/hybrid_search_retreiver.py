@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=E0611,E1101
 """
 Hybrid Search Retriever. A class that combines the following:
     - OpenAI prompting and ChatModel
@@ -22,7 +23,6 @@ from typing import Union
 
 # pinecone integration
 from langchain.cache import InMemoryCache
-from langchain.chat_models import ChatOpenAI
 
 # embedding
 from langchain.globals import set_llm_cache
@@ -30,10 +30,13 @@ from langchain.globals import set_llm_cache
 # prompting and chat
 from langchain.llms.openai import OpenAI
 from langchain.prompts import PromptTemplate
+from langchain.schema import BaseMessage, HumanMessage, SystemMessage
+from langchain_community.chat_models import ChatOpenAI
 
 # hybrid search capability
-from langchain.retrievers import PineconeHybridSearchRetriever
-from langchain.schema import BaseMessage, HumanMessage, SystemMessage
+from langchain_community.retrievers.pinecone_hybrid_search import (
+    PineconeHybridSearchRetriever,
+)
 from pinecone_text.sparse import BM25Encoder  # pylint: disable=import-error
 
 # this project
