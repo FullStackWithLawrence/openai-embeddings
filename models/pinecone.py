@@ -14,35 +14,19 @@ import os
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_openai import OpenAIEmbeddings
-from langchain_pinecone import PineconeVectorStore as LCPinecone
+from langchain_pinecone import PineconeVectorStore
 
 # pinecone integration
 # import pinecone
 from pinecone import Pinecone, ServerlessSpec
 from pinecone.core.client.exceptions import PineconeApiException
+from pinecone.models import IndexList
 
 # this project
 from models.conf import settings
 
 
 logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.ERROR)
-
-
-# pylint: disable=too-few-public-methods
-# class TextSplitter:
-#     """
-#     Custom text splitter that adds metadata to the Document object
-#     which is required by PineconeHybridSearchRetriever.
-#     """
-
-#     def create_documents(self, texts):
-#         """Create documents"""
-#         documents = []
-#         for text in texts:
-#             # Create a Document object with the text and metadata
-#             document = Document(page_content=text, metadata={"context": text})
-#             documents.append(document)
-#         return documents
 
 
 class PineconeIndex:
@@ -53,7 +37,7 @@ class PineconeIndex:
     _index_name: str = None
     _text_splitter: RecursiveCharacterTextSplitter = None
     _openai_embeddings: OpenAIEmbeddings = None
-    _vector_store: LCPinecone = None
+    _vector_store: PineconeVectorStore = None
 
     def __init__(self, index_name: str = None):
         self.init()
@@ -92,15 +76,15 @@ class PineconeIndex:
     def initialized(self) -> bool:
         """initialized read-only property."""
         indexes = self.pinecone.list_indexes()
-        return self.index_name in indexes
+        return self.index_name in indexes.names()
 
     @property
-    def vector_store(self) -> LCPinecone:
+    def vector_store(self) -> PineconeVectorStore:
         """Pinecone lazy read-only property."""
         if self._vector_store is None:
             if not self.initialized:
                 self.init_index()
-            self._vector_store = LCPinecone(
+            self._vector_store = PineconeVectorStore(
                 index=self.index,
                 embedding=self.openai_embeddings,
                 text_key=settings.pinecone_vectorstore_text_key,
@@ -134,8 +118,9 @@ class PineconeIndex:
 
     def init_index(self):
         """Verify that an index named self.index_name exists in Pinecone. If not, create it."""
+        indexes: IndexList = None
         indexes = self.pinecone.list_indexes()
-        if self.index_name not in indexes:
+        if self.index_name not in indexes.names():
             logging.debug("Index does not exist.")
             self.create()
 
