@@ -12,9 +12,9 @@ import os
 
 # from langchain.text_splitter import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores.pinecone import Pinecone as LCPinecone
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.document_loaders.pdf import PyPDFLoader
+from langchain_openai import OpenAIEmbeddings
+from langchain_pinecone import PineconeVectorStore as LCPinecone
 
 # pinecone integration
 # import pinecone
