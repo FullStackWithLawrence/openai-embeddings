@@ -26,17 +26,17 @@ from langchain.cache import InMemoryCache
 
 # embedding
 from langchain.globals import set_llm_cache
-
-# prompting and chat
-from langchain.llms.openai import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema import BaseMessage, HumanMessage, SystemMessage
-from langchain_community.chat_models import ChatOpenAI
 
 # hybrid search capability
 from langchain_community.retrievers.pinecone_hybrid_search import (
     PineconeHybridSearchRetriever,
 )
+
+# from langchain_community.chat_models import ChatOpenAI
+# prompting and chat
+from langchain_openai import ChatOpenAI, OpenAI
 from pinecone_text.sparse import BM25Encoder  # pylint: disable=import-error
 
 # this project
