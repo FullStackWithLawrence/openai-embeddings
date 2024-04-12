@@ -1,14 +1,13 @@
-## [1.3.2](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.1...v1.3.2) (2024-04-12)
-
-
-### Bug Fixes
-
-* force a new release ([4f0febd](https://github.com/FullStackWithLawrence/openai-embeddings/commit/4f0febdb7e0ee827d15dce949eb82a4909f7e7f2))
-
 # Change Log
 
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.3.2](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.1...v1.3.2) (2024-04-12)
+
+### Bug Fixes
+
+- fix deprecations and breaking changes in LangChain and Pinecone
 
 ## [1.3.0](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.2.2...v1.3.0) (2023-12-19)
 
