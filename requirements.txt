@@ -20,7 +20,7 @@ codespell==2.3.0
 # production
 # ------------
 python-decouple==3.8
-langchain==0.2.0
+langchain==0.2.1
 langchainhub==0.1.15
 langchain-openai==0.1.7
 langchain-pinecone==0.1.1
