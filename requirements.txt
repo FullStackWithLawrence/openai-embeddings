@@ -22,13 +22,13 @@ codespell==2.3.0
 python-decouple==3.8
 langchain==0.2.1
 langchainhub==0.1.17
-langchain-openai==0.1.7
+langchain-openai==0.1.8
 langchain-pinecone==0.1.1
 langchain-experimental
 openai==1.30.5
 pinecone-client==4.1.0
 pinecone-text==0.9.0
-pydantic==2.7.1
+pydantic==2.7.3
 pydantic-settings==2.3.0
 python-dotenv==1.0.1
 pypdf==4.2.0
