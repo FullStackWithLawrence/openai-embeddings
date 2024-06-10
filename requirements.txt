@@ -29,7 +29,7 @@ openai==1.30.5
 pinecone-client==4.1.0
 pinecone-text==0.9.0
 pydantic==2.7.3
-pydantic-settings==2.3.0
+pydantic-settings==2.3.1
 python-dotenv==1.0.1
 pypdf==4.2.0
 tiktoken==0.7.0
