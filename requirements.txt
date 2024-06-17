@@ -12,7 +12,7 @@ pre-commit==3.7.1
 isort==5.13.2
 mypy==1.10.0
 pylint==3.2.3
-bandit==1.7.8
+bandit==1.7.9
 pydocstringformatter==0.7.3
 tox==4.15.1
 codespell==2.3.0
@@ -26,7 +26,7 @@ langchain-openai==0.1.8
 langchain-pinecone==0.1.1
 langchain-experimental
 openai==1.33.0
-pinecone-client==4.1.0
+pinecone-client==4.1.1
 pinecone-text==0.9.0
 pydantic==2.7.3
 pydantic-settings==2.3.3
