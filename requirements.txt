@@ -22,7 +22,7 @@ codespell==2.3.0
 python-decouple==3.8
 langchain==0.2.5
 langchainhub==0.1.17
-langchain-openai==0.1.8
+langchain-openai==0.1.9
 langchain-pinecone==0.1.1
 langchain-experimental
 openai==1.33.0
