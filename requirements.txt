@@ -30,7 +30,7 @@ langchain-experimental
 pinecone-client==5.0.0
 pinecone-text==0.9.0
 pydantic==2.8.0
-pydantic-settings==2.3.4
+pydantic-settings==2.4.0
 python-dotenv==1.0.1
 pypdf==4.2.0
 tiktoken==0.7.0
