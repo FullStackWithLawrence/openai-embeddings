@@ -33,4 +33,4 @@ pydantic==2.8.2
 pydantic-settings==2.4.0
 python-dotenv==1.0.1
 pypdf==4.3.1
-tiktoken==0.7.0
+tiktoken==0.8.0
