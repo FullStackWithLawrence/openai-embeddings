@@ -5,14 +5,14 @@ pytest_mock==3.14.0
 
 # Code linters, formatters, and security scanners
 # ------------
-black==24.8.0
+black==24.10.0
 flake8==7.1.1
 flake8-coding==1.3.2
 pre-commit==3.8.0
 isort==5.13.2
 mypy==1.11.2
 pylint==3.2.6
-bandit==1.7.9
+bandit==1.7.10
 pydocstringformatter==0.7.3
 tox==4.18.0
 codespell==2.3.0
@@ -21,16 +21,16 @@ codespell==2.3.0
 # ------------
 python-decouple==3.8
 langchainhub==0.1.21
-langchain-openai==0.1.23
+langchain-openai==0.2.5
 langchain-experimental
 openai>=1.40.0
 langchain==0.2.11
 langchain-pinecone==0.2.0
 langchain-experimental
-pinecone-client==5.0.0
+pinecone-client==5.0.1
 pinecone-text==0.9.0
 pydantic==2.8.2
 pydantic-settings==2.4.0
 python-dotenv==1.0.1
 pypdf==4.3.1
-tiktoken==0.7.0
+tiktoken==0.8.0
