@@ -1,2 +1,2 @@
 # Managed via automated CI/CD in .github/workflows/semanticVersionBump.yml.
-__version__ = "1.3.2-alpha.1"
+__version__ = "1.3.2"
