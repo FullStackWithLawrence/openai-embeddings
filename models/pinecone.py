@@ -107,8 +107,9 @@ class PineconeIndex:
         """Pinecone lazy read-only property."""
         if self._pinecone is None:
             print("Initializing Pinecone...")
-            print(f"API Key: {settings.pinecone_api_key.get_secret_value()}")
-            self._pinecone = Pinecone(api_key=settings.pinecone_api_key.get_secret_value())
+            api_key = settings.pinecone_api_key.get_secret_value()
+            print(f"API Key: {api_key[:12]}****------")
+            self._pinecone = Pinecone(api_key=api_key)
         return self._pinecone
 
     @property
