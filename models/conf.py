@@ -76,7 +76,7 @@ class SettingsDefaults:
 
     PINECONE_API_KEY: SecretStr = SecretStr(None)
     PINECONE_ENVIRONMENT = "gcp-starter"
-    PINECONE_INDEX_NAME = "rag"
+    PINECONE_INDEX_NAME = "openai-embeddings"
     PINECONE_VECTORSTORE_TEXT_KEY = "lc_id"
     PINECONE_METRIC = "dotproduct"
     PINECONE_DIMENSIONS = 1536
@@ -86,8 +86,8 @@ class SettingsDefaults:
     OPENAI_ENDPOINT_IMAGE_N = 4
     OPENAI_ENDPOINT_IMAGE_SIZE = "1024x768"
     OPENAI_CHAT_CACHE = True
-    OPENAI_CHAT_MODEL_NAME = "gpt-3.5-turbo"
-    OPENAI_PROMPT_MODEL_NAME = "gpt-3.5-turbo-instruct"
+    OPENAI_CHAT_MODEL_NAME = "gpt-4"
+    OPENAI_PROMPT_MODEL_NAME = "gpt-4"
     OPENAI_CHAT_TEMPERATURE = 0.0
     OPENAI_CHAT_MAX_RETRIES = 3
 
