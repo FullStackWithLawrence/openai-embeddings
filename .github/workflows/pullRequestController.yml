@@ -50,7 +50,7 @@ on:
       - "./models/**"
 
 env:
-  python-version: "3.11"
+  python-version: "3.12"
 
 jobs:
   check_for_pending_release:
