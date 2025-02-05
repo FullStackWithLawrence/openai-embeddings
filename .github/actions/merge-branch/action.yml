@@ -22,7 +22,7 @@ inputs:
     type: string
 
   python-version:
-    description: "The version of Python to use, such as 3.11.0"
+    description: "The version of Python to use, such as 3.12"
     required: true
     type: string
 
