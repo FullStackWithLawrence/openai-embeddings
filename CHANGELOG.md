@@ -1,14 +1,19 @@
-## [1.3.4](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.3...v1.3.4) (2025-02-05)
-
-
-### Bug Fixes
-
-* deprecation warnings and breaking changes ([604353e](https://github.com/FullStackWithLawrence/openai-embeddings/commit/604353e60d1197a60c517b14c02dd02909754307))
-
 # Change Log
 
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.3.5](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.4...v1.3.5) (2025-02-05)
+
+### Bug Fixes
+
+- LangChain breaking changes and deprecations ([ac7b57e](https://github.com/FullStackWithLawrence/openai-embeddings/commit/ac7b57e75705afdea1d563c6a9e929504d782e87))
+
+## [1.3.4](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.3...v1.3.4) (2025-02-05)
+
+### Bug Fixes
+
+- deprecation warnings and breaking changes ([604353e](https://github.com/FullStackWithLawrence/openai-embeddings/commit/604353e60d1197a60c517b14c02dd02909754307))
 
 ## [1.3.2](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.1...v1.3.2) (2024-04-12)
 
