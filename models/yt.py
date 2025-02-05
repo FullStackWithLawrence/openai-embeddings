@@ -15,14 +15,11 @@ from dotenv import find_dotenv, load_dotenv
 
 # 5.) sequential chains
 # 4.) chains
-from langchain.chains import LLMChain, SimpleSequentialChain
-
-# 1.) wrappers
-from langchain.llms.openai import OpenAI
+from langchain.chains.llm import LLMChain
+from langchain.chains.sequential import SimpleSequentialChain
 
 # 3.) prompt templates
 from langchain.prompts import PromptTemplate
-from langchain.python import PythonREPL
 
 # 2.) models and messages
 from langchain.schema import HumanMessage, SystemMessage  # AIMessage (not used)
@@ -30,8 +27,12 @@ from langchain.schema import HumanMessage, SystemMessage  # AIMessage (not used)
 # 6.) embeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+# 1.) wrappers
+from langchain_community.llms.openai import OpenAI
+
 # 8.) LangChain agents
 from langchain_experimental.agents.agent_toolkits.python.base import create_python_agent
+from langchain_experimental.utilities.python import PythonREPL
 
 # from langchain_community.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -77,14 +78,14 @@ class LangChainDev:
     def test_01_basic(self):
         """Test a basic request"""
 
-        llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
+        llm = OpenAI(model_name="gpt-4")
         retval = llm("explain large language models in one sentence")
         print(retval)
 
     # 2.) models and messages. minute 6:08
     def test_02_chat_model(self):
         """Test a chat model"""
-        chat = ChatOpenAI(model_name="gpt-3.5-turbo-instruct", temperature=0.3)
+        chat = ChatOpenAI(model_name="gpt-4", temperature=0.3)
         messages = [
             SystemMessage(content="You are an expert data scientist"),
             HumanMessage(content="Write a Python script that trains a neural network on simulated data"),
@@ -104,7 +105,7 @@ class LangChainDev:
 
     def test_03_prompt_templates(self):
         """Test prompt templates"""
-        llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
+        llm = OpenAI(model_name="gpt-4")
         prompt = self.get_prompt()
         retval = llm(prompt.format(concept="regularization"))
         print(retval)
@@ -117,7 +118,7 @@ class LangChainDev:
 
     def test_04_chain(self):
         """Test a chain"""
-        llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
+        llm = OpenAI(model_name="gpt-4")
         prompt = self.get_prompt()
         chain = self.get_chain(llm=llm, prompt=prompt)
         print(chain.run("autoencoder"))
@@ -139,7 +140,7 @@ class LangChainDev:
 
     def get_explanation(self):
         """Get an explanation"""
-        llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
+        llm = OpenAI(model_name="gpt-4")
         prompt = self.get_prompt()
         chain_one = self.get_chain(llm=llm, prompt=prompt)
 

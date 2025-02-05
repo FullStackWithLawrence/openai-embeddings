@@ -106,6 +106,8 @@ class PineconeIndex:
     def pinecone(self):
         """Pinecone lazy read-only property."""
         if self._pinecone is None:
+            print("Initializing Pinecone...")
+            print(f"API Key: {settings.pinecone_api_key.get_secret_value()}")
             self._pinecone = Pinecone(api_key=settings.pinecone_api_key.get_secret_value())
         return self._pinecone
 
@@ -153,7 +155,7 @@ class PineconeIndex:
         print("Creating index. This may take a few minutes...")
         serverless_spec = ServerlessSpec(
             cloud="aws",
-            region="us-west-2",
+            region="us-east-1",
         )
         try:
             self.pinecone.create_index(

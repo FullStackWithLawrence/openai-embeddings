@@ -36,7 +36,7 @@ from langchain_community.retrievers.pinecone_hybrid_search import (
 
 # from langchain_community.chat_models import ChatOpenAI
 # prompting and chat
-from langchain_openai import ChatOpenAI, OpenAI
+from langchain_openai import ChatOpenAI
 from pinecone_text.sparse import BM25Encoder  # pylint: disable=import-error
 
 # this project
@@ -114,17 +114,13 @@ class HybridSearchRetriever:
         retval = self.chat.invoke(messages)
         return retval
 
+    # pylint: disable=unused-argument
     def prompt_with_template(
         self, prompt: PromptTemplate, concept: str, model: str = settings.openai_prompt_model_name
     ) -> str:
         """Prompt with template."""
-        llm = OpenAI(
-            model=model,
-            api_key=settings.openai_api_key.get_secret_value(),  # pylint: disable=no-member
-            organization=settings.openai_api_organization,
-        )
-        retval = llm(prompt.format(concept=concept))
-        return retval
+        retval = self.chat.invoke(prompt.format(concept=concept))
+        return retval.content if retval else "no response"
 
     def load(self, filepath: str):
         """Pdf loader."""
