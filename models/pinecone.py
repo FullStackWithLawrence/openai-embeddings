@@ -19,7 +19,7 @@ from langchain_pinecone import PineconeVectorStore
 # pinecone integration
 # import pinecone
 from pinecone import Pinecone, ServerlessSpec
-from pinecone.core.client.exceptions import PineconeApiException
+from pinecone.core.openapi.shared.exceptions import PineconeApiException
 from pinecone.models import IndexList
 
 # this project
