@@ -122,7 +122,7 @@ These are just a few examples of the analytics and accounting courses offered at
 - [OpenAI platform API key](https://platform.openai.com/).
   _If you're new to OpenAI API then see [How to Get an OpenAI API Key](./doc/OPENAI_API_GETTING_STARTED_GUIDE.md)_
 - [Pinecone](https://www.pinecone.io/) API key.
-- [Python 3.11](https://www.python.org/downloads/): for creating virtual environment used for building AWS Lambda Layer, and locally by pre-commit linters and code formatters.
+- [Python 3.12](https://www.python.org/downloads/): for creating virtual environment used for building AWS Lambda Layer, and locally by pre-commit linters and code formatters.
 - [NodeJS](https://nodejs.org/en/download): used with NPM for local ReactJS developer environment, and for configuring/testing Semantic Release.
 
 ## Configuration defaults
@@ -134,9 +134,9 @@ Set these as environment variables on the command line, or in a .env file that s
 OPENAI_API_ORGANIZATION=PLEASE-ADD-ME
 OPENAI_API_KEY=PLEASE-ADD-ME
 OPENAI_CHAT_MAX_RETRIES=3
-OPENAI_CHAT_MODEL_NAME=gpt-3.5-turbo
+OPENAI_CHAT_MODEL_NAME=gpt-4
 OPENAI_CHAT_TEMPERATURE=0.0
-OPENAI_PROMPT_MODEL_NAME=gpt-3.5-turbo-instruct
+OPENAI_PROMPT_MODEL_NAME=gpt-4
 
 # Pinecone API
 PINECONE_API_KEY=PLEASE-ADD-ME

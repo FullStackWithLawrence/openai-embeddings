@@ -97,7 +97,7 @@ class TestConfig:
         assert mock_settings.openai_endpoint_image_n == 1
         assert mock_settings.openai_endpoint_image_size == "TEST_1024x768"
         assert mock_settings.openai_chat_cache is False
-        assert mock_settings.openai_chat_model_name == "TEST_gpt-3.5-turbo"
+        assert mock_settings.openai_chat_model_name == "TEST_gpt-4"
         assert mock_settings.openai_prompt_model_name == "TEST_text-davinci-003"
         assert mock_settings.openai_chat_temperature == 1.0
         assert mock_settings.openai_chat_max_retries == 5
@@ -139,7 +139,7 @@ class TestConfig:
             openai_endpoint_image_n=1,
             openai_endpoint_image_size="TEST_1024x768",
             openai_chat_cache=False,
-            openai_chat_model_name="TEST_gpt-3.5-turbo",
+            openai_chat_model_name="TEST_gpt-4",
             openai_prompt_model_name="TEST_text-davinci-003",
             openai_chat_temperature=1.0,
             openai_chat_max_retries=5,
@@ -156,7 +156,7 @@ class TestConfig:
         assert mock_settings.openai_endpoint_image_n == 1
         assert mock_settings.openai_endpoint_image_size == "TEST_1024x768"
         assert mock_settings.openai_chat_cache is False
-        assert mock_settings.openai_chat_model_name == "TEST_gpt-3.5-turbo"
+        assert mock_settings.openai_chat_model_name == "TEST_gpt-4"
         assert mock_settings.openai_prompt_model_name == "TEST_text-davinci-003"
         assert mock_settings.openai_chat_temperature == 1.0
         assert mock_settings.openai_chat_max_retries == 5
@@ -184,7 +184,7 @@ class TestConfig:
         with pytest.raises(PydanticValidationError):
             mock_settings.openai_chat_cache = False
         with pytest.raises(PydanticValidationError):
-            mock_settings.openai_chat_model_name = "TEST_gpt-3.5-turbo"
+            mock_settings.openai_chat_model_name = "TEST_gpt-4"
         with pytest.raises(PydanticValidationError):
             mock_settings.openai_prompt_model_name = "TEST_text-davinci-003"
         with pytest.raises(PydanticValidationError):
