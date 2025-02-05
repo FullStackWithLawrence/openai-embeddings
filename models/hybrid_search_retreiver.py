@@ -21,13 +21,13 @@ import logging
 import textwrap
 from typing import Union
 
-# pinecone integration
-from langchain.cache import InMemoryCache
-
 # embedding
 from langchain.globals import set_llm_cache
 from langchain.prompts import PromptTemplate
 from langchain.schema import BaseMessage, HumanMessage, SystemMessage
+
+# pinecone integration
+from langchain_community.cache import InMemoryCache
 
 # hybrid search capability
 from langchain_community.retrievers.pinecone_hybrid_search import (
@@ -110,7 +110,8 @@ class HybridSearchRetriever:
             human_message = HumanMessage(content=str(human_message))
         messages = [system_message, human_message]
         # pylint: disable=not-callable
-        retval = self.chat(messages)
+        # retval = self.chat(messages)
+        retval = self.chat.invoke(messages)
         return retval
 
     def prompt_with_template(
