@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=E0611
 """
-    LangChain Quickstart
-    ~~~~~~~~~~~~~~~~~~~~
-    LangChain Explained in 13 Minutes | QuickStart Tutorial for Beginners
+LangChain Quickstart
+~~~~~~~~~~~~~~~~~~~~
+LangChain Explained in 13 Minutes | QuickStart Tutorial for Beginners
 
-    see: https://www.youtube.com/watch?v=aywZrzNaKjs
-         https://github.com/rabbitmetrics/langchain-13-min
+see: https://www.youtube.com/watch?v=aywZrzNaKjs
+     https://github.com/rabbitmetrics/langchain-13-min
 """
+import logging
 import os
 
 import pinecone
@@ -42,6 +43,9 @@ from langchain_pinecone import PineconeVectorStore as Pinecone
 
 from models.conf import settings
 
+
+logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file in all folders
 # pylint: disable=duplicate-code

@@ -6,7 +6,8 @@
 [![OpenAI](https://a11ybadges.com/badge?logo=openai)](https://platform.openai.com/)
 [![LangChain](https://a11ybadges.com/badge?text=LangChain&badgeColor=0834ac)](https://www.langchain.com/)
 [![Pinecone](https://a11ybadges.com/badge?text=Pinecone&badgeColor=000000)](https://www.pinecone.io/)
-[![Python](https://a11ybadges.com/badge?logo=python)](https://www.python.org/)<br>
+[![Python](https://a11ybadges.com/badge?logo=python)](https://www.python.org/)
+[![Pydantic](https://a11ybadges.com/badge?text=Pydantic&badgeColor=E520E9)](https://pydantic.dev/)<br>
 [![Release Notes](https://img.shields.io/github/release/FullStackWithLawrence/openai-embeddings)](https://github.com/FullStackWithLawrence/openai-embeddings/releases)
 ![GHA pushMain Status](https://img.shields.io/github/actions/workflow/status/FullStackWithLawrence/openai-embeddings/pushMain.yml?branch=main)
 [![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
@@ -17,6 +18,8 @@ A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI
 - **PDF Loader**. a command-line pdf loader program that extracts text, vectorizes, and
   loads into a Pinecone dot product vector database that is dimensioned to match OpenAI embeddings.
 - **Retrieval Augmented Generation**. A chatGPT prompt based on a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
+
+Secondarily, I also use this repo for demonstrating how to setup [Pydantic](https://docs.pydantic.dev/latest/) to manage your project settings and how to safely work with sensitive credentials data inside your project.
 
 ## Installation
 

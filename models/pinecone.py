@@ -10,14 +10,12 @@ import json
 import logging
 import os
 
-# from langchain.text_splitter import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 
 # pinecone integration
-# import pinecone
 from pinecone import Pinecone, ServerlessSpec
 from pinecone.core.openapi.shared.exceptions import PineconeApiException
 from pinecone.models import IndexList
@@ -26,7 +24,7 @@ from pinecone.models import IndexList
 from models.conf import settings
 
 
-logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.ERROR)
+logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.INFO)
 
 
 class PineconeIndex:
@@ -127,11 +125,10 @@ class PineconeIndex:
             logging.debug("Index does not exist.")
             self.create()
 
+    # pylint: disable=no-member
     def init(self):
         """Initialize Pinecone."""
-        # pylint: disable=no-member
 
-        # pinecone.init(api_key=settings.pinecone_api_key.get_secret_value(), environment=settings.pinecone_environment)
         self._index = None
         self._index_name = None
         self._text_splitter = None
@@ -148,11 +145,6 @@ class PineconeIndex:
 
     def create(self):
         """Create index."""
-        # deprecated?
-        # metadata_config = {
-        #     "indexed": [settings.pinecone_vectorstore_text_key, "lc_type"],
-        #     "context": ["lc_text"],
-        # }
         print("Creating index. This may take a few minutes...")
         serverless_spec = ServerlessSpec(
             cloud="aws",
