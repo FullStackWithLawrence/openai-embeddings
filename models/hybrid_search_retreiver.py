@@ -44,7 +44,8 @@ from models.conf import settings
 from models.pinecone import PineconeIndex
 
 
-logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.ERROR)
+logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class HybridSearchRetriever:
@@ -102,11 +103,11 @@ class HybridSearchRetriever:
     ) -> BaseMessage:
         """Cached chat request."""
         if not isinstance(system_message, SystemMessage):
-            logging.debug("Converting system message to SystemMessage")
+            logger.info("Converting system message to SystemMessage")
             system_message = SystemMessage(content=str(system_message))
 
         if not isinstance(human_message, HumanMessage):
-            logging.debug("Converting human message to HumanMessage")
+            logger.info("Converting human message to HumanMessage")
             human_message = HumanMessage(content=str(human_message))
         messages = [system_message, human_message]
         # pylint: disable=not-callable
@@ -143,37 +144,46 @@ class HybridSearchRetriever:
         and then use the text of these documents as part of the prompt for GPT-3.
         """
         if not isinstance(human_message, HumanMessage):
-            logging.debug("Converting human_message to HumanMessage")
+            logger.info("Converting human_message to HumanMessage")
             human_message = HumanMessage(content=human_message)
 
         # ---------------------------------------------------------------------
         # 1.) Retrieve relevant documents from Pinecone vector database
         # ---------------------------------------------------------------------
-        # documents = self.retriever.get_relevant_documents(query=human_message.content)
         documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
 
         # Extract the text from the documents
         document_texts = [doc.page_content for doc in documents]
         leader = textwrap.dedent(
-            """You are a helpful assistant.
-            You can assume that all of the following is true.
-            You should attempt to incorporate these facts
-            into your responses:\n\n
-        """
+            """\n
+            You are a helpful assistant. You should assume that all of the
+            following bullet points that follow are completely factual.
+            You should prioritize these enumerated facts when formulating your response:"""
         )
-        system_message_content = f"{leader} {'. '.join(document_texts)}"
+        system_message_content = f"{leader} {'\n\n'.join(document_texts)}"
+        system_message_content = (
+            f"{leader} {''.join([f'\n\n{40 * "-"}\n{i + 1}.) {text}\n' for i, text in enumerate(document_texts)])}"
+        )
         system_message = SystemMessage(content=system_message_content)
         # ---------------------------------------------------------------------
         # finished with hybrid search setup
         # ---------------------------------------------------------------------
-
-        logging.debug("------------------------------------------------------")
-        logging.debug("rag() Retrieval Augmented Generation prompt")
-        logging.debug("Diagnostic information:")
-        logging.debug("  Retrieved %i related documents from Pinecone", len(documents))
-        logging.debug("  System messages contains %i words", len(system_message.content.split()))
-        logging.debug("  Prompt: %s", system_message.content)
-        logging.debug("------------------------------------------------------")
+        star_line = 80 * "*"
+        logger.info(
+            "\n%s\n"
+            "rag() Retrieval Augmented Generation prompt"
+            "Diagnostic information:\n"
+            "  Retrieved %i related documents from Pinecone\n"
+            "  System messages contains %i words\n"
+            "  System Prompt:"
+            "\n  <============================ BEGIN ===============================>"
+            "%s"
+            "\n  <============================= END ================================>\n\n",
+            star_line,
+            len(documents),
+            len(system_message.content.split()),
+            system_message.content,
+        )
 
         # 2.) get a response from the chat model
         response = self.cached_chat_request(system_message=system_message, human_message=human_message)

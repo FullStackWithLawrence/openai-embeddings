@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 """Sales Support Model (hsr) Retrieval Augmented Generation (RAG)"""
 
+import logging
+
+# this project
+from models.conf import settings
 from models.pinecone import PineconeIndex
 
+
+logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.INFO)
+logger = logging.getLogger(__name__)
 
 pinecone = PineconeIndex()
 
