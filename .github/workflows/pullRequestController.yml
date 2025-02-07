@@ -45,7 +45,7 @@ on:
     types: [opened, synchronize]
     paths:
       - "**.py"
-      - "**.requirements.txt"
+      - "./requirements"
       - "**.package.json"
       - "./models/**"
 

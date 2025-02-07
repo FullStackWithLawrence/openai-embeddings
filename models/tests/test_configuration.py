@@ -98,7 +98,7 @@ class TestConfig:
         assert mock_settings.openai_endpoint_image_size == "TEST_1024x768"
         assert mock_settings.openai_chat_cache is False
         assert mock_settings.openai_chat_model_name == "TEST_gpt-4"
-        assert mock_settings.openai_prompt_model_name == "TEST_text-davinci-003"
+        assert mock_settings.openai_prompt_model_name == "TEST_gpt-4"
         assert mock_settings.openai_chat_temperature == 1.0
         assert mock_settings.openai_chat_max_retries == 5
 
