@@ -39,7 +39,7 @@ init:
 	$(PYTHON) -m venv venv && \
 	$(ACTIVATE_VENV) && \
 	$(PIP) install --upgrade pip && \
-	$(PIP) install -r requirements.txt && \
+	$(PIP) install -r requirements/local.txt && \
 	npm install && \
 	pre-commit install
 
