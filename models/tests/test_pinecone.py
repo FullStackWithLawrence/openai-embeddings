@@ -86,13 +86,16 @@ class TestPinecone:
 
     def test_07_load_pdf(self):
         """Test that we can load a PDF document to the index."""
-        if not os.path.exists("./data/test_07_load.pdf"):
-            pytest.skip("File './data/test_07_load.pdf' does not exist")
+        HERE = os.path.dirname(os.path.abspath(__file__))
+        test_file = os.path.join(HERE, "mock_data", "test_load.pdf")
+
+        if not os.path.exists(test_file):
+            pytest.skip(f"File {test_file} does not exist")
 
         pinecone = PineconeIndex()
         # pylint: disable=broad-except
         try:
-            pinecone.pdf_loader(filepath="./data/test_07_load.pdf")
+            pinecone.pdf_loader(filepath=test_file)
         except Exception as e:
             assert False, f"Pinecone.load_pdf() failed with exception: {e}"
         pinecone.delete()
