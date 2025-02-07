@@ -10,7 +10,7 @@ hsr = HybridSearchRetriever()
 templates = UofPennPromptTemplates()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="hsr University of Pennsylvania examples")
+    parser = argparse.ArgumentParser(description="Hybrid search retrieval - University of Pennsylvania examples")
     parser.add_argument("concept", type=str, help="A certification program.")
     args = parser.parse_args()
 
