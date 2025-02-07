@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=duplicate-code
-# pylint: disable=duplicate-code
 """Lawrence McDaniel https://lawrencemcdaniel.com."""
 import importlib.util
 import os
