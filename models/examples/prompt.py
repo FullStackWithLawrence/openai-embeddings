@@ -11,7 +11,7 @@ hsr = HybridSearchRetriever()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="hsr examples")
+    parser = argparse.ArgumentParser(description="hybrid search retrieval examples")
     parser.add_argument("system_message", type=str, help="A system prompt to send to the model.")
     parser.add_argument("human_message", type=str, help="A human prompt to send to the model.")
     args = parser.parse_args()
