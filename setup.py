@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Setup for openai_embeddings package."""
+"""
+Future use: setup for openai_embeddings package. I use this for instructional purposes,
+for demonstrating best practices on how to create a Python package.
+
+This package is not actually published to PyPi.
+"""
 import io
 import os
 from typing import List
@@ -24,6 +29,13 @@ def load_requirements(filename: str) -> List[str]:
     """
     Returns Python package requirements as a list of semantically
     versioned pip packages.
+
+    Args:
+        filename: The name of the requirements file to load. example: "base.txt"
+
+    Returns:
+        A list of package requirements.
+        ['pytest==8.3.4', 'pytest_mock==3.14.0', 'black==25.1.0', ... more packages ]
     """
     with io.open(os.path.join(HERE, "requirements", filename), "rt", encoding="utf-8") as f:
         return [line.strip() for line in f if is_requirement(line) and not line.startswith("-r")]
@@ -38,6 +50,7 @@ setup(
     managed by [LangChain](https://www.langchain.com/).""",
     author="Lawrence McDaniel",
     author_email="lpm0073@gmail.com",
+    url="https://lawrencemcdaniel.com/",
     packages=find_packages(),
     package_data={
         "openai_embeddings": ["*.md"],
