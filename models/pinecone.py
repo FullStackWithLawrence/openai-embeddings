@@ -101,7 +101,7 @@ class PineconeIndex:
         return self._openai_embeddings
 
     @property
-    def pinecone(self):
+    def pinecone(self) -> Pinecone:
         """Pinecone lazy read-only property."""
         if self._pinecone is None:
             print("Initializing Pinecone...")
