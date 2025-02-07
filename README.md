@@ -124,9 +124,9 @@ These are just a few examples of the analytics and accounting courses offered at
 - [make](https://gnuwin32.sourceforge.net/packages/make.htm). _pre-installed on Linux and macOS._
 - [OpenAI platform API key](https://platform.openai.com/).
   _If you're new to OpenAI API then see [How to Get an OpenAI API Key](./doc/OPENAI_API_GETTING_STARTED_GUIDE.md)_
-- [Pinecone](https://www.pinecone.io/) API key.
-- [Python 3.12](https://www.python.org/downloads/): for creating virtual environment used for building AWS Lambda Layer, and locally by pre-commit linters and code formatters.
-- [NodeJS](https://nodejs.org/en/download): used with NPM for local ReactJS developer environment, and for configuring/testing Semantic Release.
+- [Pinecone](https://www.pinecone.io/) API key. A vector database for storing embedding results.
+- [Python 3.12](https://www.python.org/downloads/): for creating virtual environment. Also used by pre-commit linters and code formatters.
+- [NodeJS](https://nodejs.org/en/download): used with NPM for configuring/testing Semantic Release.
 
 ## Configuration defaults
 
@@ -134,20 +134,20 @@ Set these as environment variables on the command line, or in a .env file that s
 
 ```console
 # OpenAI API
-OPENAI_API_ORGANIZATION=PLEASE-ADD-ME
-OPENAI_API_KEY=PLEASE-ADD-ME
-OPENAI_CHAT_MAX_RETRIES=3
+OPENAI_API_ORGANIZATION=ADD-ME-PLEASE
+OPENAI_API_KEY=ADD-ME-PLEASE
 OPENAI_CHAT_MODEL_NAME=gpt-4
-OPENAI_CHAT_TEMPERATURE=0.0
 OPENAI_PROMPT_MODEL_NAME=gpt-4
+OPENAI_CHAT_TEMPERATURE=0.0
+OPENAI_CHAT_MAX_RETRIES=3
 
 # Pinecone API
-PINECONE_API_KEY=PLEASE-ADD-ME
-PINECONE_DIMENSIONS=1536
+PINECONE_API_KEY=ADD-ME-PLEASE
 PINECONE_ENVIRONMENT=gcp-starter
-PINECONE_INDEX_NAME=rag
-PINECONE_METRIC=dotproduct
+PINECONE_INDEX_NAME=openai-embeddings
 PINECONE_VECTORSTORE_TEXT_KEY=lc_id
+PINECONE_METRIC=dotproduct
+PINECONE_DIMENSIONS=1536
 
 # This package
 DEBUG_MODE=False
