@@ -1,0 +1,21 @@
+
+-r base.txt
+
+# dev and test
+# ------------
+pytest==8.3.4
+pytest_mock==3.14.0
+
+# Code linters, formatters, and security scanners
+# ------------
+black==25.1.0
+flake8==7.1.1
+flake8-coding==1.3.2
+pre-commit==4.0.1
+isort==6.0.0
+mypy==1.14.1
+pylint==3.3.4
+bandit==1.7.10
+pydocstringformatter==0.7.3
+tox==4.23.2
+codespell==2.4.1
