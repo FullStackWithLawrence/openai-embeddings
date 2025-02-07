@@ -121,7 +121,7 @@ class HybridSearchRetriever:
     ) -> str:
         """Prompt with template."""
         retval = self.chat.invoke(prompt.format(concept=concept))
-        return retval.content if retval else "no response"
+        return str(retval.content) if retval else "no response"
 
     def load(self, filepath: str):
         """Pdf loader."""
@@ -188,4 +188,4 @@ class HybridSearchRetriever:
         # 2.) get a response from the chat model
         response = self.cached_chat_request(system_message=system_message, human_message=human_message)
 
-        return response.content
+        return str(response.content)
