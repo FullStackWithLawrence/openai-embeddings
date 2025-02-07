@@ -1,3 +1,11 @@
+## [1.3.7](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.6...v1.3.7) (2025-02-07)
+
+
+### Bug Fixes
+
+* broken yaml ([db3ccfa](https://github.com/FullStackWithLawrence/openai-embeddings/commit/db3ccfa8a6310f04c24a72f49140d6eada7c8f18))
+* remove superfluous checks ([716ede1](https://github.com/FullStackWithLawrence/openai-embeddings/commit/716ede136628193040f4d9863aa2a36b34e3e345))
+
 ## [1.3.6](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.5...v1.3.6) (2025-02-07)
 
 
