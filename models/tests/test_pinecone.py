@@ -8,6 +8,7 @@ import os
 
 import pinecone as oem_pinecone
 import pytest  # pylint: disable=unused-import
+from pinecone import Pinecone
 
 from models.conf import settings
 from models.pinecone import PineconeIndex
@@ -50,29 +51,38 @@ class TestPinecone:
 
     def test_05_delete(self):
         """Test that the index can be deleted."""
-        pinecone = PineconeIndex()
-        indexes = oem_pinecone.manage.list_indexes()
-        assert pinecone.index_name in indexes
+        pinecone_index = PineconeIndex()
+
+        # pylint: disable=E1101
+        api_key = settings.pinecone_api_key.get_secret_value()
+        pinecone = Pinecone(api_key=api_key)
+        indexes = pinecone.list_indexes().names()
+        assert pinecone_index.index_name in indexes
         # pylint: disable=broad-except
         try:
-            pinecone.delete()
+            pinecone_index.delete()
         except Exception as e:
             assert False, f"Pinecone.delete() failed with exception: {e}"
 
     def test_06_create(self):
         """Test that the index can be created."""
-        pinecone = PineconeIndex()
-        indexes = oem_pinecone.manage.list_indexes()
-        if pinecone.index_name in indexes:
-            pinecone.delete()
+        pinecone_index = PineconeIndex()
+
+        # pylint: disable=E1101
+        api_key = settings.pinecone_api_key.get_secret_value()
+        pinecone = Pinecone(api_key=api_key)
+
+        indexes = pinecone.list_indexes().names()
+        if pinecone_index.index_name in indexes:
+            pinecone_index.delete()
 
         # pylint: disable=broad-except
         try:
-            pinecone.create()
+            pinecone_index.create()
         except Exception as e:
             assert False, f"Pinecone.create() failed with exception: {e}"
-        assert isinstance(pinecone.index, oem_pinecone.Index)
-        pinecone.delete()
+        assert isinstance(pinecone_index.index, oem_pinecone.Index)
+        pinecone_index.delete()
 
     def test_07_load_pdf(self):
         """Test that we can load a PDF document to the index."""
