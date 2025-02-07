@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements/local.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip
 
@@ -66,7 +66,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          pip install -r ./requirements.txt
+          pip install -r ./requirements/local.txt
         env:
           SITE_PACKAGES_PATH: ${{ env.SITE_PACKAGES_PATH }}
 
