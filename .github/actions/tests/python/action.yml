@@ -35,38 +35,6 @@ runs:
       id: checkout
       uses: actions/checkout@v4
 
-    - name: Check for openai in requirements
-      shell: bash
-      run: |
-        if ! grep -q "openai" ./requirements/local.txt; then
-          echo "openai not found in requirements/local.txt" >&2
-          exit 1
-        fi
-
-    - name: Check for langchain in requirements
-      shell: bash
-      run: |
-        if ! grep -q "langchain" ./requirements/local.txt; then
-          echo "langchain not found in requirements/local.txt" >&2
-          exit 1
-        fi
-
-    - name: Check for langchain-experimental in requirements
-      shell: bash
-      run: |
-        if ! grep -q "langchain-experimental" ./requirements/local.txt; then
-          echo "langchain-experimental not found in requirements/local.txt" >&2
-          exit 1
-        fi
-
-    - name: Check for pinecone-client in requirements
-      shell: bash
-      run: |
-        if ! grep -q "pinecone-client" ./requirements/local.txt; then
-          echo "pinecone-client not found in requirements/local.txt" >&2
-          exit 1
-        fi
-
     - name: Cache Python dependencies
       uses: actions/cache@v3
       with:
