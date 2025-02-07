@@ -9,10 +9,7 @@ on:
     paths:
       - "**.py"
     branches:
-      - alpha
-      - beta
-      - next
-      - next-major
+      - main
 
 env:
   python-version: "3.12"
