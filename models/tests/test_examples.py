@@ -24,15 +24,17 @@ class TestExamples:
     @patch("argparse.ArgumentParser.parse_args")
     def test_prompt(self, mock_parse_args):
         """Test prompt example."""
-        mock_args = MagicMock()
-        mock_args.system_prompt = """you are a helpful assistant. If you are prompted,
+        system_prompt = """you are a helpful assistant. If you are prompted,
         'this is a test', then return the word 'SUCCESS' in upper case. Return only
         this single word, in upper case. Do not embellish. do not further prompt
         the user for any reason."""
+
+        mock_args = MagicMock()
+        mock_args.system_prompt = system_prompt
         mock_args.human_prompt = HUMAN_MESSAGE
         mock_parse_args.return_value = mock_args
 
-        system_message = SystemMessage(content="you are a helpful assistant")
+        system_message = SystemMessage(content=system_prompt)
         human_message = HumanMessage(content=HUMAN_MESSAGE)
         result = prompt_hrs.cached_chat_request(system_message=system_message, human_message=human_message)
         assert result.content == "SUCCESS"
