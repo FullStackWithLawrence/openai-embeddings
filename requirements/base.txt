@@ -8,7 +8,7 @@ langchain==0.3.22
 langchain-pinecone==0.2.3
 langchain-experimental
 pinecone-client==5.0.1
-pinecone-text==0.9.0
+pinecone-text==0.10.0
 pydantic==2.10.4
 pydantic-settings==2.7.1
 python-dotenv==1.1.0
