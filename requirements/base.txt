@@ -1,7 +1,7 @@
 
 python-decouple==3.8
 langchainhub==0.1.21
-langchain-openai==0.1.25
+langchain-openai==0.3.18
 langchain-experimental
 openai>=1.40.0
 langchain
