@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=no-member
-# pylint: disable=E0213,C0103
+# pylint: disable=E0213,C0103,C0301
 """
 Configuration for Lambda functions.
 
@@ -34,6 +33,8 @@ def load_version() -> Dict[str, str]:
     """Stringify the __version__ module."""
     version_file_path = os.path.join(HERE, "__version__.py")
     spec = importlib.util.spec_from_file_location("__version__", version_file_path)
+    if spec is None or spec.loader is None:
+        raise ModelConfigurationError(f"Could not load version file: {version_file_path}")
     version_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(version_module)
     return version_module.__dict__
@@ -74,22 +75,22 @@ class SettingsDefaults:
 
     LANGCHAIN_MEMORY_KEY = "chat_history"
 
-    PINECONE_API_KEY: SecretStr = SecretStr(None)
-    PINECONE_ENVIRONMENT = "gcp-starter"
-    PINECONE_INDEX_NAME = "openai-embeddings"
-    PINECONE_VECTORSTORE_TEXT_KEY = "lc_id"
-    PINECONE_METRIC = "dotproduct"
-    PINECONE_DIMENSIONS = 1536
+    PINECONE_API_KEY: Optional[SecretStr] = SecretStr(os.environ.get("PINECONE_API_KEY")) if os.environ.get("PINECONE_API_KEY") else None  # type: ignore[assignment]
+    PINECONE_ENVIRONMENT = os.environ.get("PINECONE_ENVIRONMENT", "gcp-starter")
+    PINECONE_INDEX_NAME = os.environ.get("PINECONE_INDEX_NAME", "openai-embeddings")
+    PINECONE_VECTORSTORE_TEXT_KEY = os.environ.get("PINECONE_VECTORSTORE_TEXT_KEY", "lc_id")
+    PINECONE_METRIC = os.environ.get("PINECONE_METRIC", "dotproduct")
+    PINECONE_DIMENSIONS = int(os.environ.get("PINECONE_DIMENSIONS", 1536))
 
-    OPENAI_API_ORGANIZATION: str = None
-    OPENAI_API_KEY: SecretStr = SecretStr(None)
-    OPENAI_ENDPOINT_IMAGE_N = 4
-    OPENAI_ENDPOINT_IMAGE_SIZE = "1024x768"
-    OPENAI_CHAT_CACHE = True
-    OPENAI_CHAT_MODEL_NAME = "gpt-4"
-    OPENAI_PROMPT_MODEL_NAME = "gpt-4"
-    OPENAI_CHAT_TEMPERATURE = 0.0
-    OPENAI_CHAT_MAX_RETRIES = 3
+    OPENAI_API_ORGANIZATION: Optional[str] = os.environ.get("OPENAI_API_ORGANIZATION", None)
+    OPENAI_API_KEY: Optional[SecretStr] = SecretStr(os.environ.get("OPENAI_API_KEY")) if os.environ.get("OPENAI_API_KEY") else None  # type: ignore[assignment]
+    OPENAI_ENDPOINT_IMAGE_N = int(os.environ.get("OPENAI_ENDPOINT_IMAGE_N", 4))
+    OPENAI_ENDPOINT_IMAGE_SIZE = os.environ.get("OPENAI_ENDPOINT_IMAGE_SIZE", "1024x768")
+    OPENAI_CHAT_CACHE = os.environ.get("OPENAI_CHAT_CACHE", "true").lower() in ["true", "1", "t", "y", "yes"]
+    OPENAI_CHAT_MODEL_NAME = os.environ.get("OPENAI_CHAT_MODEL_NAME", "gpt-4o-mini")
+    OPENAI_PROMPT_MODEL_NAME = os.environ.get("OPENAI_PROMPT_MODEL_NAME", "gpt-4o-mini")
+    OPENAI_CHAT_TEMPERATURE = float(os.environ.get("OPENAI_CHAT_TEMPERATURE", 0.0))
+    OPENAI_CHAT_MAX_RETRIES = int(os.environ.get("OPENAI_CHAT_MAX_RETRIES", 3))
 
     @classmethod
     def to_dict(cls):
@@ -123,7 +124,7 @@ def empty_str_to_int_default(v: str, default: int) -> int:
 class Settings(BaseSettings):
     """Settings for Lambda functions"""
 
-    _dump: dict = None
+    _dump: Optional[dict] = None
     _pinecone_api_key_source: str = "unset"
     _openai_api_key_source: str = "unset"
     _initialized: bool = False
@@ -142,59 +143,38 @@ class Settings(BaseSettings):
 
     debug_mode: Optional[bool] = Field(
         SettingsDefaults.DEBUG_MODE,
-        env="DEBUG_MODE",
-        pre=True,
-        getter=lambda v: empty_str_to_bool_default(v, SettingsDefaults.DEBUG_MODE),
     )
     dump_defaults: Optional[bool] = Field(
         SettingsDefaults.DUMP_DEFAULTS,
-        env="DUMP_DEFAULTS",
-        pre=True,
-        getter=lambda v: empty_str_to_bool_default(v, SettingsDefaults.DUMP_DEFAULTS),
     )
 
-    langchain_memory_key: Optional[str] = Field(SettingsDefaults.LANGCHAIN_MEMORY_KEY, env="LANGCHAIN_MEMORY_KEY")
+    langchain_memory_key: Optional[str] = Field(SettingsDefaults.LANGCHAIN_MEMORY_KEY)
 
-    openai_api_organization: Optional[str] = Field(
-        SettingsDefaults.OPENAI_API_ORGANIZATION, env="OPENAI_API_ORGANIZATION"
-    )
-    openai_api_key: Optional[SecretStr] = Field(SettingsDefaults.OPENAI_API_KEY, env="OPENAI_API_KEY")
-    openai_endpoint_image_n: Optional[int] = Field(
-        SettingsDefaults.OPENAI_ENDPOINT_IMAGE_N, env="OPENAI_ENDPOINT_IMAGE_N"
-    )
-    openai_endpoint_image_size: Optional[str] = Field(
-        SettingsDefaults.OPENAI_ENDPOINT_IMAGE_SIZE, env="OPENAI_ENDPOINT_IMAGE_SIZE"
-    )
+    openai_api_organization: Optional[str] = Field(SettingsDefaults.OPENAI_API_ORGANIZATION)
+    openai_api_key: Optional[SecretStr] = Field(SettingsDefaults.OPENAI_API_KEY)
+    openai_endpoint_image_n: Optional[int] = Field(SettingsDefaults.OPENAI_ENDPOINT_IMAGE_N)
+    openai_endpoint_image_size: Optional[str] = Field(SettingsDefaults.OPENAI_ENDPOINT_IMAGE_SIZE)
     openai_chat_cache: Optional[bool] = Field(
         SettingsDefaults.OPENAI_CHAT_CACHE,
-        env="OPENAI_CHAT_CACHE",
-        pre=True,
-        getter=lambda v: empty_str_to_bool_default(v, SettingsDefaults.OPENAI_CHAT_CACHE),
     )
-    openai_chat_model_name: Optional[str] = Field(SettingsDefaults.OPENAI_CHAT_MODEL_NAME, env="OPENAI_CHAT_MODEL_NAME")
-    openai_prompt_model_name: Optional[str] = Field(
-        SettingsDefaults.OPENAI_PROMPT_MODEL_NAME, env="OPENAI_PROMPT_MODEL_NAME"
-    )
+    openai_chat_model_name: str = Field(SettingsDefaults.OPENAI_CHAT_MODEL_NAME)
+    openai_prompt_model_name: str = Field(SettingsDefaults.OPENAI_PROMPT_MODEL_NAME)
     openai_chat_temperature: Optional[float] = Field(
         SettingsDefaults.OPENAI_CHAT_TEMPERATURE,
-        env="OPENAI_CHAT_TEMPERATURE",
         ge=0.0,
         le=1.0,
     )
     openai_chat_max_retries: Optional[int] = Field(
         SettingsDefaults.OPENAI_CHAT_MAX_RETRIES,
-        env="OPENAI_CHAT_MAX_RETRIES",
         ge=0,
     )
 
-    pinecone_api_key: Optional[SecretStr] = Field(SettingsDefaults.PINECONE_API_KEY, env="PINECONE_API_KEY")
-    pinecone_environment: Optional[str] = Field(SettingsDefaults.PINECONE_ENVIRONMENT, env="PINECONE_ENVIRONMENT")
-    pinecone_index_name: Optional[str] = Field(SettingsDefaults.PINECONE_INDEX_NAME, env="PINECONE_INDEX_NAME")
-    pinecone_vectorstore_text_key: Optional[str] = Field(
-        SettingsDefaults.PINECONE_VECTORSTORE_TEXT_KEY, env="PINECONE_VECTORSTORE_TEXT_KEY"
-    )
-    pinecone_metric: Optional[str] = Field(SettingsDefaults.PINECONE_METRIC, env="PINECONE_METRIC")
-    pinecone_dimensions: Optional[int] = Field(SettingsDefaults.PINECONE_DIMENSIONS, env="PINECONE_DIMENSIONS", gt=0)
+    pinecone_api_key: Optional[SecretStr] = Field(SettingsDefaults.PINECONE_API_KEY)
+    pinecone_environment: Optional[str] = Field(SettingsDefaults.PINECONE_ENVIRONMENT)
+    pinecone_index_name: Optional[str] = Field(SettingsDefaults.PINECONE_INDEX_NAME)
+    pinecone_vectorstore_text_key: Optional[str] = Field(SettingsDefaults.PINECONE_VECTORSTORE_TEXT_KEY)
+    pinecone_metric: Optional[str] = Field(SettingsDefaults.PINECONE_METRIC)
+    pinecone_dimensions: Optional[int] = Field(SettingsDefaults.PINECONE_DIMENSIONS, gt=0)
 
     @property
     def pinecone_api_key_source(self) -> str:
@@ -331,18 +311,33 @@ class Settings(BaseSettings):
         return v
 
     @field_validator("openai_api_organization")
-    def check_openai_api_organization(cls, v) -> str:
+    def check_openai_api_organization(cls, v) -> Optional[str]:
         """Check openai_api_organization"""
-        if v in [None, ""]:
-            return SettingsDefaults.OPENAI_API_ORGANIZATION
-        return v
+        if isinstance(v, str) and len(v.strip()) > 0:
+            return v.strip()
+        if (
+            isinstance(SettingsDefaults.OPENAI_API_ORGANIZATION, str)
+            and len(SettingsDefaults.OPENAI_API_ORGANIZATION.strip()) > 0
+        ):
+            return SettingsDefaults.OPENAI_API_ORGANIZATION.strip()
+        return None
 
     @field_validator("openai_api_key")
     def check_openai_api_key(cls, v) -> SecretStr:
         """Check openai_api_key"""
-        if v in [None, ""]:
+        if v is None:
+            raise ModelValueError(
+                "OpenAI API key is required. Please set the OPENAI_API_KEY environment variable or pass it as an argument."
+            )
+        if isinstance(v, SecretStr):
+            return v
+        if isinstance(v, str):
+            return SecretStr(v)
+        if isinstance(SettingsDefaults.OPENAI_API_KEY, SecretStr):
             return SettingsDefaults.OPENAI_API_KEY
-        return v
+        raise ModelValueError(
+            "OpenAI API key must be a string or SecretStr. Please set the OPENAI_API_KEY environment variable or pass it as an argument."
+        )
 
     @field_validator("openai_endpoint_image_n")
     def check_openai_endpoint_image_n(cls, v) -> int:
@@ -400,9 +395,13 @@ class Settings(BaseSettings):
     @field_validator("pinecone_api_key")
     def check_pinecone_api_key(cls, v) -> SecretStr:
         """Check pinecone_api_key"""
-        if v in [None, ""]:
+        if isinstance(v, SecretStr):
+            return v
+        if isinstance(SettingsDefaults.PINECONE_API_KEY, SecretStr):
             return SettingsDefaults.PINECONE_API_KEY
-        return v
+        raise ModelValueError(
+            "Pinecone API key must be a string or SecretStr. Please set the PINECONE_API_KEY environment variable or pass it as an argument."
+        )
 
     @field_validator("pinecone_environment")
     def check_pinecone_environment(cls, v) -> str:
