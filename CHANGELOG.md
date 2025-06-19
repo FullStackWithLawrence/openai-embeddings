@@ -1,3 +1,10 @@
+## [1.3.9](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.8...v1.3.9) (2025-06-19)
+
+
+### Bug Fixes
+
+* force a new release ([b14d915](https://github.com/FullStackWithLawrence/openai-embeddings/commit/b14d9153a7337157fe3e2c887774c082f1b04b1c))
+
 ## [1.3.8](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.7...v1.3.8) (2025-05-14)
 
 
