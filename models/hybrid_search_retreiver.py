@@ -75,7 +75,6 @@ class HybridSearchRetriever:
             self._chat = ChatOpenAI(
                 api_key=settings.openai_api_key,
                 organization=settings.openai_api_organization,
-                cache=settings.openai_chat_cache,
                 max_retries=settings.openai_chat_max_retries,
                 model=settings.openai_chat_model_name,
                 temperature=settings.openai_chat_temperature,
