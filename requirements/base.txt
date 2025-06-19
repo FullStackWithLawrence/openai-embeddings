@@ -1,18 +1,20 @@
 
 isort==6.0.1
 langchain==0.3.25
-langchain-community==0.3.25
+langchain-community==0.3.21
 langchain-core==0.3.65
 langchain-experimental==0.3.4
-langchain-openai==0.3.18
+langchain-openai==0.3.24
 langchain-pinecone==0.2.8
-langchain-tests==0.3.20
+langchain-tests==0.3.17
 langchain-text-splitters==0.3.8
 langchainhub==0.1.21
+langsmith==0.3.45
 openai==1.88.0
 pinecone==7.2.0
 pinecone-client==5.0.1
 pinecone-plugin-assistant==1.7.0
+pinecone-plugin-inference==1.1.0
 pinecone-plugin-interface==0.0.7
 pinecone-text==0.10.0
 pydantic==2.10.4
