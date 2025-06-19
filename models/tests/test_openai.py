@@ -17,6 +17,6 @@ class TestOpenAI:
 
         hsr = HybridSearchRetriever()
         retval = hsr.cached_chat_request(
-            "your are a helpful assistant", "please return the value 'CORRECT' in all upper case."
+            "you are a helpful assistant", "please return the value 'CORRECT' in all upper case."
         )
         assert retval.content == "CORRECT"

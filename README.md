@@ -50,7 +50,7 @@ PINECONE_API_KEY=PLEASE-ADD-ME
 
 ```console
 # example 1 - generic assistant
-python3 -m models.examples.prompt "your are a helpful assistant" "What analytics and accounting courses does Wharton offer?"
+python3 -m models.examples.prompt "you are a helpful assistant" "What analytics and accounting courses does Wharton offer?"
 
 # example 2 - assistant with improved system prompting
 python3 -m models.examples.prompt "You are a student advisor at University of Pennsylvania. You provide concise answers of 100 words or less." "What analytics and accounting courses does Wharton offer?"

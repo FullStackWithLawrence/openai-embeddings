@@ -160,9 +160,9 @@ class HybridSearchRetriever:
             following bullet points that follow are completely factual.
             You should prioritize these enumerated facts when formulating your response:"""
         )
-        system_message_content = f"{leader} {'\n\n'.join(document_texts)}"
-        system_message_content = (
-            f"{leader} {''.join([f'\n\n{40 * "-"}\n{i + 1}.) {text}\n' for i, text in enumerate(document_texts)])}"
+        separator = "\n\n" + "-" * 40 + "\n"
+        system_message_content = f"{leader} " + "".join(
+            [separator + f"{i + 1}.) {text}\n" for i, text in enumerate(document_texts)]
         )
         system_message = SystemMessage(content=system_message_content)
         # ---------------------------------------------------------------------
