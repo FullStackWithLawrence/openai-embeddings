@@ -9,6 +9,7 @@ import glob
 import json
 import logging
 import os
+from typing import Optional
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.pdf import PyPDFLoader
@@ -16,9 +17,14 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 
 # pinecone integration
-from pinecone import Pinecone, ServerlessSpec
+from pinecone import AwsRegion, CloudProvider, Pinecone, ServerlessSpec, VectorType
+from pinecone.core.openapi.db_data.models import (
+    IndexDescription as PineconeIndexDescription,
+)
+from pinecone.db_control.models import IndexList
+from pinecone.db_data import Index
 from pinecone.exceptions import PineconeApiException
-from pinecone.models import IndexList
+from pydantic import SecretStr
 
 # this project
 from models.conf import settings
@@ -31,20 +37,20 @@ class PineconeIndex:
     """Pinecone helper class."""
 
     _pinecone = None
-    _index: Pinecone.Index = None
-    _index_name: str = None
-    _text_splitter: RecursiveCharacterTextSplitter = None
-    _openai_embeddings: OpenAIEmbeddings = None
-    _vector_store: PineconeVectorStore = None
+    _index: Optional[Index] = None
+    _index_name: Optional[str] = None
+    _text_splitter: Optional[RecursiveCharacterTextSplitter] = None
+    _openai_embeddings: Optional[OpenAIEmbeddings] = None
+    _vector_store: Optional[PineconeVectorStore] = None
 
-    def __init__(self, index_name: str = None):
+    def __init__(self, index_name: Optional[str] = None):
         self.init()
         self.index_name = index_name or settings.pinecone_index_name
         logging.debug("PineconeIndex initialized with index_name: %s", self.index_name)
         logging.debug(self.index_stats)
 
     @property
-    def index_name(self) -> str:
+    def index_name(self) -> Optional[str]:
         """index name."""
         return self._index_name
 
@@ -57,24 +63,30 @@ class PineconeIndex:
             self.init_index()
 
     @property
-    def index(self) -> Pinecone.Index:
+    def index(self) -> Optional[Index]:
         """pinecone.Index lazy read-only property."""
         if self._index is None:
             self.init_index()
-            self._index = self.pinecone.Index(name=self.index_name)
+            if isinstance(self.pinecone, Pinecone) and isinstance(self.index_name, str):
+                self._index = self.pinecone.Index(name=self.index_name)
+
         return self._index
 
     @property
-    def index_stats(self) -> dict:
+    def index_stats(self) -> str:
         """index stats."""
-        retval = self.index.describe_index_stats()
-        return json.dumps(retval.to_dict(), indent=4)
+        if self.index is not None:
+            retval: PineconeIndexDescription = self.index.describe_index_stats()
+            return json.dumps(retval.to_dict(), indent=4)
+        return "Index not initialized."
 
     @property
     def initialized(self) -> bool:
         """initialized read-only property."""
-        indexes = self.pinecone.list_indexes()
-        return self.index_name in indexes.names()
+        if isinstance(self.pinecone, Pinecone) and isinstance(self.index_name, str):
+            indexes = self.pinecone.list_indexes()
+            return self.index_name in indexes.names()
+        return False
 
     @property
     def vector_store(self) -> PineconeVectorStore:
@@ -95,19 +107,20 @@ class PineconeIndex:
         if self._openai_embeddings is None:
             # pylint: disable=no-member
             self._openai_embeddings = OpenAIEmbeddings(
-                api_key=settings.openai_api_key.get_secret_value(),
+                api_key=settings.openai_api_key,
                 organization=settings.openai_api_organization,
             )
         return self._openai_embeddings
 
     @property
-    def pinecone(self) -> Pinecone:
+    def pinecone(self) -> Optional[Pinecone]:
         """Pinecone lazy read-only property."""
         if self._pinecone is None:
             print("Initializing Pinecone...")
-            api_key = settings.pinecone_api_key.get_secret_value()
-            print(f"API Key: {api_key[:12]}****------")
-            self._pinecone = Pinecone(api_key=api_key)
+            if isinstance(settings.pinecone_api_key, SecretStr):
+                api_key = settings.pinecone_api_key.get_secret_value()
+                print(f"API Key: {api_key[:12]}****------")
+                self._pinecone = Pinecone(api_key=api_key)
         return self._pinecone
 
     @property
@@ -119,11 +132,11 @@ class PineconeIndex:
 
     def init_index(self):
         """Verify that an index named self.index_name exists in Pinecone. If not, create it."""
-        indexes: IndexList = None
-        indexes = self.pinecone.list_indexes()
-        if self.index_name not in indexes.names():
-            logging.debug("Index does not exist.")
-            self.create()
+        if isinstance(self.pinecone, Pinecone):
+            indexes: IndexList = self.pinecone.list_indexes()
+            if self.index_name not in indexes.names():
+                logging.debug("Index does not exist.")
+                self.create()
 
     # pylint: disable=no-member
     def init(self):
@@ -140,24 +153,27 @@ class PineconeIndex:
         if not self.initialized:
             logging.debug("Index does not exist. Nothing to delete.")
             return
-        print("Deleting index...")
-        self.pinecone.delete_index(self.index_name)
+        if isinstance(self.pinecone, Pinecone) and isinstance(self.index_name, str):
+            print("Deleting index...")
+            self.pinecone.delete_index(self.index_name)
 
     def create(self):
         """Create index."""
         print("Creating index. This may take a few minutes...")
         serverless_spec = ServerlessSpec(
-            cloud="aws",
-            region="us-east-1",
+            cloud=CloudProvider.AWS,
+            region=AwsRegion.US_EAST_1,
         )
         try:
-            self.pinecone.create_index(
-                name=self.index_name,
-                dimension=settings.pinecone_dimensions,
-                metric=settings.pinecone_metric,
-                spec=serverless_spec,
-            )
-            print("Index created.")
+            if isinstance(self.pinecone, Pinecone) and isinstance(self.index_name, str):
+                self.pinecone.create_index(
+                    name=self.index_name,
+                    dimension=settings.pinecone_dimensions,
+                    metric=settings.pinecone_metric,
+                    spec=serverless_spec,
+                    vector_type=VectorType.DENSE,
+                )
+                print("Index created.")
         except PineconeApiException:
             pass
 

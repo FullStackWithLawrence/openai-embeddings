@@ -124,6 +124,8 @@ def empty_str_to_int_default(v: str, default: int) -> int:
 class Settings(BaseSettings):
     """Settings for Lambda functions"""
 
+    model_config = {"frozen": True}
+
     _dump: Optional[dict] = None
     _pinecone_api_key_source: str = "unset"
     _openai_api_key_source: str = "unset"
@@ -170,8 +172,8 @@ class Settings(BaseSettings):
     )
 
     pinecone_api_key: Optional[SecretStr] = Field(SettingsDefaults.PINECONE_API_KEY)
-    pinecone_environment: Optional[str] = Field(SettingsDefaults.PINECONE_ENVIRONMENT)
-    pinecone_index_name: Optional[str] = Field(SettingsDefaults.PINECONE_INDEX_NAME)
+    pinecone_environment: str = Field(SettingsDefaults.PINECONE_ENVIRONMENT)
+    pinecone_index_name: str = Field(SettingsDefaults.PINECONE_INDEX_NAME)
     pinecone_vectorstore_text_key: Optional[str] = Field(SettingsDefaults.PINECONE_VECTORSTORE_TEXT_KEY)
     pinecone_metric: Optional[str] = Field(SettingsDefaults.PINECONE_METRIC)
     pinecone_dimensions: Optional[int] = Field(SettingsDefaults.PINECONE_DIMENSIONS, gt=0)
@@ -278,12 +280,6 @@ class Settings(BaseSettings):
 
         self._dump = recursive_sort_dict(self._dump)
         return self._dump
-
-    # pylint: disable=too-few-public-methods
-    class Config:
-        """Pydantic configuration"""
-
-        frozen = True
 
     @field_validator("debug_mode")
     def parse_debug_mode(cls, v) -> bool:
