@@ -19,3 +19,4 @@ bandit==1.8.3
 pydocstringformatter==0.7.3
 tox==4.25.0
 codespell==2.4.1
+pylint==3.3.7
