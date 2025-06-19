@@ -12,9 +12,6 @@ langchainhub==0.1.21
 langsmith==0.3.45
 openai==1.88.0
 pinecone==7.2.0
-pinecone-client==5.0.1
-pinecone-plugin-assistant==1.7.0
-pinecone-plugin-interface==0.0.7
 pinecone-text==0.10.0
 pydantic==2.10.4
 pydantic-settings==2.9.1
