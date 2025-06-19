@@ -17,9 +17,10 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
 """
 
 # general purpose imports
+import json
 import logging
 import textwrap
-from typing import Union
+from typing import Optional, Union
 
 # embedding
 from langchain.globals import set_llm_cache
@@ -51,10 +52,10 @@ logger = logging.getLogger(__name__)
 class HybridSearchRetriever:
     """Hybrid Search Retriever"""
 
-    _chat: ChatOpenAI = None
-    _b25_encoder: BM25Encoder = None
-    _pinecone: PineconeIndex = None
-    _retriever: PineconeHybridSearchRetriever = None
+    _chat: Optional[ChatOpenAI] = None
+    _b25_encoder: Optional[BM25Encoder] = None
+    _pinecone: Optional[PineconeIndex] = None
+    _retriever: Optional[PineconeHybridSearchRetriever] = None
 
     def __init__(self):
         """Constructor"""
@@ -73,7 +74,7 @@ class HybridSearchRetriever:
         """ChatOpenAI lazy read-only property."""
         if self._chat is None:
             self._chat = ChatOpenAI(
-                api_key=settings.openai_api_key.get_secret_value(),  # pylint: disable=no-member
+                api_key=settings.openai_api_key,
                 organization=settings.openai_api_organization,
                 cache=settings.openai_chat_cache,
                 max_retries=settings.openai_chat_max_retries,
@@ -150,6 +151,11 @@ class HybridSearchRetriever:
         # ---------------------------------------------------------------------
         # 1.) Retrieve relevant documents from Pinecone vector database
         # ---------------------------------------------------------------------
+        if not isinstance(human_message.content, str):
+            if isinstance(human_message.content, (dict, list)):
+                human_message.content = json.dumps(human_message.content)
+            else:
+                human_message.content = str(human_message.content)
         documents = self.pinecone.vector_store.similarity_search(query=human_message.content)
 
         # Extract the text from the documents
@@ -181,7 +187,7 @@ class HybridSearchRetriever:
             "\n  <============================= END ================================>\n\n",
             star_line,
             len(documents),
-            len(system_message.content.split()),
+            len(system_message.content.split()) if isinstance(system_message.content, str) else 0,
             system_message.content,
         )
 

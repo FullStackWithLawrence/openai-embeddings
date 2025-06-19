@@ -29,7 +29,7 @@ repos:
     hooks:
       - id: pylint
         name: pylint
-        entry: ./run_pylint.sh
+        entry: ./scripts/run_pylint.sh
         language: script
         types: [python]
   - repo: https://github.com/PyCQA/bandit
