@@ -6,9 +6,10 @@ Test this model's Pinecone helper class.
 
 import os
 
-import pinecone as oem_pinecone
-import pytest  # pylint: disable=unused-import
+import pytest
 from pinecone import Pinecone
+from pinecone.db_data import Index
+from pydantic import SecretStr
 
 from models.conf import settings
 from models.pinecone import PineconeIndex
@@ -47,13 +48,15 @@ class TestPinecone:
             pinecone.initialize()
         except Exception as e:
             assert False, f"Pinecone.initialize() failed with exception: {e}"
-        assert isinstance(pinecone.index, oem_pinecone.Index)
+        assert isinstance(pinecone.index, Index)
 
     def test_05_delete(self):
         """Test that the index can be deleted."""
         pinecone_index = PineconeIndex()
 
-        # pylint: disable=E1101
+        if not isinstance(settings.pinecone_api_key, SecretStr):
+            raise ValueError("Pinecone API key is not a SecretStr")
+        # pylint: disable=no-member
         api_key = settings.pinecone_api_key.get_secret_value()
         pinecone = Pinecone(api_key=api_key)
         indexes = pinecone.list_indexes().names()
@@ -68,7 +71,10 @@ class TestPinecone:
         """Test that the index can be created."""
         pinecone_index = PineconeIndex()
 
-        # pylint: disable=E1101
+        if not isinstance(settings.pinecone_api_key, SecretStr):
+            raise ValueError("Pinecone API key is not a SecretStr")
+
+        # pylint: disable=no-member
         api_key = settings.pinecone_api_key.get_secret_value()
         pinecone = Pinecone(api_key=api_key)
 
@@ -81,7 +87,7 @@ class TestPinecone:
             pinecone_index.create()
         except Exception as e:
             assert False, f"Pinecone.create() failed with exception: {e}"
-        assert isinstance(pinecone_index.index, oem_pinecone.Index)
+        assert isinstance(pinecone_index.index, Index)
         pinecone_index.delete()
 
     def test_07_load_pdf(self):

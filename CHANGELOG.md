@@ -1,3 +1,10 @@
+## [1.3.10](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.9...v1.3.10) (2025-06-19)
+
+
+### Bug Fixes
+
+* remove deprecated pinecone imports ([51d2ea3](https://github.com/FullStackWithLawrence/openai-embeddings/commit/51d2ea3db115ea220dd6dd3d78d3e25c647af34d))
+
 ## [1.3.9](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.8...v1.3.9) (2025-06-19)
 
 
