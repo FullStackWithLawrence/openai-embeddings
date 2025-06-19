@@ -14,15 +14,17 @@ from typing import Optional
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_openai import OpenAIEmbeddings
-from langchain_pinecone import PineconeVectorStore
+from langchain_pinecone import PineconeVectorStore  # pylint: disable=import-error
 
 # pinecone integration
 from pinecone import AwsRegion, CloudProvider, Pinecone, ServerlessSpec, VectorType
+
+# pylint: disable=import-error
 from pinecone.core.openapi.db_data.models import (
     IndexDescription as PineconeIndexDescription,
 )
-from pinecone.db_control.models import IndexList
-from pinecone.db_data import Index
+from pinecone.db_control.models import IndexList  # pylint: disable=import-error
+from pinecone.db_data import Index  # pylint: disable=import-error
 from pinecone.exceptions import PineconeApiException
 from pydantic import SecretStr
 
@@ -105,7 +107,6 @@ class PineconeIndex:
     def openai_embeddings(self) -> OpenAIEmbeddings:
         """OpenAIEmbeddings lazy read-only property."""
         if self._openai_embeddings is None:
-            # pylint: disable=no-member
             self._openai_embeddings = OpenAIEmbeddings(
                 api_key=settings.openai_api_key,
                 organization=settings.openai_api_organization,
@@ -138,7 +139,6 @@ class PineconeIndex:
                 logging.debug("Index does not exist.")
                 self.create()
 
-    # pylint: disable=no-member
     def init(self):
         """Initialize Pinecone."""
 
