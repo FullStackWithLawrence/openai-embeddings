@@ -35,7 +35,6 @@ from langchain_community.retrievers.pinecone_hybrid_search import (
     PineconeHybridSearchRetriever,
 )
 
-# from langchain_community.chat_models import ChatOpenAI
 # prompting and chat
 from langchain_openai import ChatOpenAI
 from pinecone_text.sparse import BM25Encoder  # pylint: disable=import-error
@@ -111,8 +110,6 @@ class HybridSearchRetriever:
             logger.info("Converting human message to HumanMessage")
             human_message = HumanMessage(content=str(human_message))
         messages = [system_message, human_message]
-        # pylint: disable=not-callable
-        # retval = self.chat(messages)
         retval = self.chat.invoke(messages)
         return retval
 
