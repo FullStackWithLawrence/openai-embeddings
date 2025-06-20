@@ -13,13 +13,14 @@
 [![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
 [![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
 
-A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI API Embeddings](https://platform.openai.com/docs/guides/embeddings) persisted to a [Pinecone](https://docs.pinecone.io/docs/python-client) vector database index and managed by [LangChain](https://www.langchain.com/). Implements the following:
+A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI API Embeddings](https://platform.openai.com/docs/guides/embeddings) persisted to a [Pinecone](https://docs.pinecone.io/docs/python-client) vector database index and managed by [LangChain](https://www.langchain.com/). Demonstrates the following:
 
 - **System Prompting**. How do use the system prompt to modify LLM text completion behavior.
 - **Templates**. How to create templates in order keep your prompt DRY.
 - **LangChain**. How to setup a project using LangChain as an alternative to vendor specific LLM PyPi packages.
 - **PDF Loader**. a command-line pdf loader program that extracts text, vectorizes, and
   loads into a Pinecone dot product vector database that is dimensioned to match OpenAI embeddings.
+- **Pinecone**. How to create, load, and query a Pinecone vector database.
 - **Retrieval Augmented Generation (RAG)**. A chatGPT prompt based on a hybrid search retriever that locates relevant documents from the vector database and includes these in OpenAI prompts.
 
 Secondarily, I also use this repo for demonstrating how to setup [Pydantic](https://docs.pydantic.dev/latest/) to manage your project settings and how to safely work with sensitive credentials data inside your project.
