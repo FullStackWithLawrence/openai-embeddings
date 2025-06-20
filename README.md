@@ -16,7 +16,7 @@
 A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI API Embeddings](https://platform.openai.com/docs/guides/embeddings) persisted to a [Pinecone](https://docs.pinecone.io/docs/python-client) vector database index and managed by [LangChain](https://www.langchain.com/). Demonstrates the following:
 
 - **System Prompting**. How do use the system prompt to modify LLM text completion behavior.
-- **Templates**. How to create templates in order keep your prompt DRY.
+- **Templates**. How to create templates in order keep your prompts DRY.
 - **LangChain**. How to setup a project using LangChain as an alternative to vendor specific LLM PyPi packages.
 - **PDF Loader**. a command-line pdf loader program that extracts text, vectorizes, and
   loads into a Pinecone dot product vector database that is dimensioned to match OpenAI embeddings.
