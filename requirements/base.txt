@@ -4,7 +4,7 @@ langchain==0.3.26
 langchain-community==0.3.21
 langchain-core==0.3.67
 langchain-experimental==0.3.4
-langchain-openai==0.3.24
+langchain-openai==0.3.27
 langchain-pinecone==0.2.8
 langchain-tests==0.3.20
 langchain-text-splitters==0.3.8
