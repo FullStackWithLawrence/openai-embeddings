@@ -1,6 +1,6 @@
 
 isort==6.0.1
-langchain==0.3.25
+langchain==0.3.26
 langchain-community==0.3.21
 langchain-core==0.3.67
 langchain-experimental==0.3.4
