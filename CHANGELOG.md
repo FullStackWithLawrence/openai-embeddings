@@ -1,3 +1,10 @@
+## [1.3.12](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.11...v1.3.12) (2025-07-30)
+
+
+### Bug Fixes
+
+* pip requirements version conflicts ([a033b99](https://github.com/FullStackWithLawrence/openai-embeddings/commit/a033b99967a735f48e22d721631feac38c6bbe02))
+
 ## [1.3.11](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.10...v1.3.11) (2025-06-19)
 
 
