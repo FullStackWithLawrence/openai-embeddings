@@ -1,21 +1,21 @@
 
 isort==6.0.1
 langchain==0.3.26
-langchain-community==0.3.21
-langchain-core==0.3.67
+langchain-community==0.3.27
+langchain-core==0.3.72
 langchain-experimental==0.3.4
 langchain-openai==0.3.27
-langchain-pinecone==0.2.8
+langchain-pinecone==0.2.11
 langchain-tests==0.3.20
 langchain-text-splitters==0.3.8
 langchainhub==0.1.21
 langsmith==0.3.45
 openai==1.93.0
 pinecone==7.3.0
-pinecone-text==0.10.0
+pinecone-text
 pydantic==2.11.7
 pydantic-settings==2.10.1
-pydantic_core==2.35.2
+pydantic_core==2.33.2
 python-decouple==3.8
 python-dotenv==1.1.1
 pypdf==5.7.0
