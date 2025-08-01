@@ -1,6 +1,6 @@
 
 isort==6.0.1
-langchain==0.3.26
+langchain==0.3.27
 langchain-community==0.3.27
 langchain-core==0.3.72
 langchain-experimental==0.3.4
@@ -18,5 +18,5 @@ pydantic-settings==2.10.1
 pydantic_core==2.33.2
 python-decouple==3.8
 python-dotenv==1.1.1
-pypdf==5.7.0
+pypdf==5.9.0
 tiktoken==0.9.0
