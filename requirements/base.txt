@@ -9,7 +9,7 @@ langchain-pinecone==0.2.11
 langchain-tests==0.3.20
 langchain-text-splitters==0.3.8
 langchainhub==0.1.21
-langsmith==0.3.45
+langsmith==0.4.9
 openai==1.98.0
 pinecone==7.3.0
 pinecone-text
