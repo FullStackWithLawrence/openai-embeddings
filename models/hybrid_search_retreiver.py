@@ -20,6 +20,7 @@ See: https://python.langchain.com/docs/modules/model_io/llms/llm_caching
 import json
 import logging
 import textwrap
+import warnings
 from typing import Optional, Union
 
 # embedding
@@ -44,6 +45,7 @@ from models.conf import settings
 from models.pinecone import PineconeIndex
 
 
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="langchain_pinecone")
 logging.basicConfig(level=logging.DEBUG if settings.debug_mode else logging.INFO)
 logger = logging.getLogger(__name__)
 
