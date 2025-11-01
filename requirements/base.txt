@@ -1,7 +1,7 @@
 
 isort==6.0.1
 langchain==0.3.27
-langchain-community==0.3.27
+langchain-community==0.4.1
 langchain-core==0.3.72
 langchain-experimental==0.3.4
 langchain-openai==1.0.1
