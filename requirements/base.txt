@@ -6,7 +6,7 @@ langchain-core==1.1.0
 langchain-experimental==0.3.4
 langchain-openai==1.1.6
 langchain-pinecone==0.2.12
-langchain-tests==1.0.2
+langchain-tests==1.1.2
 langchain-text-splitters==1.0.0
 langchainhub==0.1.21
 langsmith==0.4.39
