@@ -18,5 +18,5 @@ pylint==4.0.5
 bandit==1.9.3
 pydocstringformatter==0.7.5
 tox==4.34.1
-codespell==2.4.1
+codespell==2.4.2
 pylint==4.0.5
