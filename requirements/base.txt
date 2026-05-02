@@ -18,5 +18,5 @@ pydantic-settings
 pydantic_core
 python-decouple==3.8
 python-dotenv==1.2.1
-pypdf==6.7.4
+pypdf==6.10.2
 tiktoken==0.12.0
