@@ -2,7 +2,7 @@
 # pylint: disable=too-few-public-methods
 """Sales Support Model (hsr) prompt templates"""
 
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 
 class UofPennPromptTemplates:

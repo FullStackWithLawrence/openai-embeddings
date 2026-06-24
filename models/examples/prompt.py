@@ -2,7 +2,7 @@
 """Sales Support Model (hsr)"""
 import argparse
 
-from langchain.schema import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 
 from models.hybrid_search_retreiver import HybridSearchRetriever
 
