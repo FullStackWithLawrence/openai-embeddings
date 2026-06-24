@@ -6,7 +6,7 @@ Test command line example prompts.
 from unittest.mock import MagicMock, patch
 
 import pytest  # pylint: disable=unused-import
-from langchain.schema import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 
 from models.examples.certification_programs import hsr as uofpenn_certification_program
 from models.examples.online_courses import hsr as uofpenn_online_hsr
