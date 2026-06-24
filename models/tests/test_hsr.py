@@ -9,7 +9,7 @@ import pytest  # pylint: disable=unused-import
 # from langchain_community.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
 
-from models.hybrid_search_retreiver import HybridSearchRetriever
+from models.hybrid_search_retriever import HybridSearchRetriever
 from models.pinecone import PineconeIndex
 
 
