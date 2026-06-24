@@ -2,7 +2,7 @@
 """Sales Support Model (hsr) for the LangChain project."""
 import argparse
 
-from models.hybrid_search_retreiver import HybridSearchRetriever
+from models.hybrid_search_retriever import HybridSearchRetriever
 from models.prompt_templates import UofPennPromptTemplates
 
 
