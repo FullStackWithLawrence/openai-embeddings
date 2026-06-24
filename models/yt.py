@@ -16,20 +16,16 @@ from dotenv import find_dotenv, load_dotenv
 
 # 5.) sequential chains
 # 4.) chains
-from langchain.chains.llm import LLMChain
-from langchain.chains.sequential import SimpleSequentialChain
-
-# 3.) prompt templates
-from langchain.prompts import PromptTemplate
-
-# 2.) models and messages
-from langchain.schema import HumanMessage, SystemMessage  # AIMessage (not used)
-
-# 6.) embeddings
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_classic.chains import LLMChain, SimpleSequentialChain
 
 # 1.) wrappers
 from langchain_community.llms.openai import OpenAI
+
+# 2.) models and messages
+from langchain_core.messages import HumanMessage, SystemMessage
+
+# 3.) prompt templates
+from langchain_core.prompts import PromptTemplate
 
 # 8.) LangChain agents
 from langchain_experimental.agents.agent_toolkits.python.base import create_python_agent
@@ -40,6 +36,9 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 # 7.) pinecode client
 from langchain_pinecone import PineconeVectorStore as Pinecone
+
+# 6.) embeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from models.conf import settings
 

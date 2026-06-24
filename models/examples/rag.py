@@ -2,7 +2,7 @@
 """Sales Support Model (hsr) Retrieval Augmented Generation (RAG)"""
 import argparse
 
-from langchain.schema import HumanMessage
+from langchain_core.messages import HumanMessage
 
 from models.hybrid_search_retreiver import HybridSearchRetriever
 
