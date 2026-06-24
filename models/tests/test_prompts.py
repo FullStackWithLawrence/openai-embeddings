@@ -5,7 +5,7 @@ Test integrity of base class.
 """
 import pytest  # pylint: disable=unused-import
 
-from models.hybrid_search_retreiver import HybridSearchRetriever
+from models.hybrid_search_retriever import HybridSearchRetriever
 from models.prompt_templates import NetecPromptTemplates
 
 

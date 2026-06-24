@@ -65,7 +65,7 @@ class LangChainDev:
     multi_prompt_explanation = None
     texts_splitter_results = None
     pinecone_search = None
-    openai_embedding = OpenAIEmbeddings(model_name="ada")  # minute: 10:05
+    openai_embedding = OpenAIEmbeddings(model="ada")  # minute: 10:05
     query_result = None
     agent_executor = create_python_agent(  # minute: 11:45
         llm=OpenAI(temperature=0, max_tokens=1000),
@@ -81,14 +81,14 @@ class LangChainDev:
     def test_01_basic(self):
         """Test a basic request"""
 
-        llm = OpenAI(model_name="gpt-4")
+        llm = OpenAI(model="gpt-4")
         retval = llm("explain large language models in one sentence")
         print(retval)
 
     # 2.) models and messages. minute 6:08
     def test_02_chat_model(self):
         """Test a chat model"""
-        chat = ChatOpenAI(model_name="gpt-4", temperature=0.3)
+        chat = ChatOpenAI(model="gpt-4", temperature=0.3)
         messages = [
             SystemMessage(content="You are an expert data scientist"),
             HumanMessage(content="Write a Python script that trains a neural network on simulated data"),
@@ -108,7 +108,7 @@ class LangChainDev:
 
     def test_03_prompt_templates(self):
         """Test prompt templates"""
-        llm = OpenAI(model_name="gpt-4")
+        llm = OpenAI(name="gpt-4")
         prompt = self.get_prompt()
         retval = llm(prompt.format(concept="regularization"))
         print(retval)
@@ -121,7 +121,7 @@ class LangChainDev:
 
     def test_04_chain(self):
         """Test a chain"""
-        llm = OpenAI(model_name="gpt-4")
+        llm = OpenAI(name="gpt-4")
         prompt = self.get_prompt()
         chain = self.get_chain(llm=llm, prompt=prompt)
         print(chain.run("autoencoder"))
@@ -143,7 +143,7 @@ class LangChainDev:
 
     def get_explanation(self):
         """Get an explanation"""
-        llm = OpenAI(model_name="gpt-4")
+        llm = OpenAI(name="gpt-4")
         prompt = self.get_prompt()
         chain_one = self.get_chain(llm=llm, prompt=prompt)
 
