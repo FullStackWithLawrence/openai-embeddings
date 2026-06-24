@@ -4,7 +4,7 @@ import argparse
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from models.hybrid_search_retreiver import HybridSearchRetriever
+from models.hybrid_search_retriever import HybridSearchRetriever
 
 
 hsr = HybridSearchRetriever()

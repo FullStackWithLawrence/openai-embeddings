@@ -2,7 +2,7 @@
 """Sales Support Model (hsr) Retrieval Augmented Generation (RAG)"""
 import argparse
 
-from models.hybrid_search_retreiver import HybridSearchRetriever
+from models.hybrid_search_retriever import HybridSearchRetriever
 
 
 hsr = HybridSearchRetriever()
