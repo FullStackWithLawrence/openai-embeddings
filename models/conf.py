@@ -19,7 +19,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
-from pydantic import Field, SecretStr, ValidationError, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 from models.const import HERE
@@ -143,7 +143,7 @@ class Settings(BaseSettings):
             self._openai_api_key_source = "init argument"
         self._initialized = True
 
-    debug_mode: Optional[bool] = Field(
+    debug_mode: bool = Field(
         SettingsDefaults.DEBUG_MODE,
     )
     dump_defaults: Optional[bool] = Field(
@@ -435,8 +435,4 @@ class Settings(BaseSettings):
         return int(v)
 
 
-settings = None
-try:
-    settings = Settings()
-except (ValidationError, ValueError, ModelConfigurationError, ModelValueError) as e:
-    raise ModelConfigurationError("Invalid configuration: " + str(e)) from e
+settings = Settings()

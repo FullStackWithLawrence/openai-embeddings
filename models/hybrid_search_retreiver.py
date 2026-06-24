@@ -23,11 +23,6 @@ import textwrap
 import warnings
 from typing import Optional, Union
 
-# embedding
-from langchain.globals import set_llm_cache
-from langchain.prompts import PromptTemplate
-from langchain.schema import BaseMessage, HumanMessage, SystemMessage
-
 # pinecone integration
 from langchain_community.cache import InMemoryCache
 
@@ -35,6 +30,11 @@ from langchain_community.cache import InMemoryCache
 from langchain_community.retrievers.pinecone_hybrid_search import (
     PineconeHybridSearchRetriever,
 )
+
+# embedding
+from langchain_core.globals import set_llm_cache
+from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
+from langchain_core.prompts import PromptTemplate
 
 # prompting and chat
 from langchain_openai import ChatOpenAI
