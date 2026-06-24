@@ -11,10 +11,10 @@ import logging
 import os
 from typing import Optional
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore  # pylint: disable=import-error
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # pinecone integration
 from pinecone import AwsRegion, CloudProvider, Pinecone, ServerlessSpec, VectorType
