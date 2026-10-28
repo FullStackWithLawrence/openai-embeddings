@@ -10,6 +10,8 @@
 [![Pydantic](https://a11ybadges.com/badge?text=Pydantic&badgeColor=E520E9)](https://pydantic.dev/)<br>
 [![Release Notes](https://img.shields.io/github/release/FullStackWithLawrence/openai-embeddings)](https://github.com/FullStackWithLawrence/openai-embeddings/releases)
 ![GHA pushMain Status](https://img.shields.io/github/actions/workflow/status/FullStackWithLawrence/openai-embeddings/pushMain.yml?branch=main)
+[![Python Unit Tests](https://github.com/FullStackWithLawrence/openai-embeddings/actions/workflows/testsPython.yml/badge.svg?branch=main)](https://github.com/FullStackWithLawrence/openai-embeddings/actions/workflows/testsPython.yml)
+[![codecov](https://codecov.io/gh/FullStackWithLawrence/openai-embeddings/graph/badge.svg)](https://codecov.io/gh/FullStackWithLawrence/openai-embeddings)
 [![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
 [![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
 

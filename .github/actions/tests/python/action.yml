@@ -27,6 +27,10 @@ inputs:
     description: "The Pinecone environment"
     required: true
     type: string
+  codecov-token:
+    description: "The Codecov upload token"
+    required: false
+    type: string
 
 runs:
   using: "composite"
@@ -80,7 +84,17 @@ runs:
         PINECONE_API_KEY: ${{ inputs.pinecone-api-key }}
         PINECONE_ENVIRONMENT: ${{ inputs.pinecone-environment }}
 
-    - name: Run Python unit tests
+    - name: Run Python unit tests with coverage
       shell: bash
       run: |
-        make test
+        make coverage
+        python -m setup_test
+
+    - name: Upload coverage to Codecov
+      if: always()
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ inputs.codecov-token }}
+        files: ./coverage.xml
+        flags: python
+        fail_ci_if_error: false

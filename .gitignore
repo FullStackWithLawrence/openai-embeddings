@@ -21,3 +21,9 @@ venv
 # npm
 node_modules
 package-lock.json
+
+# coverage
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
