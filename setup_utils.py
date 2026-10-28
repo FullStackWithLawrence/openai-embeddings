@@ -50,7 +50,12 @@ def get_semantic_version() -> str:
     - pypi does not allow semantic version numbers to contain a dash.
     - pypi does not allow semantic version numbers to contain a 'v' prefix.
     - pypi does not allow semantic version numbers to contain a 'next' suffix.
+    - semantic-release pre-releases such as 0.1.17-alpha.1 become the PEP 440
+      form 0.1.17a1. Otherwise setuptools normalizes them and warns on stderr.
     """
     version = VERSION["__version__"]
     version = re.sub(r"-next\.\d+", "", version)
-    return re.sub(r"-next-major\.\d+", "", version)
+    version = re.sub(r"-next-major\.\d+", "", version)
+    version = re.sub(r"-alpha\.(\d+)", r"a\1", version)
+    version = re.sub(r"-beta\.(\d+)", r"b\1", version)
+    return re.sub(r"-rc\.(\d+)", r"rc\1", version)
