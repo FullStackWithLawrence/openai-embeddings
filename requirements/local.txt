@@ -5,6 +5,8 @@
 # ------------
 pytest
 pytest_mock
+pytest-cov
+setuptools
 
 # Code linters, formatters, and security scanners
 # ------------

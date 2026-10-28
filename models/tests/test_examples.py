@@ -12,6 +12,8 @@ from models.examples.certification_programs import hsr as uofpenn_certification_
 from models.examples.online_courses import hsr as uofpenn_online_hsr
 from models.examples.prompt import hsr as prompt_hrs
 from models.examples.rag import hsr as rag_hsr
+from models.hybrid_search_retriever import HybridSearchRetriever
+from models.pinecone import PineconeIndex
 from models.prompt_templates import NetecPromptTemplates
 
 
@@ -78,3 +80,11 @@ class TestExamples:
         result = uofpenn_online_hsr.prompt_with_template(prompt=prompt, concept=mock_args.human_message)
         assert isinstance(result, str)
         assert len(result) > 0
+
+    def test_example_modules_import(self):
+        """The load and pinecone_init examples import, and build their objects."""
+        # pylint: disable=import-outside-toplevel
+        from models.examples import load, pinecone_init
+
+        assert isinstance(load.hsr, HybridSearchRetriever)
+        assert isinstance(pinecone_init.pinecone, PineconeIndex)

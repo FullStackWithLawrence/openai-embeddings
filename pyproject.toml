@@ -1,6 +1,24 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 
+[tool.coverage.run]
+source = ["models"]
+omit = [
+    "models/tests/*",
+    # The YouTube video's script. Nothing imports it, and its methods call live
+    # OpenAI and Pinecone APIs.
+    "models/yt.py",
+]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
 [tool.isort]
 profile = "black"
 lines_after_imports = 2
