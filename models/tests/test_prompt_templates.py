@@ -5,9 +5,9 @@
 Test integrity of base class.
 """
 import pytest  # pylint: disable=unused-import
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
-from models.prompt_templates import NetecPromptTemplates
+from models.prompt_templates import NetecPromptTemplates, UofPennPromptTemplates
 
 
 class TestPromptTemplates:
@@ -19,3 +19,13 @@ class TestPromptTemplates:
         for prop_name in templates.get_properties():
             prop = getattr(templates, prop_name)
             assert isinstance(prop, PromptTemplate)
+
+    def test_02_uofpenn_templates(self):
+        """Every UofPenn template is a PromptTemplate that takes a concept."""
+        templates = UofPennPromptTemplates()
+        properties = templates.get_properties()
+        assert properties
+        for prop_name in properties:
+            prop = getattr(templates, prop_name)
+            assert isinstance(prop, PromptTemplate)
+            assert "accounting" in prop.format(concept="accounting")

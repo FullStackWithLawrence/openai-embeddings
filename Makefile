@@ -3,7 +3,7 @@ ifeq ($(OS),Windows_NT)
     PYTHON = python.exe
     ACTIVATE_VENV = venv\Scripts\activate
 else
-    PYTHON = python3.12
+    PYTHON = python3.14
     ACTIVATE_VENV = source venv/bin/activate
 endif
 PIP = $(PYTHON) -m pip
@@ -34,12 +34,15 @@ all: help
 analyze:
 	cloc . --exclude-ext=svg,json,zip --vcs=git
 
+# --ignore-requires-python: every langchain-pinecone release declares
+# Requires-Python <3.14, so on 3.14 pip falls back to 0.0.x, which needs
+# simsimd<4 (no 3.14 wheels). The current release works fine on 3.14.
 init:
 	make clean && \
 	$(PYTHON) -m venv venv && \
 	$(ACTIVATE_VENV) && \
 	$(PIP) install --upgrade pip && \
-	$(PIP) install -r requirements/local.txt && \
+	$(PIP) install --ignore-requires-python -r requirements/local.txt && \
 	npm install && \
 	pre-commit install
 
@@ -49,6 +52,9 @@ activate:
 test:
 	cd models && pytest -v -s tests/
 	python -m setup_test
+
+coverage:
+	python -m pytest --cov --cov-report=term-missing --cov-report=html --cov-report=xml models/tests/
 
 lint:
 	pre-commit run --all-files && \
@@ -74,5 +80,6 @@ help:
 	@echo 'init            - create a Python virtual environment and install dependencies'
 	@echo 'activate        - activate the Python virtual environment'
 	@echo 'test            - run Python unit tests'
+	@echo 'coverage        - run Python unit tests with a coverage report (fails under 95%)'
 	@echo 'lint            - run Python linting'
 	@echo 'clean           - destroy the Python virtual environment'
