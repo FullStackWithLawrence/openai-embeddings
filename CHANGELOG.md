@@ -1,3 +1,10 @@
+## [1.3.14](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.13...v1.3.14) (2026-10-28)
+
+
+### Bug Fixes
+
+* **deps:** support python 3.14, add agent skills and test coverage ([ab45d07](https://github.com/FullStackWithLawrence/openai-embeddings/commit/ab45d071ad82b0730edacee0981458ce647e60f0))
+
 ## [1.3.12](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.11...v1.3.12) (2025-07-30)
 
 
