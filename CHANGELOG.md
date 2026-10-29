@@ -1,3 +1,10 @@
+## [1.3.15](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.14...v1.3.15) (2026-10-28)
+
+
+### Bug Fixes
+
+* **setup:** convert pre-release versions to PEP 440 for setuptools ([b0fd8e4](https://github.com/FullStackWithLawrence/openai-embeddings/commit/b0fd8e4a142cce35b2a24d422f807139d6b68ca0))
+
 ## [1.3.14](https://github.com/FullStackWithLawrence/openai-embeddings/compare/v1.3.13...v1.3.14) (2026-10-28)
 
 
