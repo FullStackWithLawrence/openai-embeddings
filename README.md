@@ -12,7 +12,7 @@
 ![GHA pushMain Status](https://img.shields.io/github/actions/workflow/status/FullStackWithLawrence/openai-embeddings/pushMain.yml?branch=main)
 [![Python Unit Tests](https://github.com/FullStackWithLawrence/openai-embeddings/actions/workflows/testsPython.yml/badge.svg?branch=main)](https://github.com/FullStackWithLawrence/openai-embeddings/actions/workflows/testsPython.yml)
 [![codecov](https://codecov.io/gh/FullStackWithLawrence/openai-embeddings/graph/badge.svg)](https://codecov.io/gh/FullStackWithLawrence/openai-embeddings)
-[![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
+[![AGPL License](https://img.shields.io/github/license/FullStackWithLawrence/openai-embeddings.svg?style=flat-square)](https://github.com/FullStackWithLawrence/openai-embeddings/blob/main/LICENSE)
 [![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
 
 A Hybrid Search and Augmented Generation prompting solution using Python [OpenAI API Embeddings](https://platform.openai.com/docs/guides/embeddings) persisted to a [Pinecone](https://docs.pinecone.io/docs/python-client) vector database index and managed by [LangChain](https://www.langchain.com/). Demonstrates the following:

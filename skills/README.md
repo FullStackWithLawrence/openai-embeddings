@@ -1,5 +1,12 @@
 # openai-embeddings Agent Skills
 
+[![Python Unit Tests](https://github.com/FullStackWithLawrence/openai-embeddings/actions/workflows/testsPython.yml/badge.svg?branch=main)](https://github.com/FullStackWithLawrence/openai-embeddings/actions/workflows/testsPython.yml)
+[![codecov](https://codecov.io/gh/FullStackWithLawrence/openai-embeddings/graph/badge.svg)](https://codecov.io/gh/FullStackWithLawrence/openai-embeddings)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/FullStackWithLawrence/openai-embeddings/blob/main/.pre-commit-config.yaml)
+[![Release Notes](https://img.shields.io/github/release/FullStackWithLawrence/openai-embeddings)](https://github.com/FullStackWithLawrence/openai-embeddings/releases)
+[![License: AGPL v3](https://img.shields.io/github/license/FullStackWithLawrence/openai-embeddings)](https://github.com/FullStackWithLawrence/openai-embeddings/blob/main/LICENSE)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-8-blueviolet)](https://agentskills.io/specification)
+
 This folder holds the [Agent Skills](https://agentskills.io/specification) for
 working on this repository with an AI coding agent such as Claude Code. This
 README is written for people.
