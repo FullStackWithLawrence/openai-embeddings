@@ -4,10 +4,6 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    assignees:
-      - "lpm0073"
-    reviewers:
-      - "lpm0073"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -15,10 +11,6 @@ updates:
     labels:
       - "dependencies"
       - "javascript"
-    assignees:
-      - "FullStackWithLawrence"
-    reviewers:
-      - "FullStackWithLawrence"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -26,7 +18,3 @@ updates:
     labels:
       - "dependencies"
       - "python"
-    assignees:
-      - "lpm0073"
-    reviewers:
-      - "lpm0073"
